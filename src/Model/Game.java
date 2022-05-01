@@ -31,7 +31,7 @@ public class Game {
     /**
      * Constructor of game class. Takes a fen string to build the current status
      */
-    public void Game(String fenString) throws IllegalArgumentException {
+    public void update(String fenString) throws IllegalArgumentException {
 
         String reducedFenString = "";
         String emptyMask ="0000000000000000000000000000000000000000000000000000000000000000";
@@ -134,8 +134,12 @@ public class Game {
         }
     }
 
-
-
+    /**
+     * Constructor
+     */
+    public Game(String fenString) {
+        this.update(fenString);
+    }
 
     /**
      * Convenience and general Getters
