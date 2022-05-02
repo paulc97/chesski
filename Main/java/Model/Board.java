@@ -4,7 +4,7 @@ public class Board {
 
     //TODO: get the info which color the KI is playing (from the game server)
     private boolean gameOver = false;
-    private boolean KIPlaysWhite = false;
+    private boolean KIPlaysWhite = true;
     private boolean currentPlayerIsWhite = false;
     private short halfMoveCount = 0;
     private short nextMoveCount = 0;
@@ -140,7 +140,7 @@ public class Board {
     /**
      * parses a String boardMask to its binary representation in form of a 64bit long
      */
-    private long parseStringToBitboard (String boardMask) {
+    public long parseStringToBitboard (String boardMask) {
         //handle the sign bit at index 0
         if (boardMask.charAt(0)=='0') {
             return Long.parseLong(boardMask, 2);
@@ -335,14 +335,14 @@ public class Board {
      * returns a long indicating the position of all white pieces
      */
     public long getWhitePieces() {
-        return this.whiteKing & this.whiteQueen & this.whiteKnights & this.whiteBishops & this.whiteRooks & this.whitePawns;
+        return this.whiteKing | this.whiteQueen | this.whiteKnights | this.whiteBishops | this.whiteRooks | this.whitePawns;
     }
 
     /**
      * returns a long indicating the position of all black pieces
      */
     public long getBlackPieces() {
-        return this.blackKing & this.blackQueen & this.blackKnights & this.blackBishops & this.blackRooks & this.blackPawns;
+        return this.blackKing | this.blackQueen | this.blackKnights | this.blackBishops | this.blackRooks | this.blackPawns;
     }
 
     /**
@@ -350,9 +350,9 @@ public class Board {
      */
     public long getOwnPieces() {
         if (isKIPlayingWhite()){
-            return this.whiteKing & this.whiteQueen & this.whiteKnights & this.whiteBishops & this.whiteRooks & this.whitePawns;
+            return this.whiteKing | this.whiteQueen | this.whiteKnights | this.whiteBishops | this.whiteRooks | this.whitePawns;
         } else {
-            return this.blackKing & this.blackQueen & this.blackKnights & this.blackBishops & this.blackRooks & this.blackPawns;  
+            return this.blackKing | this.blackQueen | this.blackKnights | this.blackBishops | this.blackRooks | this.blackPawns;  
         }
     }
 
@@ -361,9 +361,9 @@ public class Board {
      */
     public long getOppositePieces() {
         if (!isKIPlayingWhite()){
-            return this.whiteKing & this.whiteQueen & this.whiteKnights & this.whiteBishops & this.whiteRooks & this.whitePawns;
+            return this.whiteKing | this.whiteQueen | this.whiteKnights | this.whiteBishops | this.whiteRooks | this.whitePawns;
         } else {
-            return this.blackKing & this.blackQueen & this.blackKnights & this.blackBishops & this.blackRooks & this.blackPawns;
+            return this.blackKing | this.blackQueen | this.blackKnights | this.blackBishops | this.blackRooks | this.blackPawns;
         }
     }
 
@@ -371,9 +371,15 @@ public class Board {
      * returns a long indicating the position of all pieces
      */
     public long getAllPieces() {
-        return this.getBlackPieces() & this.getWhitePieces();
+        return this.getBlackPieces() | this.getWhitePieces();
     }
 
+    /**
+     * returns all empty fields
+     */
+    public long getEmptyFields() {
+        return ~getAllPieces();
+    }
 
     /**
      * Allows to increases the 'halfMoveCount' manually at the end of a move (for KI simulation)
