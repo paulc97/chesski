@@ -1,6 +1,6 @@
 package Model;
 
-public class Game {
+public class Board {
 
     //TODO: get the info which color the KI is playing (from the game server)
     private boolean gameOver = false;
@@ -28,24 +28,36 @@ public class Game {
             blackRooks=0L,
             blackPawns=0L;
 
-    /**
-     * Constructor of game class. Takes a fen string to build the current status
+     /**
+     * Overloaded constructors - allows to create a board from a fen string
+      * or to create a new board based on an existing board and a move
      */
-    public void update(String fenString) throws IllegalArgumentException {
+    public Board(String fenString) {
+        this.fenToBitboardParser(fenString);
+    }
 
-        String reducedFenString = "";
+    public Board(Board currentBoard, Move move){
+        //TODO: To be implemented if move object structure is known
+    }
+
+    /**
+     * Takes a fen string and sets all bitboards and flags accordingly
+     */
+    public void fenToBitboardParser(String fenString) throws IllegalArgumentException {
+
+        String positions = "";
         String emptyMask ="0000000000000000000000000000000000000000000000000000000000000000";
 
         if (fenString.contains(" ")) {
             // remove and evaluate all meta information from the fen string
             String[] fenStringParts = fenString.split(" ");
 
-            if (fenStringParts.length != 5){
+            if (fenStringParts.length != 6){
                 throw new IllegalArgumentException("fenString " + fenString + " contains more or less than five ' '");
             }
             else{
                 //get positions
-                reducedFenString = fenStringParts[0];
+                positions = fenStringParts[0];
 
                 //get current color
                 if (fenStringParts[1].charAt(0) == 'w') currentPlayerIsWhite = true;
@@ -71,8 +83,11 @@ public class Game {
             throw new IllegalArgumentException("fenString " + fenString + " does not contain ' '");
         }
 
-        for (int i=0, k = 0; i<reducedFenString.length(); i++) {
+        for (int i=0, k = 0; i<positions.length(); i++) {
             //i is the iterator index for the fen string, k the iterator position for the chess field position
+
+            //Debugging
+            //System.out.println("starting to parse "+fenString.charAt(i));
 
             //build a board mask that points to the current board position
             String boardMask = emptyMask.substring(k+1) + "1" + emptyMask.substring(0, k);
@@ -80,9 +95,10 @@ public class Game {
             switch (fenString.charAt(i)) {
 
                 //remove line breaks from fen string
-                case '/': continue;
+                case '/':
+                    continue;
 
-                //identify the respective piece board and add the piece - WHITE/black
+                    //identify the respective piece board and add the piece - WHITE/black
                 case 'K': this.whiteKing = this.whiteKing | parseStringToBitboard(boardMask);
                     break;
                 case 'Q': this.whiteQueen = this.whiteQueen | parseStringToBitboard(boardMask);
@@ -110,11 +126,10 @@ public class Game {
                     break;
 
                 //if no line break or piece was detected jump to the next board position
-                default: k += Character.getNumericValue(fenString.charAt(i));
+                default: k += (Character.getNumericValue(fenString.charAt(i)) -1);
                     break;
             }
 
-            //TODO Test if the "/" case does not reach this statement
             //move to the next board position
             k++;
 
@@ -134,15 +149,9 @@ public class Game {
         }
     }
 
-    /**
-     * Constructor
-     */
-    public Game(String fenString) {
-        this.update(fenString);
-    }
 
     /**
-     * Convenience and general Getters
+     * Helpers and Getters
      */
 
     public boolean isGameOver() {
@@ -376,4 +385,11 @@ public class Game {
     public boolean KiIsPlaying(){
         return KIPlaysWhite == currentPlayerIsWhite;
     }
+
+    public String getFen() {
+        String fen = "";
+        //TODO: To be implemented if required for server communication (TBD: the move that is send to the server)
+        return fen;
+    }
+
 }

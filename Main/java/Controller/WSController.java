@@ -1,10 +1,10 @@
 package Controller;
 
-import Model.Game;
+import Model.Board;
 
 public class WSController {
 
-    public Game game;
+    public Board board;
 
     public static String login (String user){
 

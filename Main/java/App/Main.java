@@ -17,16 +17,16 @@ public class Main {
         controller.joinGame();
 
         //create a new Game on the server if not successfull
-        if (controller.game == null) {
+        if (controller.board == null) {
             controller.createGame();
         }
 
 
 
-        while (!controller.game.isGameOver()){
+        while (!controller.board.isGameOver()){
 
             //check if it's the turn of the KI
-            if(controller.game.KiIsPlaying()){
+            if(controller.board.KiIsPlaying()){
 
             //TODO create and select moves and send it to the server
                 Thread.sleep(2000);
