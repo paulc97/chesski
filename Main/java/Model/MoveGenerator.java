@@ -1,6 +1,7 @@
 package Model;
 
 import Model.Pieces.Pawns;
+import Model.Pieces.SlidingPieces;
 
 import java.util.Arrays;
 import static Model.Mask.*;
@@ -10,13 +11,17 @@ public class MoveGenerator {
 
 
         Pawns pawns = new Pawns();
+        SlidingPieces slidingPieces = new SlidingPieces();
 
         //TODO: Check if "king of the hill" requires also to omit/add the king to the own/opposite pieces
 
         public String ownPossibleMoves(String history, Board board) {
             String list = "";
 
-            list=pawns.moves(history, board)/*+
+            list=pawns.moves(history, board)+"-"+
+                slidingPieces.rookMoves(history, board)+"-"+
+                slidingPieces.bishopMoves(history, board)+"-"+
+                slidingPieces.queenMoves(history, board)/*+
                 posibleNW(WP,WN,WB,WR,WQ,WK,BP,BN,BB,BR,BQ,BK)+
                 posibleBW(WP,WN,WB,WR,WQ,WK,BP,BN,BB,BR,BQ,BK)+
                 posibleRW(WP,WN,WB,WR,WQ,WK,BP,BN,BB,BR,BQ,BK)+
