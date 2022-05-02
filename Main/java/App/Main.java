@@ -14,11 +14,11 @@ public class Main {
         String id = WSController.login(user);
 
         //try to join a game
-        controller.joinGame();
+        controller.joinGame(user, id);
 
         //create a new Game on the server if not successfull
         if (controller.board == null) {
-            controller.createGame();
+            controller.createGame(user, id);
         }
 
 
@@ -29,11 +29,14 @@ public class Main {
             if(controller.board.KiIsPlaying()){
 
             //TODO create and select moves and send it to the server
+
+            //TODO if a move is represented as fen string, implement a method to get a fen String out of a Board or Move
+                controller.commitMove("FEN");
                 Thread.sleep(2000);
 
             } else {
                 Thread.sleep(500);
-                controller.updateGame();
+                controller.updateGame(user, id);
             }
         }
 

@@ -13,16 +13,20 @@ public class WSController {
         return id;
     }
 
-    public void updateGame() {
+    public void updateGame(String user, String id) {
         //TODO implement
     }
 
 
-    public void joinGame() {
+    public void joinGame(String user, String id) {
         //TODO implement
     }
 
-    public void createGame() {
+    public void createGame(String user, String id) {
+        //TODO implement
+    }
+
+    public void commitMove(String fen) {
         //TODO implement
     }
 }
