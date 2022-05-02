@@ -10,7 +10,8 @@ public class Pawns implements Piece {
 
         String list = "";
 
-        if (b.isKIPlayingWhite()) {
+        //TODO Does it make sense to handle the black/white move generation this way?
+        if (b.isCurrentPlayerIsWhite()) {
             //x1,y1,x2,y2
             long PAWN_MOVES = (b.getWhitePawns() >> 7) & b.getBlackPieces() & ~RANK_8 & ~FILE_A;//capture right
             for (int i = Long.numberOfTrailingZeros(PAWN_MOVES); i < 64 - Long.numberOfLeadingZeros(PAWN_MOVES); i++) {

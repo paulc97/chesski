@@ -11,9 +11,7 @@ public class MoveGenerator {
 
         Pawns pawns = new Pawns();
 
-        //TODO Does it make sense to handle the black/white move generation this way?
         //TODO: Check if "king of the hill" requires also to omit/add the king to the own/opposite pieces
-        //TODO: Discuss - how we want to process the moves (String, Move object, in a new board...)
 
         public String ownPossibleMoves(String history, Board board) {
             String list = "";
