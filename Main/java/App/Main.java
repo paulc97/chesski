@@ -1,7 +1,6 @@
-package Main;
+package App;
 
 import Controller.WSController;
-import Model.Game;
 
 public class Main {
 
