@@ -1,7 +1,9 @@
 package App;
 
 import Controller.MessageDTO;
+import Controller.MessageDecoder;
 import Controller.MessageEncoder;
+import Controller.ResponseDTO;
 import org.glassfish.tyrus.client.ClientManager;
 
 import javax.websocket.*;
@@ -17,14 +19,23 @@ import java.util.logging.Logger;
 public class Main {
     private static CountDownLatch latch;
     private Logger logger = Logger.getLogger(this.getClass().getName());
-    private MessageEncoder messageEncoder = new MessageEncoder();
+    private MessageEncoder me = new MessageEncoder();
+    private MessageDecoder md = new MessageDecoder();
 
+    //Config
+    String user = "Allman";
+    String id;
+
+
+    //Executed if connection gets established
     @OnOpen
     public void onOpen(Session session) {
         logger.info("Connected. Session id: " + session.getId());
         try {
-            session.getBasicRemote().sendText("start");
-            session.getBasicRemote().sendText(messageEncoder.encode(new MessageDTO(0, "Allhhhman")));
+            //if no id is set create a new user
+            if (id == null){
+                //send the message to the server
+                session.getBasicRemote().sendText(me.encode(new MessageDTO(0, user)));}
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (EncodeException e) {
@@ -32,11 +43,29 @@ public class Main {
         }
     }
 
+    //Executed if message arrives
     @OnMessage
-    public String onMessage(String message, Session session) {
+    public String onMessage(String message, Session session) throws DecodeException {
+
+        //parse the message into a ResponseDTO object
+        ResponseDTO response = null;
+        try {
+            response = md.decode(message);
+        } catch (DecodeException e) {
+            e.printStackTrace();
+        }
+        assert response != null;
+        response.print();
+
+        //TODO:  implement our Move generator/move selection logic somewhere here?
+
+        //What for? Do we need this?
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
         try {
+
+
             logger.info("Received: " + message);
+
             String userInput = bufferedReader.readLine();
             return userInput;
         } catch (IOException e) {
