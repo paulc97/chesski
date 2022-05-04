@@ -21,8 +21,7 @@ public class MoveGenerator {
             list=pawns.moves(history, board)+"-"+
                 slidingPieces.rookMoves(history, board)+"-"+
                 slidingPieces.bishopMoves(history, board)+"-"+
-                slidingPieces.queenMoves(history, board)/*+
-                posibleNW(WP,WN,WB,WR,WQ,WK,BP,BN,BB,BR,BQ,BK)+
+                slidingPieces.queenMoves(history, board)/*+                posibleNW(WP,WN,WB,WR,WQ,WK,BP,BN,BB,BR,BQ,BK)+
                 posibleBW(WP,WN,WB,WR,WQ,WK,BP,BN,BB,BR,BQ,BK)+
                 posibleRW(WP,WN,WB,WR,WQ,WK,BP,BN,BB,BR,BQ,BK)+
                 posibleQW(WP,WN,WB,WR,WQ,WK,BP,BN,BB,BR,BQ,BK)+
