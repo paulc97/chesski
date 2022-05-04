@@ -1,9 +1,6 @@
 package App;
 
-import Controller.MessageDTO;
-import Controller.MessageDecoder;
-import Controller.MessageEncoder;
-import Controller.ResponseDTO;
+import Controller.*;
 import org.glassfish.tyrus.client.ClientManager;
 
 import javax.websocket.*;
@@ -23,8 +20,8 @@ public class Main {
     private MessageDecoder md = new MessageDecoder();
 
     //Config
-    String user = "Allman";
-    String id;
+    private String userName="Magnus";
+    private long playerId;
 
 
     //Executed if connection gets established
@@ -33,9 +30,9 @@ public class Main {
         logger.info("Connected. Session id: " + session.getId());
         try {
             //if no id is set create a new user
-            if (id == null){
                 //send the message to the server
-                session.getBasicRemote().sendText(me.encode(new MessageDTO(0, user)));}
+                Message message = new Message(0, userName, playerId);
+                session.getBasicRemote().sendText(me.encode(message));
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (EncodeException e) {
@@ -46,31 +43,19 @@ public class Main {
     //Executed if message arrives
     @OnMessage
     public String onMessage(String message, Session session) throws DecodeException {
-
-        //parse the message into a ResponseDTO object
-        ResponseDTO response = null;
-        try {
-            response = md.decode(message);
-        } catch (DecodeException e) {
-            e.printStackTrace();
-        }
-        assert response != null;
-        response.print();
-
-        //TODO:  implement our Move generator/move selection logic somewhere here?
-
-        //What for? Do we need this?
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
         try {
-
-
             logger.info("Received: " + message);
-
-            String userInput = bufferedReader.readLine();
-            return userInput;
+            switch (message) {
+                case "please provide your playerID if you are already logged in": return "Error:"+message;
+                //TODO handle here all possible messages including move generation etc.
+                default: String userInput = bufferedReader.readLine();
+                    return userInput;
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
     }
 
     @OnClose
@@ -90,6 +75,8 @@ public class Main {
         } catch (DeploymentException | URISyntaxException | InterruptedException e) {
             throw new RuntimeException(e);
         }
+
+
     }
 
         /*//create a user

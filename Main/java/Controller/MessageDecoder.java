@@ -6,13 +6,13 @@ import javax.websocket.DecodeException;
 import javax.websocket.Decoder;
 import javax.websocket.EndpointConfig;
 
-public class MessageDecoder implements Decoder.Text<ResponseDTO> {
+public class MessageDecoder implements Decoder.Text<Message> {
 
     private static Gson gson = new Gson();
 
     @Override
-    public ResponseDTO decode(String s) throws DecodeException {
-        return gson.fromJson(s, ResponseDTO.class);
+    public Message decode(String s) throws DecodeException {
+        return gson.fromJson(s, Message.class);
     }
 
     @Override

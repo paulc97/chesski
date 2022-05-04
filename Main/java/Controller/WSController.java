@@ -21,7 +21,7 @@ public class WSController {
         logger.info("Connected. Session id: " + session.getId());
         try {
             session.getBasicRemote().sendText("start");
-            session.getBasicRemote().sendText(messageEncoder.encode(new MessageDTO(0, "Allman")));
+            session.getBasicRemote().sendText(messageEncoder.encode(new Message(0, "Allman")));
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (EncodeException e) {
