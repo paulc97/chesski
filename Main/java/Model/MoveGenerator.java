@@ -1,5 +1,7 @@
 package Model;
 
+import Model.Pieces.King;
+import Model.Pieces.Knights;
 import Model.Pieces.Pawns;
 import Model.Pieces.SlidingPieces;
 
@@ -12,6 +14,8 @@ public class MoveGenerator {
 
         Pawns pawns = new Pawns();
         SlidingPieces slidingPieces = new SlidingPieces();
+        Knights knights = new Knights();
+        King king = new King();
 
         //TODO: Check if "king of the hill" requires also to omit/add the king to the own/opposite pieces
 
@@ -19,13 +23,18 @@ public class MoveGenerator {
             String list = "";
 
             list=pawns.moves(history, board)+"-"+
-                slidingPieces.rookMoves(history, board)+"-"+
-                slidingPieces.bishopMoves(history, board)+"-"+
-                slidingPieces.queenMoves(history, board)/*+                posibleNW(WP,WN,WB,WR,WQ,WK,BP,BN,BB,BR,BQ,BK)+
+                    knights.moves(history, board)+"-"+
+                    king.moves(history, board)+"-"+
+                    slidingPieces.rookMoves(history, board)+"-"+
+                    slidingPieces.bishopMoves(history, board)+"-"+
+                    slidingPieces.queenMoves(history, board)/*+
+                posibleNW(WP,WN,WB,WR,WQ,WK,BP,BN,BB,BR,BQ,BK)+
                 posibleBW(WP,WN,WB,WR,WQ,WK,BP,BN,BB,BR,BQ,BK)+
                 posibleRW(WP,WN,WB,WR,WQ,WK,BP,BN,BB,BR,BQ,BK)+
                 posibleQW(WP,WN,WB,WR,WQ,WK,BP,BN,BB,BR,BQ,BK)+
                 posibleKW(WP,WN,WB,WR,WQ,WK,BP,BN,BB,BR,BQ,BK)*/;
+
+            //TODO: king in check/check mate: Video: King Movement & Safety  Minute 2
 
             return list;
         }
