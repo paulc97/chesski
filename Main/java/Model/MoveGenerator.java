@@ -31,6 +31,7 @@ public class MoveGenerator {
             return list;
         }
 
+/*
         public static void drawBitboard(long bitBoard) {
             String chessBoard[][]=new String[8][8];
             for (int i=0;i<64;i++) {
@@ -73,6 +74,7 @@ public class MoveGenerator {
                 }
             }
         }
+*/
 
 
 }
