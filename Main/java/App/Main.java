@@ -20,7 +20,7 @@ public class Main {
     private MessageDecoder md = new MessageDecoder();
 
     //Config
-    private String userName="Magnus";
+    private String userName="Maagnus";
     private long playerId;
 
 
@@ -44,14 +44,21 @@ public class Main {
     @OnMessage
     public String onMessage(String message, Session session) throws DecodeException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+        Response response = md.decode(message);
         try {
             logger.info("Received: " + message);
-            switch (message) {
+            if (response.playerID != 0){
+                playerId = response.playerID;
+                System.out.println("Received player ID: "+ playerId);
+                //TODO send a message to join a game
+            }
+
+
 
                 //TODO handle here all possible messages including move generation etc.
-                default: String userInput = bufferedReader.readLine();
-                    return userInput;
-            }
+            String userInput = bufferedReader.readLine();
+            return userInput;
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
