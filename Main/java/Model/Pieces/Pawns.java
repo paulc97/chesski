@@ -10,17 +10,16 @@ public class Pawns implements Piece {
 
         String list = "";
 
-        //TODO Does it make sense to handle the black/white move generation this way?
         if (b.isCurrentPlayerIsWhite()) {
             //x1,y1,x2,y2
-            long PAWN_MOVES = (b.getWhitePawns() >> 7) & b.getBlackPieces() & ~RANK_8 & ~FILE_A;//capture right
+            long PAWN_MOVES = (b.getWhitePawns() >> 7) & (b.getBlackPieces() & ~b.getBlackKing()) & ~RANK_8 & ~FILE_A;//capture right
             for (int i = Long.numberOfTrailingZeros(PAWN_MOVES); i < 64 - Long.numberOfLeadingZeros(PAWN_MOVES); i++) {
                 if (((PAWN_MOVES >> i) & 1) == 1) {
                     list += "" + (i / 8 + 1) + (i % 8 - 1) + (i / 8) + (i % 8);
                     //TODO discuss: create a new board here, assess the value of it and add it to the result list?
                 }
             }
-            PAWN_MOVES = (b.getWhitePawns() >> 9) & b.getBlackPieces() & ~RANK_8 & ~FILE_H;//capture left
+            PAWN_MOVES = (b.getWhitePawns() >> 9) & (b.getBlackPieces() & ~b.getBlackKing()) & ~RANK_8 & ~FILE_H;//capture left
             for (int i = Long.numberOfTrailingZeros(PAWN_MOVES); i < 64 - Long.numberOfLeadingZeros(PAWN_MOVES); i++) {
                 if (((PAWN_MOVES >> i) & 1) == 1) {
                     list += "" + (i / 8 + 1) + (i % 8 + 1) + (i / 8) + (i % 8);
@@ -39,15 +38,14 @@ public class Pawns implements Piece {
                 }
             }
 
-            //TODO is this obsolete?
             //y1,y2,Promotion Type,"P"
-            PAWN_MOVES = (b.getWhitePawns() >> 7) & b.getBlackPieces() & RANK_8 & ~FILE_A;//pawn promotion by capture right
+            PAWN_MOVES = (b.getWhitePawns() >> 7) & (b.getBlackPieces() & ~b.getBlackKing()) & RANK_8 & ~FILE_A;//pawn promotion by capture right
             for (int i = Long.numberOfTrailingZeros(PAWN_MOVES); i < 64 - Long.numberOfLeadingZeros(PAWN_MOVES); i++) {
                 if (((PAWN_MOVES >> i) & 1) == 1) {
                     list += "" + (i % 8 - 1) + (i % 8) + "QP" + (i % 8 - 1) + (i % 8) + "RP" + (i % 8 - 1) + (i % 8) + "BP" + (i % 8 - 1) + (i % 8) + "NP";
                 }
             }
-            PAWN_MOVES = (b.getWhitePawns() >> 9) & b.getBlackPieces() & RANK_8 & ~FILE_H;//pawn promotion by capture left
+            PAWN_MOVES = (b.getWhitePawns() >> 9) & (b.getBlackPieces() & ~b.getBlackKing()) & RANK_8 & ~FILE_H;//pawn promotion by capture left
             for (int i = Long.numberOfTrailingZeros(PAWN_MOVES); i < 64 - Long.numberOfLeadingZeros(PAWN_MOVES); i++) {
                 if (((PAWN_MOVES >> i) & 1) == 1) {
                     list += "" + (i % 8 + 1) + (i % 8) + "QP" + (i % 8 + 1) + (i % 8) + "RP" + (i % 8 + 1) + (i % 8) + "BP" + (i % 8 + 1) + (i % 8) + "NP";
@@ -88,13 +86,13 @@ public class Pawns implements Piece {
 
 
             //x1,y1,x2,y2
-            long PAWN_MOVES = (b.getBlackPawns() << 7) & b.getWhitePieces() & ~RANK_1 & ~FILE_H;//capture right
+            long PAWN_MOVES = (b.getBlackPawns() << 7) & (b.getWhitePieces() & ~b.getWhiteKing()) & ~RANK_1 & ~FILE_H;//capture right
             for (int i = Long.numberOfTrailingZeros(PAWN_MOVES); i < 64 - Long.numberOfLeadingZeros(PAWN_MOVES); i++) {
                 if (((PAWN_MOVES >> i) & 1) == 1) {
                     list += "" + (i / 8 - 1) + (i % 8 + 1) + (i / 8) + (i % 8);
                 }
             }
-            PAWN_MOVES = (b.getBlackPawns() << 9) & b.getWhitePieces() & ~RANK_1 & ~FILE_A;//capture left
+            PAWN_MOVES = (b.getBlackPawns() << 9) & (b.getWhitePieces() & ~b.getWhiteKing()) & ~RANK_1 & ~FILE_A;//capture left
             for (int i = Long.numberOfTrailingZeros(PAWN_MOVES); i < 64 - Long.numberOfLeadingZeros(PAWN_MOVES); i++) {
                 if (((PAWN_MOVES >> i) & 1) == 1) {
                     list += "" + (i / 8 - 1) + (i % 8 - 1) + (i / 8) + (i % 8);
@@ -113,15 +111,14 @@ public class Pawns implements Piece {
                 }
             }
 
-            //TODO is this obsolete?
             //y1,y2,Promotion Type,"P"
-            PAWN_MOVES = (b.getBlackPawns() << 7) & b.getWhitePieces() & RANK_1 & ~FILE_H;//pawn promotion by capture right
+            PAWN_MOVES = (b.getBlackPawns() << 7) & (b.getWhitePieces() & ~b.getWhiteKing()) & RANK_1 & ~FILE_H;//pawn promotion by capture right
             for (int i = Long.numberOfTrailingZeros(PAWN_MOVES); i < 64 - Long.numberOfLeadingZeros(PAWN_MOVES); i++) {
                 if (((PAWN_MOVES >> i) & 1) == 1) {
                     list += "" + (i % 8 + 1) + (i % 8) + "QP" + (i % 8 + 1) + (i % 8) + "RP" + (i % 8 + 1) + (i % 8) + "BP" + (i % 8 + 1) + (i % 8) + "NP";
                 }
             }
-            PAWN_MOVES = (b.getBlackPawns() << 9) & b.getWhitePieces() & RANK_1 & ~FILE_A;//pawn promotion by capture left
+            PAWN_MOVES = (b.getBlackPawns() << 9) & (b.getWhitePieces() & ~b.getWhiteKing()) & RANK_1 & ~FILE_A;//pawn promotion by capture left
             for (int i = Long.numberOfTrailingZeros(PAWN_MOVES); i < 64 - Long.numberOfLeadingZeros(PAWN_MOVES); i++) {
                 if (((PAWN_MOVES >> i) & 1) == 1) {
                     list += "" + (i % 8 - 1) + (i % 8) + "QP" + (i % 8 - 1) + (i % 8) + "RP" + (i % 8 - 1) + (i % 8) + "BP" + (i % 8 - 1) + (i % 8) + "NP";

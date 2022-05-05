@@ -17,7 +17,6 @@ public class MoveGenerator {
         Knights knights = new Knights();
         King king = new King();
 
-        //TODO: Check if "king of the hill" requires also to omit/add the king to the own/opposite pieces
 
         public String ownPossibleMoves(String history, Board board) {
             String list = "";
@@ -41,12 +40,7 @@ public class MoveGenerator {
                 list += slidingPieces.bishopMoves(history, board) + "-";
                 if (System.currentTimeMillis() - startTime > maxtime) break;
 
-                list += slidingPieces.queenMoves(history, board);/*+
-                posibleNW(WP,WN,WB,WR,WQ,WK,BP,BN,BB,BR,BQ,BK)+
-                posibleBW(WP,WN,WB,WR,WQ,WK,BP,BN,BB,BR,BQ,BK)+
-                posibleRW(WP,WN,WB,WR,WQ,WK,BP,BN,BB,BR,BQ,BK)+
-                posibleQW(WP,WN,WB,WR,WQ,WK,BP,BN,BB,BR,BQ,BK)+
-                posibleKW(WP,WN,WB,WR,WQ,WK,BP,BN,BB,BR,BQ,BK)*/;
+                list += slidingPieces.queenMoves(history, board);
                 break;
             }
 
