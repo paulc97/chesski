@@ -6,13 +6,13 @@ import javax.websocket.DecodeException;
 import javax.websocket.Decoder;
 import javax.websocket.EndpointConfig;
 
-public class MessageDecoder implements Decoder.Text<Message> {
+public class MessageDecoder implements Decoder.Text<Response> {
 
     private static Gson gson = new Gson();
 
     @Override
-    public Message decode(String s) throws DecodeException {
-        return gson.fromJson(s, Message.class);
+    public Response decode(String s) throws DecodeException {
+        return gson.fromJson(s, Response.class);
     }
 
     @Override
