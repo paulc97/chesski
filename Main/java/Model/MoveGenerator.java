@@ -21,18 +21,34 @@ public class MoveGenerator {
 
         public String ownPossibleMoves(String history, Board board) {
             String list = "";
+            long startTime = System.currentTimeMillis();
+            long maxtime = 10000L;
+            while (true) {
 
-            list=pawns.moves(history, board)+"-"+
-                    knights.moves(history, board)+"-"+
-                    king.moves(history, board)+"-"+
-                    slidingPieces.rookMoves(history, board)+"-"+
-                    slidingPieces.bishopMoves(history, board)+"-"+
-                    slidingPieces.queenMoves(history, board)/*+
+                list += pawns.moves(history, board) + "-";
+                if (System.currentTimeMillis() - startTime > maxtime) break;
+
+                list += knights.moves(history, board) + "-";
+                if (System.currentTimeMillis() - startTime > maxtime) break;
+
+                list += king.moves(history, board) + "-";
+                if (System.currentTimeMillis() - startTime > maxtime) break;
+
+                list += slidingPieces.rookMoves(history, board) + "-";
+                if (System.currentTimeMillis() - startTime > maxtime) break;
+
+
+                list += slidingPieces.bishopMoves(history, board) + "-";
+                if (System.currentTimeMillis() - startTime > maxtime) break;
+
+                list += slidingPieces.queenMoves(history, board);/*+
                 posibleNW(WP,WN,WB,WR,WQ,WK,BP,BN,BB,BR,BQ,BK)+
                 posibleBW(WP,WN,WB,WR,WQ,WK,BP,BN,BB,BR,BQ,BK)+
                 posibleRW(WP,WN,WB,WR,WQ,WK,BP,BN,BB,BR,BQ,BK)+
                 posibleQW(WP,WN,WB,WR,WQ,WK,BP,BN,BB,BR,BQ,BK)+
                 posibleKW(WP,WN,WB,WR,WQ,WK,BP,BN,BB,BR,BQ,BK)*/;
+                break;
+            }
 
             //TODO: king in check/check mate: Video: King Movement & Safety  Minute 2
 

@@ -47,7 +47,7 @@ public class Main {
         try {
             logger.info("Received: " + message);
             switch (message) {
-                case "please provide your playerID if you are already logged in": return "Error:"+message;
+
                 //TODO handle here all possible messages including move generation etc.
                 default: String userInput = bufferedReader.readLine();
                     return userInput;
