@@ -282,6 +282,8 @@ public class MoveGenerator {
         for (int i=0;i<moves.length();i+=4) {
 
             //!!TODO: neues (temporäres) Board erstellen, dazu current board duplizieren
+
+
             Board tempB = new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq f4 0 1");
 
 
@@ -343,18 +345,18 @@ public class MoveGenerator {
 
 
 
-        public String checkBishopMoves( Board board){
+        public String checkBishopMoves(Board board){
 
             return slidingPieces.bishopMoves(board);
 
         }
 
-        public String checkRookMoves( Board board){
+        public String checkRookMoves(Board board){
 
             return slidingPieces.rookMoves(board);
         }
 
-        public String checkQueenMoves( Board board){
+        public String checkQueenMoves(Board board){
 
             return slidingPieces.queenMoves(board);
         }

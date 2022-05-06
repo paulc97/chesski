@@ -50,5 +50,10 @@ public class BoardTests {
         assertEquals(1, board.getNextMoveCount());
     }
 
+    @Test
+    void testDrawBoard(){
+        board.drawArray();
+    }
+
 
 }
