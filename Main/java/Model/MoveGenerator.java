@@ -327,6 +327,48 @@ public class MoveGenerator {
 
     }
 
+    public void selectAndMakeMove(Board b, String validMoves){
+            String move = validMoves.substring(0,4);
+
+
+        b.setWhitePawns(makeMove(b.getWhitePawns(), move, 'P'));
+        b.setWhiteKnights(makeMove(b.getWhiteKnights(), move, 'N'));
+        b.setWhiteBishops(makeMove(b.getWhiteBishops(), move, 'B'));
+        b.setWhiteRooks(makeMove(b.getWhiteRooks(), move, 'R'));
+        b.setWhiteQueen(makeMove(b.getWhiteQueen(), move, 'Q'));
+        b.setWhiteKing(makeMove(b.getWhiteKing(), move, 'K'));
+        b.setBlackPawns(makeMove(b.getBlackPawns(), move, 'p'));
+        b.setBlackKnights(makeMove(b.getBlackKnights(), move, 'n'));
+        b.setBlackBishops(makeMove(b.getBlackBishops(), move, 'b'));
+        b.setBlackRooks(makeMove(b.getBlackRooks(), move, 'r'));
+        b.setBlackQueen(makeMove(b.getBlackQueen(), move, 'q'));
+        b.setBlackKing(makeMove(b.getBlackKing(), move, 'k'));
+        b.setEnPassantBitboardFile(makeMoveEP(b.getWhitePawns()|b.getBlackPawns(),move));
+
+
+        if (Character.isDigit(move.charAt(3))) {//'regular' move
+            int start=(Character.getNumericValue(move.charAt(0))*8)+(Character.getNumericValue(move.charAt(0+1)));
+            if (((1L<<start)&b.getWhiteKing())!=0) {b.setWhiteToCastleKingside(false); b.setWhiteToCastleQueenside(false);}
+            if (((1L<<start)&b.getBlackKing())!=0) {b.setBlackToCastleKingside(false); b.setBlackToCastleQueenside(false);}
+            if (((1L<<start)&b.getWhiteRooks()&(1L<<63))!=0) {b.setWhiteToCastleKingside(false);}
+            if (((1L<<start)&b.getWhiteRooks()&(1L<<56))!=0) {b.setWhiteToCastleQueenside(false);}
+            if (((1L<<start)&b.getBlackRooks()&(1L<<7))!=0) {b.setBlackToCastleKingside(false);}
+            if (((1L<<start)&b.getBlackRooks()&1L)!=0) {b.setBlackToCastleQueenside(false);}
+        }
+
+        b.setCurrentPlayerIsWhite(!b.isCurrentPlayerIsWhite());
+
+        if(b.isCurrentPlayerIsWhite()){
+            b.setHalfMoveCount(1);
+
+        }else{
+            b.setHalfMoveCount(0);
+            b.setNextMoveCount(b.getNextMoveCount()+1);
+            //TODO: reset NextMove to 0 if pawn or capture
+        }
+
+    }
+
 
 
 

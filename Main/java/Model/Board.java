@@ -8,8 +8,8 @@ public class Board {
     private boolean gameOver = false;
     private boolean KIPlaysWhite = true;
     private boolean currentPlayerIsWhite = false;
-    private short halfMoveCount = 0;
-    private short nextMoveCount = 0;
+    private int halfMoveCount = 0; //TODO: change to short again if wished
+    private int nextMoveCount = 0;
     private boolean whiteToCastleKingside = false;
     private boolean whiteToCastleQueenside = false;
     private boolean blackToCastleKingside = false;
@@ -374,12 +374,20 @@ public class Board {
         return whitePawns;
     }
 
-    public short getHalfMoveCount() {
+    public int getHalfMoveCount() {
         return halfMoveCount;
     }
 
-    public short getNextMoveCount() {
+    public void setHalfMoveCount(int halfMoveCount) {
+        this.halfMoveCount = halfMoveCount;
+    }
+
+    public int getNextMoveCount() {
         return nextMoveCount;
+    }
+
+    public void setNextMoveCount(int nextMoveCount) {
+        this.nextMoveCount = nextMoveCount;
     }
 
     public boolean isWhiteToCastleKingside() {
@@ -562,8 +570,8 @@ public class Board {
 
         newFen += " "+enPassants;
 
-        newFen += " 0"; //TODO: implement halbzüge
-        newFen += " 1"; //TODO: implement move count
+        newFen += " " +this.getHalfMoveCount(); //TODO: implement halbzüge
+        newFen += " " +this.getNextMoveCount(); //TODO: implement move count
 
 
         return newFen;

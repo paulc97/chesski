@@ -1,6 +1,7 @@
 package tests;
 
 import Model.Board;
+import Model.MoveGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -53,6 +54,15 @@ public class BoardTests {
     @Test
     void testDrawBoard(){
         board.drawArray();
+    }
+
+    @Test
+    void makeMove(){
+        MoveGenerator mg = new MoveGenerator();
+        Board b1 = new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq f4 0 1");
+        String validMoves = mg.validMoves(b1);
+        mg.selectAndMakeMove(b1, validMoves);
+        System.out.println(b1.getFen());
     }
 
 
