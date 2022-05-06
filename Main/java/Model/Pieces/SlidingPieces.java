@@ -18,7 +18,7 @@ public class SlidingPieces {
             while(i != 0)
             {
                 int iLocation=Long.numberOfTrailingZeros(i);
-                possibility=getHorrizontalAndVerticalMoves(iLocation,b)&b.getWhitePieces();
+                possibility=getHorrizontalAndVerticalMoves(iLocation,b)&b.getBlackPieces();
                 long j=possibility&~(possibility-1);
                 while (j != 0)
                 {
@@ -39,7 +39,7 @@ public class SlidingPieces {
             while(i != 0)
             {
                 int iLocation=Long.numberOfTrailingZeros(i);
-                possibility=getHorrizontalAndVerticalMoves(iLocation,b)&b.getBlackPieces();
+                possibility=getHorrizontalAndVerticalMoves(iLocation,b)&b.getWhitePieces();
                 long j=possibility&~(possibility-1);
                 while (j != 0)
                 {
@@ -69,7 +69,7 @@ public class SlidingPieces {
             while(i != 0)
             {
                 int iLocation=Long.numberOfTrailingZeros(i);
-                possibility=getDiagonalMoves(iLocation,b)&b.getWhitePieces();
+                possibility=getDiagonalMoves(iLocation,b)&b.getBlackPieces();
                 long j=possibility&~(possibility-1);
                 while (j != 0)
                 {
@@ -92,7 +92,7 @@ public class SlidingPieces {
             while(i != 0)
             {
                 int iLocation=Long.numberOfTrailingZeros(i);
-                possibility=getDiagonalMoves(iLocation,b)&b.getBlackPieces();
+                possibility=getDiagonalMoves(iLocation,b)&b.getWhitePieces();
                 long j=possibility&~(possibility-1);
                 while (j != 0)
                 {

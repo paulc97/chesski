@@ -49,6 +49,17 @@ public class MoveGenerator {
             return list;
         }
 
+        public int getMoveCount(String list){
+
+            int lenght = 0;
+
+
+            return lenght;
+
+        }
+
+
+
 /*
         public static void drawBitboard(long bitBoard) {
             String chessBoard[][]=new String[8][8];
