@@ -156,7 +156,8 @@ public class SlidingPieces {
 
     }
 
-    static long DAndAntiDMoves(int s,long OCCUPIED)
+
+    public static long DAndAntiDMoves(int s,long OCCUPIED)
     {
         long binaryS=1L<<s;
         long possibilitiesDiagonal = ((OCCUPIED&DiagonalMasks8[(s / 8) + (s % 8)]) - (2 * binaryS)) ^ Long.reverse(Long.reverse(OCCUPIED&DiagonalMasks8[(s / 8) + (s % 8)]) - (2 * Long.reverse(binaryS)));
@@ -164,11 +165,12 @@ public class SlidingPieces {
         return (possibilitiesDiagonal&DiagonalMasks8[(s / 8) + (s % 8)]) | (possibilitiesAntiDiagonal&AntiDiagonalMasks8[(s / 8) + 7 - (s % 8)]);
     }
 
-    static long HAndVMoves(int s,long OCCUPIED)
+    public static long HAndVMoves(int s,long OCCUPIED)
     {
         long binaryS=1L<<s;
         long possibilitiesHorizontal = (OCCUPIED - 2 * binaryS) ^ Long.reverse(Long.reverse(OCCUPIED) - 2 * Long.reverse(binaryS));
         long possibilitiesVertical = ((OCCUPIED&FileMasks8[s % 8]) - (2 * binaryS)) ^ Long.reverse(Long.reverse(OCCUPIED&FileMasks8[s % 8]) - (2 * Long.reverse(binaryS)));
         return (possibilitiesHorizontal&RankMasks8[s / 8]) | (possibilitiesVertical&FileMasks8[s % 8]);
+
     }
 }
