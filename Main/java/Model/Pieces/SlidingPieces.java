@@ -164,7 +164,8 @@ public class SlidingPieces {
 
     }
 
-    private long getDiagonalMoves(int p,Board b){
+    //note @paul: MoveGenerator-Klasse braucht diese Methoden (vorerst?) deswegen private->public
+    public long getDiagonalMoves(int p,Board b){
 
         long binaryS=1L<<p;
         long possibilitiesDiagonal = ((b.getAllPieces()&DiagonalMasks8[(p / 8) + (p % 8)]) - (2 * binaryS)) ^ Long.reverse(Long.reverse(b.getAllPieces()&DiagonalMasks8[(p / 8) + (p % 8)]) - (2 * Long.reverse(binaryS)));
@@ -173,7 +174,7 @@ public class SlidingPieces {
 
     }
 
-    private long getHorrizontalAndVerticalMoves(int p,Board b){
+    public long getHorrizontalAndVerticalMoves(int p,Board b){
 
         long binaryS=1L<<p;
         long possibilitiesHorizontal = (b.getAllPieces() - 2 * binaryS) ^ Long.reverse(Long.reverse(b.getAllPieces()) - 2 * Long.reverse(binaryS));
