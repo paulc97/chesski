@@ -180,6 +180,10 @@ public class Board {
         return currentPlayerIsWhite;
     }
 
+    public void setCurrentPlayerIsWhite(boolean currentPlayerIsWhite) {
+        this.currentPlayerIsWhite = currentPlayerIsWhite;
+    }
+
     public boolean isKIPlayingWhite() {
         return KIPlaysWhite;
     }
@@ -476,12 +480,93 @@ public class Board {
     }
 
     public String getFen() {
+
+        String chessBoard[][]=new String[8][8];
+        for (int i=0;i<64;i++) {
+            chessBoard[i/8][i%8]="1";
+        }
+        for (int i=0;i<64;i++) {
+            if (((this.getWhitePawns()>>i)&1)==1) {chessBoard[i/8][i%8]="P";}
+            if (((this.getWhiteKnights()>>i)&1)==1) {chessBoard[i/8][i%8]="N";}
+            if (((this.getWhiteBishops()>>i)&1)==1) {chessBoard[i/8][i%8]="B";}
+            if (((this.getWhiteRooks()>>i)&1)==1) {chessBoard[i/8][i%8]="R";}
+            if (((this.getWhiteQueen()>>i)&1)==1) {chessBoard[i/8][i%8]="Q";}
+            if (((this.getWhiteKing()>>i)&1)==1) {chessBoard[i/8][i%8]="K";}
+            if (((this.getBlackPawns()>>i)&1)==1) {chessBoard[i/8][i%8]="p";}
+            if (((this.getBlackKnights()>>i)&1)==1) {chessBoard[i/8][i%8]="n";}
+            if (((this.getBlackBishops()>>i)&1)==1) {chessBoard[i/8][i%8]="b";}
+            if (((this.getBlackRooks()>>i)&1)==1) {chessBoard[i/8][i%8]="r";}
+            if (((this.getBlackQueen()>>i)&1)==1) {chessBoard[i/8][i%8]="q";}
+            if (((this.getBlackKing()>>i)&1)==1) {chessBoard[i/8][i%8]="k";}
+        }
+
+
+        //createFEN
         String fen = "";
+        for (int i = 0;i<8;i++){
+            for (int j = 0;j<8;j++){
 
-        //TODO: To be implemented if required for server communication (TBD: the move that is send to the server)
+
+                fen += chessBoard[i][7-j];
 
 
-        return fen;
+            }
+            fen +="/";
+
+        }
+
+        String[] splittedFen = fen.split("/");
+
+        String newFen ="";
+
+        int counter =0;
+        for (String fensplit : splittedFen){
+
+            for (int i =0; i<8; i++){
+                if(fensplit.charAt(i)=='1'){
+                    counter++;
+                } else {
+                    if(counter>0){
+                        newFen+= counter;
+                        counter = 0;
+                    }
+                    newFen+=fensplit.charAt(i);
+
+                }
+            }
+            if (counter!=0){
+                newFen+=counter;
+                counter=0;
+            }
+            newFen+="/";
+        }
+
+        newFen = newFen.substring(0,newFen.length()-2);
+
+        if(this.isCurrentPlayerIsWhite()){
+            newFen+=" w";
+        } else {
+            newFen+=" b";
+        }
+
+        String castleRights = "";
+        if(this.whiteToCastleKingside) castleRights+= "K";
+        if(this.whiteToCastleQueenside) castleRights+= "Q";
+        if(this.blackToCastleKingside) castleRights+= "k";
+        if(this.blackToCastleQueenside) castleRights+= "q";
+        if (castleRights!=""){
+            newFen+= " "+castleRights;
+        } else {
+            newFen +=" -";
+        }
+
+        newFen += " "+enPassants;
+
+        newFen += " 0"; //TODO: implement halbzüge
+        newFen += " 1"; //TODO: implement move count
+
+
+        return newFen;
     }
 
     public void drawArray() {

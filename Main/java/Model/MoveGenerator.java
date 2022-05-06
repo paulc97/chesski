@@ -281,11 +281,7 @@ public class MoveGenerator {
 
         for (int i=0;i<moves.length();i+=4) {
 
-            //!!TODO: neues (temporäres) Board erstellen, dazu current board duplizieren
-
-
-            Board tempB = new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq f4 0 1");
-
+            Board tempB = new Board(b.getFen());
 
             tempB.setWhitePawns(makeMove(b.getWhitePawns(), moves.substring(i,i+4), 'P'));
             tempB.setWhiteKnights(makeMove(b.getWhiteKnights(), moves.substring(i,i+4), 'N'));
@@ -314,6 +310,10 @@ public class MoveGenerator {
                     if (((1L<<start)&b.getBlackRooks()&(1L<<7))!=0) {tempB.setBlackToCastleKingside(false);}
                     if (((1L<<start)&b.getBlackRooks()&1L)!=0) {tempB.setBlackToCastleQueenside(false);}
                 }
+
+                tempB.setCurrentPlayerIsWhite(!b.isCurrentPlayerIsWhite());
+
+
                 //check if own King is NOT in danger after move
                 if (((tempB.getWhiteKing()&unsafeForWhite(tempB))==0 && b.isCurrentPlayerIsWhite()) ||
                         ((tempB.getBlackKing()&unsafeForBlack(tempB))==0 && !b.isCurrentPlayerIsWhite())) {
@@ -341,7 +341,6 @@ public class MoveGenerator {
             return (list.replace("-","").length()/4);
 
         }
-        //TODO: ändern oder "getValidMoveCount" für nur valide züge, die durch "validMoves" Methode durchgegangen sind
 
 
 

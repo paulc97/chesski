@@ -37,6 +37,12 @@ public class MoveTests {
         assertEquals("18", moveGenerator.ownPossibleMoves(board));
     }
 
+
+    @Test
+    void validMovesTest(){
+        assertEquals(0, moveGenerator.getMoveCount(moveGenerator.validMoves(new Board("2k5/R1P4R/8/8/8/3K4/8/8 b - - 0 1"))));
+    }
+
     //@Test
     //void testMovesCount(){
 
