@@ -6,7 +6,7 @@ import static Model.Mask.*;
 
 public class Pawns implements Piece {
 
-    public String moves(String history, Board b) {
+    public String moves(Board b) {
 
         String list = "";
 
@@ -57,28 +57,23 @@ public class Pawns implements Piece {
                     list += "" + (i % 8) + (i % 8) + "QP" + (i % 8) + (i % 8) + "RP" + (i % 8) + (i % 8) + "BP" + (i % 8) + (i % 8) + "NP";
                 }
             }
-            //y1,y2,Space,"E //TODO: vllt En Passant Optimation im Vid 13 oder 14 oder 15...
-            if (history.length()>=4)//1636
+            //y1,y2,Space,"WE"
+            //TODO: wenn enPassant Feld im FEN angegeben, vereinfachen evtl. möglich
+
+
+            long possibility = 0L; //TODO: entfernen, wenn Move-Optimation bei restlichen Pawn Moves -> schon deklariert
+            possibility = (b.getWhitePawns() << 1)&b.getBlackPawns()&RANK_5&~FILE_A&b.getEnPassantBitboardFile();//shows piece to remove, not the destination
+            if (possibility != 0)
             {
-                if ((history.charAt(history.length()-1)==history.charAt(history.length()-3)) && Math.abs(history.charAt(history.length()-2)-history.charAt(history.length()-4))==2)
-                {
-                    int eFile=history.charAt(history.length()-1)-'0';
-                    long possibility = 0L; //TODO: entfernen, wenn Move-Optimation bei restlichen Pawn Moves -> schon deklariert
-                    //en passant right
-                    possibility = (b.getWhitePawns() << 1)&b.getBlackPawns()&RANK_5&~FILE_A&FileMasks8[eFile];//shows piece to remove, not the destination
-                    if (possibility != 0)
-                    {
-                        int index=Long.numberOfTrailingZeros(possibility);
-                        list+=""+(index%8-1)+(index%8)+" E";
-                    }
-                    //en passant left
-                    possibility = (b.getWhitePawns() >> 1)&b.getBlackPawns()&RANK_5&~FILE_H&FileMasks8[eFile];//shows piece to remove, not the destination
-                    if (possibility != 0)
-                    {
-                        int index=Long.numberOfTrailingZeros(possibility);
-                        list+=""+(index%8+1)+(index%8)+" E";
-                    }
-                }
+                int index=Long.numberOfTrailingZeros(possibility);
+                list+=""+(index%8-1)+(index%8)+"WE";
+            }
+            //en passant left
+            possibility = (b.getWhitePawns() >> 1)&b.getBlackPawns()&RANK_5&~FILE_H&b.getEnPassantBitboardFile();//shows piece to remove, not the destination
+            if (possibility != 0)
+            {
+                int index=Long.numberOfTrailingZeros(possibility);
+                list+=""+(index%8+1)+(index%8)+"WE";
             }
 
         } else {
@@ -115,43 +110,35 @@ public class Pawns implements Piece {
             PAWN_MOVES = (b.getBlackPawns() << 7) & (b.getWhitePieces() & ~b.getWhiteKing()) & RANK_1 & ~FILE_H;//pawn promotion by capture right
             for (int i = Long.numberOfTrailingZeros(PAWN_MOVES); i < 64 - Long.numberOfLeadingZeros(PAWN_MOVES); i++) {
                 if (((PAWN_MOVES >> i) & 1) == 1) {
-                    list += "" + (i % 8 + 1) + (i % 8) + "QP" + (i % 8 + 1) + (i % 8) + "RP" + (i % 8 + 1) + (i % 8) + "BP" + (i % 8 + 1) + (i % 8) + "NP";
+                    list += "" + (i % 8 + 1) + (i % 8) + "qP" + (i % 8 + 1) + (i % 8) + "rP" + (i % 8 + 1) + (i % 8) + "bP" + (i % 8 + 1) + (i % 8) + "nP";
                 }
             }
             PAWN_MOVES = (b.getBlackPawns() << 9) & (b.getWhitePieces() & ~b.getWhiteKing()) & RANK_1 & ~FILE_A;//pawn promotion by capture left
             for (int i = Long.numberOfTrailingZeros(PAWN_MOVES); i < 64 - Long.numberOfLeadingZeros(PAWN_MOVES); i++) {
                 if (((PAWN_MOVES >> i) & 1) == 1) {
-                    list += "" + (i % 8 - 1) + (i % 8) + "QP" + (i % 8 - 1) + (i % 8) + "RP" + (i % 8 - 1) + (i % 8) + "BP" + (i % 8 - 1) + (i % 8) + "NP";
+                    list += "" + (i % 8 - 1) + (i % 8) + "qP" + (i % 8 - 1) + (i % 8) + "rP" + (i % 8 - 1) + (i % 8) + "bP" + (i % 8 - 1) + (i % 8) + "nP";
                 }
             }
             PAWN_MOVES = (b.getBlackPawns() << 8) & b.getEmptyFields() & RANK_1;//pawn promotion by move 1 forward
             for (int i = Long.numberOfTrailingZeros(PAWN_MOVES); i < 64 - Long.numberOfLeadingZeros(PAWN_MOVES); i++) {
                 if (((PAWN_MOVES >> i) & 1) == 1) {
-                    list += "" + (i % 8) + (i % 8) + "QP" + (i % 8) + (i % 8) + "RP" + (i % 8) + (i % 8) + "BP" + (i % 8) + (i % 8) + "NP";
+                    list += "" + (i % 8) + (i % 8) + "qP" + (i % 8) + (i % 8) + "rP" + (i % 8) + (i % 8) + "bP" + (i % 8) + (i % 8) + "nP";
                 }
             }
-            //y1,y2,"bE"
-            if (history.length()>=4)
+            //y1,y2,"BE"//TODO: check if bE or BE is correct
+            long possibility = 0L; //TODO: entfernen, wenn Move-Optimation bei restlichen Pawn Moves -> schon deklariert
+            possibility = (b.getBlackPawns() >> 1)&b.getWhitePawns()&RANK_4&~FILE_H&b.getEnPassantBitboardFile();//shows piece to remove, not the destination
+            if (possibility != 0)
             {
-                if ((history.charAt(history.length()-1)==history.charAt(history.length()-3)) && Math.abs(history.charAt(history.length()-2)-history.charAt(history.length()-4))==2)
-                {
-                    int eFile=history.charAt(history.length()-1)-'0';
-                    long possibility = 0L;
-                    //en passant right
-                    possibility = (b.getBlackPawns() >> 1)&b.getWhitePawns()&RANK_4&~FILE_H&FileMasks8[eFile];//shows piece to remove, not the destination
-                    if (possibility != 0)
-                    {
-                        int index=Long.numberOfTrailingZeros(possibility);
-                        list+=""+(index%8+1)+(index%8)+"bE";
-                    }
-                    //en passant left
-                    possibility = (b.getBlackPawns() << 1)&b.getWhitePawns()&RANK_4&~FILE_A&FileMasks8[eFile];//shows piece to remove, not the destination
-                    if (possibility != 0)
-                    {
-                        int index=Long.numberOfTrailingZeros(possibility);
-                        list+=""+(index%8-1)+(index%8)+"bE";
-                    }
-                }
+                int index=Long.numberOfTrailingZeros(possibility);
+                list+=""+(index%8+1)+(index%8)+"BE";
+            }
+            //en passant left
+            possibility = (b.getBlackPawns() << 1)&b.getWhitePawns()&RANK_4&~FILE_A&b.getEnPassantBitboardFile();//shows piece to remove, not the destination
+            if (possibility != 0)
+            {
+                int index=Long.numberOfTrailingZeros(possibility);
+                list+=""+(index%8-1)+(index%8)+"BE";
             }
 
         }

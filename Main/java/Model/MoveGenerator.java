@@ -21,29 +21,29 @@ public class MoveGenerator {
         King king = new King();
 
 
-        public String ownPossibleMoves(String history, Board board) {
+        public String ownPossibleMoves(Board board) {
             String list = "";
             long startTime = System.currentTimeMillis();
-            long maxtime = 10000L;
+            long maxtime = 10000L; //TODO: Zeitmanagement in validMoves Methode?
             while (true) {
 
-                list += pawns.moves(history, board) + "-";
+                list += pawns.moves(board) + "-";
                 if (System.currentTimeMillis() - startTime > maxtime) break;
 
-                list += knights.moves(history, board) + "-";
+                list += knights.moves(board) + "-";
                 if (System.currentTimeMillis() - startTime > maxtime) break;
 
-                list += king.moves(history, board) + "-";
+                list += king.moves(board) + "-"; //includes castling
                 if (System.currentTimeMillis() - startTime > maxtime) break;
 
-                list += slidingPieces.rookMoves(history, board) + "-";
+                list += slidingPieces.rookMoves(board) + "-";
                 if (System.currentTimeMillis() - startTime > maxtime) break;
 
 
-                list += slidingPieces.bishopMoves(history, board) + "-";
+                list += slidingPieces.bishopMoves(board) + "-";
                 if (System.currentTimeMillis() - startTime > maxtime) break;
 
-                list += slidingPieces.queenMoves(history, board);
+                list += slidingPieces.queenMoves(board);
                 break;
             }
 
@@ -208,24 +208,9 @@ public class MoveGenerator {
 
 
 
-    //TODO: Methode, die Move auswählt und tatsächlich ausführt -> "makeAllMoves" aufruft
-    /*
-    long WPt=Moves.makeMove(WP, moves.substring(i,i+4), 'P'), WNt=Moves.makeMove(WN, moves.substring(i,i+4), 'N'),
-    WBt=Moves.makeMove(WB, moves.substring(i,i+4), 'B'), WRt=Moves.makeMove(WR, moves.substring(i,i+4), 'R'),
-    WQt=Moves.makeMove(WQ, moves.substring(i,i+4), 'Q'), WKt=Moves.makeMove(WK, moves.substring(i,i+4), 'K'),
-    BPt=Moves.makeMove(BP, moves.substring(i,i+4), 'p'), BNt=Moves.makeMove(BN, moves.substring(i,i+4), 'n'),
-    BBt=Moves.makeMove(BB, moves.substring(i,i+4), 'b'), BRt=Moves.makeMove(BR, moves.substring(i,i+4), 'r'),
-    BQt=Moves.makeMove(BQ, moves.substring(i,i+4), 'q'), BKt=Moves.makeMove(BK, moves.substring(i,i+4), 'k'),
-    EPt=Moves.makeMoveEP(moves.substring(i,i+4));
-    */
+    //TODO: Methode, die Move auswählt und tatsächlich ausführt
 
-    //TODO: Methode, die alle Bitboards ändert
-    //TODO: setterMethoden in Klasse Board
-    public void makeAllMoves(Board b, String move){
-       // b.setWhitePawns() = makeMove(b.getWhitePawns(), move, 'P');
-        //.... (siehe oben)
-    }
-
+    //TODO: static or non-static?
     //ändert für 1 Bitboard ("long board") die Positionen, nachdem "String move" ausgeführt wurde
     public static long makeMove(long board, String move, char type) {
         if (Character.isDigit(move.charAt(3))) {//'regular' move
@@ -240,14 +225,20 @@ public class MoveGenerator {
             else {board&=~(1L<<end);}
         } else if (move.charAt(3)=='P') {//pawn promotion
             int start, end;
-            if (Character.isUpperCase(move.charAt(2))) {
+            if (Character.isUpperCase(move.charAt(2))) { //white Promotion
                 start=Long.numberOfTrailingZeros(FileMasks8[move.charAt(0)-'0']&RankMasks8[6]);
                 end=Long.numberOfTrailingZeros(FileMasks8[move.charAt(1)-'0']&RankMasks8[7]);
-            } else {
+            } else { //black Promotion
                 start=Long.numberOfTrailingZeros(FileMasks8[move.charAt(0)-'0']&RankMasks8[1]);
                 end=Long.numberOfTrailingZeros(FileMasks8[move.charAt(1)-'0']&RankMasks8[0]);
             }
-            if (type==move.charAt(2)) {board&=~(1L<<start); board|=(1L<<end);} else {board&=~(1L<<end);}
+            if (type==move.charAt(2))
+
+            //fügt neue Figur zu der promotet wurde auf passendem Board hinzu
+            {board&=~(1L<<start); board|=(1L<<end);}
+
+            //entfernt alte Figur (i.e. Pawn auf PawnBoard)
+            else {board&=~(1L<<end);}
         } else if (move.charAt(3)=='E') {//en passant
             int start, end;
             if (Character.isUpperCase(move.charAt(2))) {
@@ -265,22 +256,93 @@ public class MoveGenerator {
         }
         return board;
     }
+    //when pawn moves forward 2 spaces, then on that file an en passant can happen
     public static long makeMoveEP(long board,String move) {
         if (Character.isDigit(move.charAt(3))) {
             int start=(Character.getNumericValue(move.charAt(0))*8)+(Character.getNumericValue(move.charAt(1)));
             if ((Math.abs(move.charAt(0)-move.charAt(2))==2)&&(((board>>>start)&1)==1)) {//pawn double push
-                return FileMasks8[move.charAt(1)-'0'];
+                //board, to be sure that type is a pawn
+                return FileMasks8[move.charAt(1)-'0']; //return file on which that pawn push occured on
             }
         }
-        return 0;
+        return 0; //-> no en passant allowed
     }
+
+
+
+
+    //"valid" i.e. eigener King ist danach nicht (mehr) im Schach
+    //public static void perft(long WP,long WN,long WB,long WR,long WQ,long WK,long BP,long BN,long BB,long BR,long BQ,long BK,long EP,boolean CWK,boolean CWQ,boolean CBK,boolean CBQ,boolean WhiteToMove,int depth)
+    public String validMoves(Board b)
+    {
+        String validMoves = "";
+
+        String moves = ownPossibleMoves(b).replace("-","");
+
+        for (int i=0;i<moves.length();i+=4) {
+
+            //!!TODO: neues (temporäres) Board erstellen, dazu current board duplizieren
+            Board tempB = new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq f4 0 1");
+
+
+            tempB.setWhitePawns(makeMove(b.getWhitePawns(), moves.substring(i,i+4), 'P'));
+            tempB.setWhiteKnights(makeMove(b.getWhiteKnights(), moves.substring(i,i+4), 'N'));
+            tempB.setWhiteBishops(makeMove(b.getWhiteBishops(), moves.substring(i,i+4), 'B'));
+            tempB.setWhiteRooks(makeMove(b.getWhiteRooks(), moves.substring(i,i+4), 'R'));
+            tempB.setWhiteQueen(makeMove(b.getWhiteQueen(), moves.substring(i,i+4), 'Q'));
+            tempB.setWhiteKing(makeMove(b.getWhiteKing(), moves.substring(i,i+4), 'K'));
+            tempB.setBlackPawns(makeMove(b.getBlackPawns(), moves.substring(i,i+4), 'p'));
+            tempB.setBlackKnights(makeMove(b.getBlackKnights(), moves.substring(i,i+4), 'n'));
+            tempB.setBlackBishops(makeMove(b.getBlackBishops(), moves.substring(i,i+4), 'b'));
+            tempB.setBlackRooks(makeMove(b.getBlackRooks(), moves.substring(i,i+4), 'r'));
+            tempB.setBlackQueen(makeMove(b.getBlackQueen(), moves.substring(i,i+4), 'q'));
+            tempB.setBlackKing(makeMove(b.getBlackKing(), moves.substring(i,i+4), 'k'));
+            tempB.setEnPassantBitboardFile(makeMoveEP(b.getWhitePawns()|b.getBlackPawns(),moves.substring(i,i+4)));
+
+                tempB.setWhiteToCastleKingside(b.isWhiteToCastleKingside());
+                tempB.setWhiteToCastleQueenside(b.isWhiteToCastleQueenside());
+                tempB.setBlackToCastleKingside(b.isBlackToCastleKingside());
+                tempB.setBlackToCastleQueenside(b.isBlackToCastleQueenside());
+                if (Character.isDigit(moves.charAt(3))) {//'regular' move
+                    int start=(Character.getNumericValue(moves.charAt(i))*8)+(Character.getNumericValue(moves.charAt(i+1)));
+                    if (((1L<<start)&b.getWhiteKing())!=0) {tempB.setWhiteToCastleKingside(false); tempB.setWhiteToCastleQueenside(false);}
+                    if (((1L<<start)&b.getBlackKing())!=0) {tempB.setBlackToCastleKingside(false); tempB.setBlackToCastleQueenside(false);}
+                    if (((1L<<start)&b.getWhiteRooks()&(1L<<63))!=0) {tempB.setWhiteToCastleKingside(false);}
+                    if (((1L<<start)&b.getWhiteRooks()&(1L<<56))!=0) {tempB.setWhiteToCastleQueenside(false);}
+                    if (((1L<<start)&b.getBlackRooks()&(1L<<7))!=0) {tempB.setBlackToCastleKingside(false);}
+                    if (((1L<<start)&b.getBlackRooks()&1L)!=0) {tempB.setBlackToCastleQueenside(false);}
+                }
+                //check if own King is NOT in danger after move
+                if (((tempB.getWhiteKing()&unsafeForWhite(tempB))==0 && b.isCurrentPlayerIsWhite()) ||
+                        ((tempB.getBlackKing()&unsafeForBlack(tempB))==0 && !b.isCurrentPlayerIsWhite())) {
+                    //add current move to validMoves if king is not in danger
+                    validMoves += moves.substring(i,i+4);
+
+                }
+            }
+
+        return validMoves;
+
+    }
+
+
+
+
+
+
+
+
+
 
         public int getMoveCount(String list){
 
             return (list.replace("-","").length()/4);
 
         }
+        //TODO: ändern oder "getValidMoveCount" für nur valide züge, die durch "validMoves" Methode durchgegangen sind
 
+
+    //TODO: delete "history" parameter -> obsolete
         public String checkBishopMoves(String history, Board board){
 
             return slidingPieces.bishopMoves(history,board);

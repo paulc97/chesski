@@ -28,7 +28,23 @@ public class Board {
             blackRooks=0L,
             blackPawns=0L;
 
-     /**
+    //WIP EP start
+    //ist File in der EnPassant möglich/erlaubt ist
+    private long enPassantBitboardFile =0L;
+    // eingefügt, um makeMove wie Video 16&17 zu machen
+    //TODO: combine/integrate with privateString enPassants, fix BitboardGeneration correct
+
+
+    public long getEnPassantBitboardFile() {
+        return enPassantBitboardFile;
+    }
+
+    public void setEnPassantBitboardFile(long enPassantBitboardFile) {
+        this.enPassantBitboardFile = enPassantBitboardFile;
+    }
+    //WIP EP ende
+
+    /**
      * Overloaded constructors - allows to create a board from a fen string
       * or to create a new board based on an existing board and a move
      */
@@ -255,6 +271,55 @@ public class Board {
         }
     }
 
+
+    public void setWhiteKing(long whiteKing) {
+        this.whiteKing = whiteKing;
+    }
+
+    public void setWhiteQueen(long whiteQueen) {
+        this.whiteQueen = whiteQueen;
+    }
+
+    public void setWhiteKnights(long whiteKnights) {
+        this.whiteKnights = whiteKnights;
+    }
+
+    public void setWhiteBishops(long whiteBishops) {
+        this.whiteBishops = whiteBishops;
+    }
+
+    public void setWhiteRooks(long whiteRooks) {
+        this.whiteRooks = whiteRooks;
+    }
+
+    public void setWhitePawns(long whitePawns) {
+        this.whitePawns = whitePawns;
+    }
+
+    public void setBlackKing(long blackKing) {
+        this.blackKing = blackKing;
+    }
+
+    public void setBlackQueen(long blackQueen) {
+        this.blackQueen = blackQueen;
+    }
+
+    public void setBlackKnights(long blackKnights) {
+        this.blackKnights = blackKnights;
+    }
+
+    public void setBlackBishops(long blackBishops) {
+        this.blackBishops = blackBishops;
+    }
+
+    public void setBlackRooks(long blackRooks) {
+        this.blackRooks = blackRooks;
+    }
+
+    public void setBlackPawns(long blackPawns) {
+        this.blackPawns = blackPawns;
+    }
+
     public long getBlackKing() {
         return blackKing;
     }
@@ -325,6 +390,22 @@ public class Board {
 
     public boolean isBlackToCastleQueenside() {
         return blackToCastleQueenside;
+    }
+
+    public void setWhiteToCastleKingside(boolean whiteToCastleKingside) {
+        this.whiteToCastleKingside = whiteToCastleKingside;
+    }
+
+    public void setWhiteToCastleQueenside(boolean whiteToCastleQueenside) {
+        this.whiteToCastleQueenside = whiteToCastleQueenside;
+    }
+
+    public void setBlackToCastleKingside(boolean blackToCastleKingside) {
+        this.blackToCastleKingside = blackToCastleKingside;
+    }
+
+    public void setBlackToCastleQueenside(boolean blackToCastleQueenside) {
+        this.blackToCastleQueenside = blackToCastleQueenside;
     }
 
     public String getEnPassants() {

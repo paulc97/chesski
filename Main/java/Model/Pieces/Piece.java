@@ -4,6 +4,6 @@ import Model.Board;
 
 public interface Piece {
 
-    public String moves(String history, Board board);
+    public String moves(Board board);
 
 }

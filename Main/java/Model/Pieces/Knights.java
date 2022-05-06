@@ -7,7 +7,7 @@ import static Model.Mask.RANK_8;
 
 public class Knights implements Piece {
 
-    public String moves(String history, Board b) {
+    public String moves(Board b) {
 
         String list = "";
         if (b.isCurrentPlayerIsWhite()) {

@@ -4,10 +4,11 @@ import Model.Board;
 
 import static Model.Mask.*;
 
+//TODO: implements Piece interface?
 
 public class SlidingPieces {
 
-    public String rookMoves(String history,Board b) {
+    public String rookMoves(Board b) {
 
         long OCCUPIED = b.getAllPieces();
         String list="";
@@ -56,7 +57,7 @@ public class SlidingPieces {
         return list;
     }
 
-    public String bishopMoves(String history,Board b) {
+    public String bishopMoves(Board b) {
 
         long OCCUPIED = b.getAllPieces();
         String list="";
@@ -106,7 +107,7 @@ public class SlidingPieces {
 
     }
 
-    public String queenMoves(String history,Board b) {
+    public String queenMoves(Board b) {
 
         long OCCUPIED = b.getAllPieces();
         String list="";
