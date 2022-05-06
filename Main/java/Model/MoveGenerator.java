@@ -342,21 +342,21 @@ public class MoveGenerator {
         //TODO: ändern oder "getValidMoveCount" für nur valide züge, die durch "validMoves" Methode durchgegangen sind
 
 
-    //TODO: delete "history" parameter -> obsolete
-        public String checkBishopMoves(String history, Board board){
 
-            return slidingPieces.bishopMoves(history,board);
+        public String checkBishopMoves( Board board){
+
+            return slidingPieces.bishopMoves(board);
 
         }
 
-        public String checkRookMoves(String history, Board board){
+        public String checkRookMoves( Board board){
 
-            return slidingPieces.rookMoves(history,board);
+            return slidingPieces.rookMoves(board);
         }
 
-        public String checkQueenMoves(String history, Board board){
+        public String checkQueenMoves( Board board){
 
-            return slidingPieces.queenMoves(history,board);
+            return slidingPieces.queenMoves(board);
         }
 
 

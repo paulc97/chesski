@@ -21,7 +21,7 @@ public class PawnTests {
 
     @Test
     void PawnMoveTest() {
-        assertEquals("1", moveGenerator.ownPossibleMoves("", board));
+        assertEquals("1", moveGenerator.ownPossibleMoves(board));
     }
 
 
