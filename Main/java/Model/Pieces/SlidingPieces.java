@@ -7,18 +7,19 @@ import static Model.Mask.*;
 
 public class SlidingPieces {
 
-    public String rookMoves(String history, Board b) {
+    public String rookMoves(String history,Board b) {
 
-        String list = "";
-        if (b.isCurrentPlayerIsWhite()) {
-
-            long i=b.getWhiteRooks()&~(b.getWhiteRooks()-1);
-            long possibility;
+        long OCCUPIED = b.getAllPieces();
+        String list="";
+        if (b.isCurrentPlayerIsWhite()){
             long WR = b.getWhiteRooks();
+            long i=WR&~(WR-1);
+            long possibility;
+
             while(i != 0)
             {
                 int iLocation=Long.numberOfTrailingZeros(i);
-                possibility=getHorrizontalAndVerticalMoves(iLocation,b)&b.getBlackPieces();
+                possibility=HAndVMoves(iLocation,OCCUPIED)&~(b.getWhitePieces()|b.getBlackKing());
                 long j=possibility&~(possibility-1);
                 while (j != 0)
                 {
@@ -30,16 +31,15 @@ public class SlidingPieces {
                 WR&=~i;
                 i=WR&~(WR-1);
             }
-
-        } else {
-
-            long i=b.getBlackRooks()&~(b.getBlackRooks()-1);
-            long possibility;
+        }else{
             long BR = b.getBlackRooks();
+            long i=BR&~(BR-1);
+            long possibility;
+
             while(i != 0)
             {
                 int iLocation=Long.numberOfTrailingZeros(i);
-                possibility=getHorrizontalAndVerticalMoves(iLocation,b)&b.getWhitePieces();
+                possibility=DAndAntiDMoves(iLocation,OCCUPIED)&~(b.getBlackPieces()|b.getWhiteKing());
                 long j=possibility&~(possibility-1);
                 while (j != 0)
                 {
@@ -53,23 +53,22 @@ public class SlidingPieces {
             }
 
         }
-
         return list;
-
     }
 
-    public String bishopMoves(String history, Board b) {
+    public String bishopMoves(String history,Board b) {
 
-        String list = "";
-        if (b.isCurrentPlayerIsWhite()) {
-
-            long i=b.getWhiteBishops()&~(b.getWhiteBishops()-1);
-            long possibility;
+        long OCCUPIED = b.getAllPieces();
+        String list="";
+        if (b.isCurrentPlayerIsWhite()){
             long WB = b.getWhiteBishops();
+            long i=WB&~(WB-1);
+            long possibility;
+
             while(i != 0)
             {
                 int iLocation=Long.numberOfTrailingZeros(i);
-                possibility=getDiagonalMoves(iLocation,b)&b.getBlackPieces();
+                possibility=DAndAntiDMoves(iLocation,OCCUPIED)&~(b.getWhitePieces()|b.getBlackKing());
                 long j=possibility&~(possibility-1);
                 while (j != 0)
                 {
@@ -81,18 +80,15 @@ public class SlidingPieces {
                 WB&=~i;
                 i=WB&~(WB-1);
             }
-
-
-
-        } else {
-
-            long i=b.getBlackBishops()&~(b.getBlackBishops()-1);
-            long possibility;
+        }else{
             long BB = b.getBlackBishops();
+            long i=BB&~(BB-1);
+            long possibility;
+
             while(i != 0)
             {
                 int iLocation=Long.numberOfTrailingZeros(i);
-                possibility=getDiagonalMoves(iLocation,b)&b.getWhitePieces();
+                possibility=DAndAntiDMoves(iLocation,OCCUPIED)&~(b.getBlackPieces()|b.getWhiteKing());
                 long j=possibility&~(possibility-1);
                 while (j != 0)
                 {
@@ -105,26 +101,24 @@ public class SlidingPieces {
                 i=BB&~(BB-1);
             }
 
-
-
         }
-
         return list;
 
     }
 
-    public String queenMoves(String history, Board b) {
+    public String queenMoves(String history,Board b) {
 
-        String list = "";
-        if (b.isCurrentPlayerIsWhite()) {
-
-            long i=b.getWhiteQueen()&~(b.getWhiteQueen()-1);
-            long possibility;
+        long OCCUPIED = b.getAllPieces();
+        String list="";
+        if (b.isCurrentPlayerIsWhite()){
             long WQ = b.getWhiteQueen();
+            long i=WQ&~(WQ-1);
+            long possibility;
+
             while(i != 0)
             {
                 int iLocation=Long.numberOfTrailingZeros(i);
-                possibility=getHorrizontalAndVerticalMoves(iLocation,b)&b.getWhitePieces()&getDiagonalMoves(iLocation,b);
+                possibility=(HAndVMoves(iLocation,OCCUPIED)|DAndAntiDMoves(iLocation,OCCUPIED))&~(b.getWhitePieces()|b.getBlackKing());
                 long j=possibility&~(possibility-1);
                 while (j != 0)
                 {
@@ -136,16 +130,15 @@ public class SlidingPieces {
                 WQ&=~i;
                 i=WQ&~(WQ-1);
             }
-
-        } else {
-
-            long i=b.getBlackQueen()&~(b.getBlackQueen()-1);
-            long possibility;
+        }else{
             long BQ = b.getBlackQueen();
+            long i=BQ&~(BQ-1);
+            long possibility;
+
             while(i != 0)
             {
                 int iLocation=Long.numberOfTrailingZeros(i);
-                possibility=getHorrizontalAndVerticalMoves(iLocation,b)&b.getBlackPieces()&getDiagonalMoves(iLocation,b);
+                possibility=(HAndVMoves(iLocation,OCCUPIED)|DAndAntiDMoves(iLocation,OCCUPIED))&~(b.getBlackPieces()|b.getWhiteKing());
                 long j=possibility&~(possibility-1);
                 while (j != 0)
                 {
@@ -159,26 +152,23 @@ public class SlidingPieces {
             }
 
         }
-
         return list;
 
     }
 
-    private long getDiagonalMoves(int p,Board b){
-
-        long binaryS=1L<<p;
-        long possibilitiesDiagonal = ((b.getAllPieces()&DiagonalMasks8[(p / 8) + (p % 8)]) - (2 * binaryS)) ^ Long.reverse(Long.reverse(b.getAllPieces()&DiagonalMasks8[(p / 8) + (p % 8)]) - (2 * Long.reverse(binaryS)));
-        long possibilitiesAntiDiagonal = ((b.getAllPieces()&AntiDiagonalMasks8[(p / 8) + 7 - (p % 8)]) - (2 * binaryS)) ^ Long.reverse(Long.reverse(b.getAllPieces()&AntiDiagonalMasks8[(p / 8) + 7 - (p % 8)]) - (2 * Long.reverse(binaryS)));
-        return (possibilitiesDiagonal&DiagonalMasks8[(p / 8) + (p % 8)]) | (possibilitiesAntiDiagonal&AntiDiagonalMasks8[(p / 8) + 7 - (p % 8)]);
-
+    static long DAndAntiDMoves(int s,long OCCUPIED)
+    {
+        long binaryS=1L<<s;
+        long possibilitiesDiagonal = ((OCCUPIED&DiagonalMasks8[(s / 8) + (s % 8)]) - (2 * binaryS)) ^ Long.reverse(Long.reverse(OCCUPIED&DiagonalMasks8[(s / 8) + (s % 8)]) - (2 * Long.reverse(binaryS)));
+        long possibilitiesAntiDiagonal = ((OCCUPIED&AntiDiagonalMasks8[(s / 8) + 7 - (s % 8)]) - (2 * binaryS)) ^ Long.reverse(Long.reverse(OCCUPIED&AntiDiagonalMasks8[(s / 8) + 7 - (s % 8)]) - (2 * Long.reverse(binaryS)));
+        return (possibilitiesDiagonal&DiagonalMasks8[(s / 8) + (s % 8)]) | (possibilitiesAntiDiagonal&AntiDiagonalMasks8[(s / 8) + 7 - (s % 8)]);
     }
 
-    private long getHorrizontalAndVerticalMoves(int p,Board b){
-
-        long binaryS=1L<<p;
-        long possibilitiesHorizontal = (b.getAllPieces() - 2 * binaryS) ^ Long.reverse(Long.reverse(b.getAllPieces()) - 2 * Long.reverse(binaryS));
-        long possibilitiesVertical = ((b.getAllPieces()&FileMasks8[p % 8]) - (2 * binaryS)) ^ Long.reverse(Long.reverse(b.getAllPieces()&FileMasks8[p % 8]) - (2 * Long.reverse(binaryS)));
-        return (possibilitiesHorizontal&RankMasks8[p / 8]) | (possibilitiesVertical&FileMasks8[p % 8]);
-
+    static long HAndVMoves(int s,long OCCUPIED)
+    {
+        long binaryS=1L<<s;
+        long possibilitiesHorizontal = (OCCUPIED - 2 * binaryS) ^ Long.reverse(Long.reverse(OCCUPIED) - 2 * Long.reverse(binaryS));
+        long possibilitiesVertical = ((OCCUPIED&FileMasks8[s % 8]) - (2 * binaryS)) ^ Long.reverse(Long.reverse(OCCUPIED&FileMasks8[s % 8]) - (2 * Long.reverse(binaryS)));
+        return (possibilitiesHorizontal&RankMasks8[s / 8]) | (possibilitiesVertical&FileMasks8[s % 8]);
     }
 }

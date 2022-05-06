@@ -50,9 +50,25 @@ public class MoveGenerator {
         }
 
         public int getMoveCount(String list){
-            
+
             return (list.replace("-","").length()/4);
 
+        }
+
+        public String checkBishopMoves(String history, Board board){
+
+            return slidingPieces.bishopMoves(history,board);
+
+        }
+
+        public String checkRookMoves(String history, Board board){
+
+            return slidingPieces.rookMoves(history,board);
+        }
+
+        public String checkQueenMoves(String history, Board board){
+
+            return slidingPieces.queenMoves(history,board);
         }
 
 
