@@ -82,7 +82,7 @@ public class Board {
 
                 //get castling status
                 if (fenStringParts[2].contains("K")) whiteToCastleKingside = true;
-                if (fenStringParts[2].contains("Q")) whiteToCastleKingside = true;
+                if (fenStringParts[2].contains("Q")) whiteToCastleQueenside = true;
                 if (fenStringParts[2].contains("k")) blackToCastleKingside = true;
                 if (fenStringParts[2].contains("q")) blackToCastleQueenside = true;
 
@@ -521,7 +521,59 @@ public class Board {
 
         }
 
+        String[] splittedFen = fen.split("/");
+
+        String newFen ="";
+
+        int counter =0;
+        for (String fensplit : splittedFen){
+
+            for (int i =0; i<8; i++){
+                if(fensplit.charAt(i)=='1'){
+                    counter++;
+                } else {
+                    if(counter>0){
+                        newFen+= counter;
+                        counter = 0;
+                    }
+                    newFen+=fensplit.charAt(i);
+
+                }
+            }
+            if (counter!=0){
+                newFen+=counter;
+                counter=0;
+            }
+            newFen+="/";
+        }
+
+        newFen = newFen.substring(0,newFen.length()-2);
+
+        if(this.isCurrentPlayerIsWhite()){
+            newFen+=" w";
+        } else {
+            newFen+=" b";
+        }
+
+        String castleRights = "";
+        if(this.whiteToCastleKingside) castleRights+= "K";
+        if(this.whiteToCastleQueenside) castleRights+= "Q";
+        if(this.blackToCastleKingside) castleRights+= "k";
+        if(this.blackToCastleQueenside) castleRights+= "q";
+        if (castleRights!=""){
+            newFen+= " "+castleRights;
+        } else {
+            newFen +=" -";
+        }
+
+        newFen += " "+enPassants;
+
+        newFen += " 0"; //TODO: implement halbzüge
+        newFen += " 1"; //TODO: implement move count
+
         System.out.println(fen);
+        System.out.println(newFen);
     }
 
 }
+
