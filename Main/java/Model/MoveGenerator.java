@@ -50,11 +50,8 @@ public class MoveGenerator {
         }
 
         public int getMoveCount(String list){
-
-            int lenght = 0;
-
-
-            return lenght;
+            
+            return (list.replace("-","").length()/4);
 
         }
 
