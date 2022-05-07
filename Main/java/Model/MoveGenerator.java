@@ -249,7 +249,27 @@ public class MoveGenerator {
         return board;
     }
 
-
+    public static long makeMoveCastle(long rookBoard, long kingBoard, String move, char type) {
+        int start=(Character.getNumericValue(move.charAt(0))*8)+(Character.getNumericValue(move.charAt(1)));
+        if ((((kingBoard>>>start)&1)==1)&&(("0402".equals(move))||("0406".equals(move))||("7472".equals(move))||("7476".equals(move)))) {//'regular' move
+            if (type=='R') {
+                switch (move) {
+                    case "7472": rookBoard&=~(1L<<56L); rookBoard|=(1L<<(56L+3));
+                        break;
+                    case "7476": rookBoard&=~(1L<<63L); rookBoard|=(1L<<(63L-2));
+                        break;
+                }
+            } else {
+                switch (move) {
+                    case "0402": rookBoard&=~(1L<<0L); rookBoard|=(1L<<(0L+3));
+                        break;
+                    case "0406": rookBoard&=~(1L<<7L); rookBoard|=(1L<<(7L-2));
+                        break;
+                }
+            }
+        }
+        return rookBoard;
+    }
 
     //when pawn moves forward 2 spaces, then on that file an en passant can happen
     public static long makeMoveEP(long board,String move) {
@@ -326,6 +346,8 @@ public class MoveGenerator {
             tempB.setEnPassantBitboardFile(makeMoveEP(b.getWhitePawns()|b.getBlackPawns(),moves.substring(i,i+4)));
             tempB.setEnPassants(makeMoveEPString(b.getWhitePawns()|b.getBlackPawns(),moves.substring(i,i+4)));
 
+            tempB.setWhiteRooks(makeMoveCastle(tempB.getWhiteRooks(), b.getWhiteKing()|b.getBlackKing(), moves.substring(i,i+4), 'R'));
+            tempB.setBlackRooks(makeMoveCastle(tempB.getBlackRooks(), b.getWhiteKing()|b.getBlackKing(), moves.substring(i,i+4), 'r'));
 
                 tempB.setWhiteToCastleKingside(b.isWhiteToCastleKingside());
                 tempB.setWhiteToCastleQueenside(b.isWhiteToCastleQueenside());
@@ -390,6 +412,10 @@ public class MoveGenerator {
         //En Passant (muss ->vor<- Änderung auf Bitboard durchgeführt werden)
         b.setEnPassantBitboardFile(makeMoveEP(b.getWhitePawns()|b.getBlackPawns(),move));
         b.setEnPassants(makeMoveEPString(b.getWhitePawns()|b.getBlackPawns(),move));
+
+        //Castling auch vor Änderung der King Position??
+        b.setWhiteRooks(makeMoveCastle(b.getWhiteRooks(), b.getWhiteKing()|b.getBlackKing(), move, 'R'));
+        b.setBlackRooks(makeMoveCastle(b.getBlackRooks(), b.getWhiteKing()|b.getBlackKing(), move, 'r'));
 
         b.setWhitePawns(makeMove(b.getWhitePawns(), move, 'P'));
         b.setWhiteKnights(makeMove(b.getWhiteKnights(), move, 'N'));
