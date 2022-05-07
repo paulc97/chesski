@@ -359,7 +359,16 @@ public class MoveGenerator {
     }
 
     public void selectAndMakeMove(Board b, String validMoves){
-            String move = validMoves.substring(0,4);
+        // String move = validMoves.substring(0,4); //-> ersten Move nehmen
+
+
+        //zufällige Zugauswahl
+        //Min + (int)(Math.random() * ((Max - Min) + 1))
+        int randomEndIndex = 4 + (int)(Math.random() * ((validMoves.length() - 4) + 1)); //TODO: dürfen wir Math.random benutzen?
+        String move = validMoves.substring(randomEndIndex-4,randomEndIndex);
+
+        //TODO: Error abfangen, wenn keine Moves mehr möglich? Spiel zuende
+
 
             String oldFEN = b.getFen().split(" ")[0]; //für 50-Zug-Remis-Regel
         long oldWhitePawns = b.getWhitePawns();
