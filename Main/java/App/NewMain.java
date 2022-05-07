@@ -47,6 +47,10 @@ anderer Durchlauf:
 rnbkqbnr/ppp1pp1p/3P4/6p1/1P4R1/N4P2/P2PP2P/R1BK1BN b KQkq - 0 6
 rnb1qbnr/ppp1pp1p/3P4/6p1/1P4Rk/N4P2/P2PP2P/R1BK1BN w KQkq - 1 6 hier springt der König einfach nach vorne??
 
+andererDurchlauf (Castling ausgeklammert):
+r1bkp1n1/1ppnp3/3p4/8/7P/N3P3/3P4/K1B w KQkq - 1 18
+r1bkp1n1/1ppnp3/3p4/8/7P/N3P3/3P4/2B b KQkq - 0 19 //unten nicht mehr 8 felder besetzt/frei??
+
 
              */
 
