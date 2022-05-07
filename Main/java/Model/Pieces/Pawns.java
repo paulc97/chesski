@@ -60,16 +60,22 @@ public class Pawns implements Piece {
             //y1,y2,Space,"WE"
             //TODO: wenn enPassant Feld im FEN angegeben, vereinfachen evtl. möglich
 
+            long EPBitboardFileFromFenString = 0L;
+            if(b.getEnPassants().length()>1){
+                EPBitboardFileFromFenString = FileMasks8[b.getEnPassants().charAt(0)-97];
+            } //TODO: ändern, wenn auf enPassant-Methode/FEN-Format geeinigt
+
 
             long possibility = 0L; //TODO: entfernen, wenn Move-Optimation bei restlichen Pawn Moves -> schon deklariert
-            possibility = (b.getWhitePawns() << 1)&b.getBlackPawns()&RANK_5&~FILE_A&b.getEnPassantBitboardFile();//shows piece to remove, not the destination
+            //alt: possibility = (b.getWhitePawns() << 1)&b.getBlackPawns()&RANK_5&~FILE_A&b.getEnPassantBitboardFile();//shows piece to remove, not the destination
+            possibility = (b.getWhitePawns() << 1)&b.getBlackPawns()&RANK_5&~FILE_A&EPBitboardFileFromFenString;
             if (possibility != 0)
             {
                 int index=Long.numberOfTrailingZeros(possibility);
                 list+=""+(index%8-1)+(index%8)+"WE";
             }
             //en passant left
-            possibility = (b.getWhitePawns() >> 1)&b.getBlackPawns()&RANK_5&~FILE_H&b.getEnPassantBitboardFile();//shows piece to remove, not the destination
+            possibility = (b.getWhitePawns() >> 1)&b.getBlackPawns()&RANK_5&~FILE_H&EPBitboardFileFromFenString;//shows piece to remove, not the destination
             if (possibility != 0)
             {
                 int index=Long.numberOfTrailingZeros(possibility);
@@ -126,15 +132,23 @@ public class Pawns implements Piece {
                 }
             }
             //y1,y2,"BE"//TODO: check if bE or BE is correct
+
+            long EPBitboardFileFromFenString = 0L;
+            if(b.getEnPassants().length()>1){
+                EPBitboardFileFromFenString = FileMasks8[b.getEnPassants().charAt(0)-97];
+            }
+
+
+
             long possibility = 0L; //TODO: entfernen, wenn Move-Optimation bei restlichen Pawn Moves -> schon deklariert
-            possibility = (b.getBlackPawns() >> 1)&b.getWhitePawns()&RANK_4&~FILE_H&b.getEnPassantBitboardFile();//shows piece to remove, not the destination
+            possibility = (b.getBlackPawns() >> 1)&b.getWhitePawns()&RANK_4&~FILE_H&EPBitboardFileFromFenString;//shows piece to remove, not the destination
             if (possibility != 0)
             {
                 int index=Long.numberOfTrailingZeros(possibility);
                 list+=""+(index%8+1)+(index%8)+"BE";
             }
             //en passant left
-            possibility = (b.getBlackPawns() << 1)&b.getWhitePawns()&RANK_4&~FILE_A&b.getEnPassantBitboardFile();//shows piece to remove, not the destination
+            possibility = (b.getBlackPawns() << 1)&b.getWhitePawns()&RANK_4&~FILE_A&EPBitboardFileFromFenString;//shows piece to remove, not the destination
             if (possibility != 0)
             {
                 int index=Long.numberOfTrailingZeros(possibility);

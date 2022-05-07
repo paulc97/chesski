@@ -4,6 +4,8 @@ import Model.Board;
 import Model.MoveGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import static Model.Mask.FileMasks8;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class BoardTests {
@@ -63,6 +65,11 @@ public class BoardTests {
         String validMoves = mg.validMoves(b1);
         mg.selectAndMakeMove(b1, validMoves);
         System.out.println(b1.getFen());
+    }
+
+    @Test
+    void testDigitConversion(){
+        System.out.println(FileMasks8[("c7").charAt(0)-97]);
     }
 
 

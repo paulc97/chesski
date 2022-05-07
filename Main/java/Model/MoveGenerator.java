@@ -207,9 +207,6 @@ public class MoveGenerator {
     }
 
 
-
-    //TODO: Methode, die Move auswählt und tatsächlich ausführt
-
     //TODO: static or non-static?
     //ändert für 1 Bitboard ("long board") die Positionen, nachdem "String move" ausgeführt wurde
     public static long makeMove(long board, String move, char type) {
@@ -262,10 +259,43 @@ public class MoveGenerator {
             int start=(Character.getNumericValue(move.charAt(0))*8)+(Character.getNumericValue(move.charAt(1)));
             if ((Math.abs(move.charAt(0)-move.charAt(2))==2)&&(((board>>>start)&1)==1)) {//pawn double push
                 //board, to be sure that type is a pawn
+
+
                 return FileMasks8[move.charAt(1)-'0']; //return file on which that pawn push occured on
             }
         }
         return 0; //-> no en passant allowed
+    }
+
+    public static String makeMoveEPString(long board,String move) {
+        if (Character.isDigit(move.charAt(3))) {
+            int start=(Character.getNumericValue(move.charAt(0))*8)+(Character.getNumericValue(move.charAt(1)));
+            if ((Math.abs(move.charAt(0)-move.charAt(2))==2)&&(((board>>>start)&1)==1)) {//pawn double push
+                //board, to be sure that type is a pawn
+
+
+                char rank;
+                if (move.charAt(0)>move.charAt(2)){ //white pawn double push e.g. 6040
+                    rank = (char) (move.charAt(0)-1);
+                } else { //black pawn double push
+                    rank = (char) (move.charAt(0)+1);
+                }
+                char file = move.charAt(1);
+
+                return convertMoveDigitsToField(rank,file); //return field on which that pawn push occured on
+            }
+        }
+        return "-"; //-> no en passant allowed
+    }
+
+    //zeileAlt spalteAlt zeileNeu spalteNeu
+    // 0         1         2        3
+    //
+
+    public static String convertMoveDigitsToField (char rank, char file){
+        char f =(char)(97+7-(file-48));
+        int r = (Math.abs(rank-48-8));
+        return ""+f+r;
     }
 
 
@@ -296,6 +326,7 @@ public class MoveGenerator {
             tempB.setBlackQueen(makeMove(b.getBlackQueen(), moves.substring(i,i+4), 'q'));
             tempB.setBlackKing(makeMove(b.getBlackKing(), moves.substring(i,i+4), 'k'));
             tempB.setEnPassantBitboardFile(makeMoveEP(b.getWhitePawns()|b.getBlackPawns(),moves.substring(i,i+4)));
+            tempB.setEnPassants(makeMoveEPString(b.getWhitePawns()|b.getBlackPawns(),moves.substring(i,i+4))); //no effect (yet)
 
                 tempB.setWhiteToCastleKingside(b.isWhiteToCastleKingside());
                 tempB.setWhiteToCastleQueenside(b.isWhiteToCastleQueenside());
@@ -344,6 +375,7 @@ public class MoveGenerator {
         b.setBlackQueen(makeMove(b.getBlackQueen(), move, 'q'));
         b.setBlackKing(makeMove(b.getBlackKing(), move, 'k'));
         b.setEnPassantBitboardFile(makeMoveEP(b.getWhitePawns()|b.getBlackPawns(),move));
+        b.setEnPassants(makeMoveEPString(b.getWhitePawns()|b.getBlackPawns(),move));
 
 
         if (Character.isDigit(move.charAt(3))) {//'regular' move

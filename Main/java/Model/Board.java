@@ -426,6 +426,10 @@ public class Board {
         return enPassants;
     }
 
+    public void setEnPassants(String enPassants) {
+        this.enPassants = enPassants;
+    }
+
     /**
      * returns a long indicating the position of all white pieces
      */
