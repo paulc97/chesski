@@ -361,6 +361,9 @@ public class MoveGenerator {
     public void selectAndMakeMove(Board b, String validMoves){
             String move = validMoves.substring(0,4);
 
+            String oldFEN = b.getFen().split(" ")[0]; //für 50-Zug-Remis-Regel
+        long oldWhitePawns = b.getWhitePawns();
+        long oldBlackPawns = b.getBlackPawns();
 
         b.setWhitePawns(makeMove(b.getWhitePawns(), move, 'P'));
         b.setWhiteKnights(makeMove(b.getWhiteKnights(), move, 'N'));
@@ -390,13 +393,36 @@ public class MoveGenerator {
 
         b.setCurrentPlayerIsWhite(!b.isCurrentPlayerIsWhite());
 
+        if(b.getWhitePawns()!=oldWhitePawns||b.getBlackPawns()!=oldBlackPawns){ //wurde ein Bauer bewegt?(/geschlagen)
+            b.setHalfMoveCount(-1);
+        } else {  //wurde eine Figur geschlagen?
+            String newFEN = b.getFen().split(" ")[0]; //für 50-Zug-Remis-Regel;
+
+            int oldFigureCount =0;
+            for (int i =0; i<oldFEN.length();i++){
+                if(oldFEN.charAt(i) == 'r'||oldFEN.charAt(i) == 'n'||oldFEN.charAt(i) == 'b'||oldFEN.charAt(i) == 'k'||oldFEN.charAt(i) == 'q'||oldFEN.charAt(i) == 'p'||oldFEN.charAt(i) == 'P'||oldFEN.charAt(i) == 'R'||oldFEN.charAt(i) == 'N'||oldFEN.charAt(i) == 'B'||oldFEN.charAt(i) == 'K'||oldFEN.charAt(i) == 'Q'){
+                    oldFigureCount++;
+                }
+            }
+            int newFigureCount =0;
+            for (int i =0; i<newFEN.length();i++){
+                if(newFEN.charAt(i) == 'r'||newFEN.charAt(i) == 'n'||newFEN.charAt(i) == 'b'||newFEN.charAt(i) == 'k'||newFEN.charAt(i) == 'q'||newFEN.charAt(i) == 'p'||newFEN.charAt(i) == 'P'||newFEN.charAt(i) == 'R'||newFEN.charAt(i) == 'N'||newFEN.charAt(i) == 'B'||newFEN.charAt(i) == 'K'||newFEN.charAt(i) == 'Q'){
+                    newFigureCount++;
+                }
+            }
+            if (oldFigureCount!=newFigureCount) b.setHalfMoveCount(-1);
+        }
+
+
+
+
         if(b.isCurrentPlayerIsWhite()){
-            b.setHalfMoveCount(1);
+            b.setHalfMoveCount(b.getHalfMoveCount()+1);
 
         }else{
-            b.setHalfMoveCount(0);
-            b.setNextMoveCount(b.getNextMoveCount()+1);
-            //TODO: reset NextMove to 0 if pawn or capture
+            b.setHalfMoveCount(b.getHalfMoveCount()+1);
+            b.setNextMoveCount(b.getNextMoveCount()+1); //"full" move after black
+
         }
 
     }

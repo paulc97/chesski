@@ -7,7 +7,7 @@ public class NewMain {
     public static void main(String[] args) {
 
         MoveGenerator mg = new MoveGenerator();
-        Board b1 = new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq f4 0 1");
+        Board b1 = new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 
 
         while(true){
