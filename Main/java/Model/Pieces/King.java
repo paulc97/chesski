@@ -36,7 +36,7 @@ public class King implements Piece {
                 j=possibility&~(possibility-1);
             }
 
-            //CASTLING //TODO: Castling updaten? (er meint (Vid18) "castling isnt fully debugged yet)
+            //CASTLING //TODO: Castling updaten? (er meint (Vid18) "castling isnt fully debugged yet) //unsafe for white?
             if (b.isWhiteToCastleKingside()&&(((1L<<63L)&b.getWhiteRooks())!=0))
             {
                 if ((b.getAllPieces()&((1L<<61)|(1L<<62)))==0) {

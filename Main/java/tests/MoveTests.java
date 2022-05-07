@@ -12,9 +12,52 @@ public class MoveTests {
 
     @BeforeEach
     void setUp() {
-        board = new Board("rnbqkbnr/1p1pp1p1/p1p2p1p/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1");
+        //board = new Board("rnbqkbnr/1p1pp1p1/p1p2p1p/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1");
+        board = new Board("7r/Pn6/8/8/8/8/2K4p/k1n5 w KQkq - 4 265");
         moveGenerator = new MoveGenerator();
     }
+
+
+    @Test
+    void validMovesTest2(){
+        Board b1 = new Board("7r/Pn6/8/8/8/8/2K4p/k1n5 w KQkq - 4 265");
+        System.out.println(b1.getFen());
+        String valMoves = moveGenerator.validMoves(b1);
+        moveGenerator.selectAndMakeMove(b1,valMoves);
+        System.out.println(b1.getFen());
+    }
+
+    @Test
+    void enPassantTest(){
+        Board b1 = new Board("rnbqkbn1/pppp4/8/3Ppp2/6pP/N2B1p1N/P1PP3R/2RQK3 w q e6 0 12");
+        System.out.println(b1.getFen());
+        String valMoves = moveGenerator.validMoves(b1);
+        System.out.println(valMoves);
+        moveGenerator.selectAndMakeMove(b1,"34WE");
+        System.out.println(b1.getFen());
+    }
+
+    @Test
+    void castlingTest(){
+        Board b1 = new Board("r3k1R1/8/4P2P/8/2P5/N1RP3N/P3B3/3QK3 b q - 0 12");
+        System.out.println(b1.getFen());
+        String valMoves = moveGenerator.validMoves(b1);
+        System.out.println(valMoves); //TODO: Why castling kein valid move hier um aus Schach zu bringen?
+        moveGenerator.selectAndMakeMove(b1,valMoves);
+        System.out.println(b1.getFen());
+    }
+    @Test
+    void castlingTest2(){
+        Board b1 = new Board("r3kb2/p2pppp1/4P2P/8/2P5/N1RP3N/P3B1R1/3QK3 b q - 0 12");
+        System.out.println(b1.getFen());
+        String valMoves = moveGenerator.validMoves(b1);
+        System.out.println(valMoves);
+        moveGenerator.selectAndMakeMove(b1,"0402");
+        System.out.println(b1.getFen());
+    }
+
+
+
 
 
     @Test

@@ -4,6 +4,7 @@ import Model.Pieces.King;
 import Model.Pieces.Knights;
 import Model.Pieces.Pawns;
 import Model.Pieces.SlidingPieces;
+import jdk.swing.interop.SwingInterOpUtils;
 
 import java.util.Arrays;
 import static Model.Mask.*;
@@ -222,30 +223,24 @@ public class MoveGenerator {
             else {board&=~(1L<<end);}
         } else if (move.charAt(3)=='P') {//pawn promotion
             int start, end;
-            if (Character.isUpperCase(move.charAt(2))) { //white Promotion
-                start=Long.numberOfTrailingZeros(FileMasks8[move.charAt(0)-'0']&RankMasks8[6]);
-                end=Long.numberOfTrailingZeros(FileMasks8[move.charAt(1)-'0']&RankMasks8[7]);
-            } else { //black Promotion
+            if (Character.isUpperCase(move.charAt(2))) {
                 start=Long.numberOfTrailingZeros(FileMasks8[move.charAt(0)-'0']&RankMasks8[1]);
                 end=Long.numberOfTrailingZeros(FileMasks8[move.charAt(1)-'0']&RankMasks8[0]);
+            } else {
+                start=Long.numberOfTrailingZeros(FileMasks8[move.charAt(0)-'0']&RankMasks8[6]);
+                end=Long.numberOfTrailingZeros(FileMasks8[move.charAt(1)-'0']&RankMasks8[7]);
             }
-            if (type==move.charAt(2))
-
-            //fügt neue Figur zu der promotet wurde auf passendem Board hinzu
-            {board&=~(1L<<start); board|=(1L<<end);}
-
-            //entfernt alte Figur (i.e. Pawn auf PawnBoard)
-            else {board&=~(1L<<end);}
+            if (type==move.charAt(2)) {board|=(1L<<end);} else {board&=~(1L<<start); board&=~(1L<<end);}
         } else if (move.charAt(3)=='E') {//en passant
             int start, end;
-            if (Character.isUpperCase(move.charAt(2))) {
-                start=Long.numberOfTrailingZeros(FileMasks8[move.charAt(0)-'0']&RankMasks8[4]);
-                end=Long.numberOfTrailingZeros(FileMasks8[move.charAt(1)-'0']&RankMasks8[5]);
-                board&=~(1L<<(FileMasks8[move.charAt(1)-'0']&RankMasks8[4]));
-            } else {
+            if (move.charAt(2)=='W') {
                 start=Long.numberOfTrailingZeros(FileMasks8[move.charAt(0)-'0']&RankMasks8[3]);
                 end=Long.numberOfTrailingZeros(FileMasks8[move.charAt(1)-'0']&RankMasks8[2]);
-                board&=~(1L<<(FileMasks8[move.charAt(1)-'0']&RankMasks8[3]));
+                board&=~(FileMasks8[move.charAt(1)-'0']&RankMasks8[3]);
+            } else {
+                start=Long.numberOfTrailingZeros(FileMasks8[move.charAt(0)-'0']&RankMasks8[4]);
+                end=Long.numberOfTrailingZeros(FileMasks8[move.charAt(1)-'0']&RankMasks8[5]);
+                board&=~(FileMasks8[move.charAt(1)-'0']&RankMasks8[4]);
             }
             if (((board>>>start)&1)==1) {board&=~(1L<<start); board|=(1L<<end);}
         } else {
@@ -253,6 +248,9 @@ public class MoveGenerator {
         }
         return board;
     }
+
+
+
     //when pawn moves forward 2 spaces, then on that file an en passant can happen
     public static long makeMoveEP(long board,String move) {
         if (Character.isDigit(move.charAt(3))) {
@@ -293,7 +291,7 @@ public class MoveGenerator {
     //
 
     public static String convertMoveDigitsToField (char rank, char file){
-        char f =(char)(97+7-(file-48));
+        char f =(char)(97+(file-48));
         int r = (Math.abs(rank-48-8));
         return ""+f+r;
     }
@@ -326,7 +324,8 @@ public class MoveGenerator {
             tempB.setBlackQueen(makeMove(b.getBlackQueen(), moves.substring(i,i+4), 'q'));
             tempB.setBlackKing(makeMove(b.getBlackKing(), moves.substring(i,i+4), 'k'));
             tempB.setEnPassantBitboardFile(makeMoveEP(b.getWhitePawns()|b.getBlackPawns(),moves.substring(i,i+4)));
-            tempB.setEnPassants(makeMoveEPString(b.getWhitePawns()|b.getBlackPawns(),moves.substring(i,i+4))); //no effect (yet)
+            tempB.setEnPassants(makeMoveEPString(b.getWhitePawns()|b.getBlackPawns(),moves.substring(i,i+4)));
+
 
                 tempB.setWhiteToCastleKingside(b.isWhiteToCastleKingside());
                 tempB.setWhiteToCastleQueenside(b.isWhiteToCastleQueenside());
@@ -364,15 +363,33 @@ public class MoveGenerator {
 
         //zufällige Zugauswahl
         //Min + (int)(Math.random() * ((Max - Min) + 1))
-        int randomEndIndex = 4 + (int)(Math.random() * ((validMoves.length() - 4) + 1)); //TODO: dürfen wir Math.random benutzen?
+        int randomEndIndex = (1 + (int)(Math.random() * ((validMoves.length()/4 - 1) + 1)))*4; //TODO: dürfen wir Math.random benutzen?
         String move = validMoves.substring(randomEndIndex-4,randomEndIndex);
 
         //TODO: Error abfangen, wenn keine Moves mehr möglich? Spiel zuende
+
+        //Debugging:
+        System.out.println("I made this move: "+move+ " which is: "+convertMoveDigitsToField(move.charAt(0),move.charAt(1))+"->"+convertMoveDigitsToField(move.charAt(2),move.charAt(3)));
 
 
             String oldFEN = b.getFen().split(" ")[0]; //für 50-Zug-Remis-Regel
         long oldWhitePawns = b.getWhitePawns();
         long oldBlackPawns = b.getBlackPawns();
+
+        //Castling (muss ->vor<- Änderung auf Bitboard durchgeführt werden)
+        if (Character.isDigit(move.charAt(3))) {//'regular' move
+            int start=(Character.getNumericValue(move.charAt(0))*8)+(Character.getNumericValue(move.charAt(0+1)));
+            if (((1L<<start)&b.getWhiteKing())!=0) { b.setWhiteToCastleKingside(false); b.setWhiteToCastleQueenside(false);}
+            if (((1L<<start)&b.getBlackKing())!=0) {b.setBlackToCastleKingside(false); b.setBlackToCastleQueenside(false);}
+            if (((1L<<start)&b.getWhiteRooks()&(1L<<63))!=0) {b.setWhiteToCastleKingside(false);}
+            if (((1L<<start)&b.getWhiteRooks()&(1L<<56))!=0) {b.setWhiteToCastleQueenside(false);}
+            if (((1L<<start)&b.getBlackRooks()&(1L<<7))!=0) {b.setBlackToCastleKingside(false);}
+            if (((1L<<start)&b.getBlackRooks()&1L)!=0) {b.setBlackToCastleQueenside(false);}
+        }
+
+        //En Passant (muss ->vor<- Änderung auf Bitboard durchgeführt werden)
+        b.setEnPassantBitboardFile(makeMoveEP(b.getWhitePawns()|b.getBlackPawns(),move));
+        b.setEnPassants(makeMoveEPString(b.getWhitePawns()|b.getBlackPawns(),move));
 
         b.setWhitePawns(makeMove(b.getWhitePawns(), move, 'P'));
         b.setWhiteKnights(makeMove(b.getWhiteKnights(), move, 'N'));
@@ -386,19 +403,9 @@ public class MoveGenerator {
         b.setBlackRooks(makeMove(b.getBlackRooks(), move, 'r'));
         b.setBlackQueen(makeMove(b.getBlackQueen(), move, 'q'));
         b.setBlackKing(makeMove(b.getBlackKing(), move, 'k'));
-        b.setEnPassantBitboardFile(makeMoveEP(b.getWhitePawns()|b.getBlackPawns(),move));
-        b.setEnPassants(makeMoveEPString(b.getWhitePawns()|b.getBlackPawns(),move));
 
 
-        if (Character.isDigit(move.charAt(3))) {//'regular' move
-            int start=(Character.getNumericValue(move.charAt(0))*8)+(Character.getNumericValue(move.charAt(0+1)));
-            if (((1L<<start)&b.getWhiteKing())!=0) {b.setWhiteToCastleKingside(false); b.setWhiteToCastleQueenside(false);}
-            if (((1L<<start)&b.getBlackKing())!=0) {b.setBlackToCastleKingside(false); b.setBlackToCastleQueenside(false);}
-            if (((1L<<start)&b.getWhiteRooks()&(1L<<63))!=0) {b.setWhiteToCastleKingside(false);}
-            if (((1L<<start)&b.getWhiteRooks()&(1L<<56))!=0) {b.setWhiteToCastleQueenside(false);}
-            if (((1L<<start)&b.getBlackRooks()&(1L<<7))!=0) {b.setBlackToCastleKingside(false);}
-            if (((1L<<start)&b.getBlackRooks()&1L)!=0) {b.setBlackToCastleQueenside(false);}
-        }
+
 
         b.setCurrentPlayerIsWhite(!b.isCurrentPlayerIsWhite());
 

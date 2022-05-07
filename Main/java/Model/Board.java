@@ -519,7 +519,8 @@ public class Board {
             for (int j = 0;j<8;j++){
 
 
-                fen += chessBoard[i][7-j];
+
+                fen += chessBoard[i][j];
 
 
             }
@@ -553,7 +554,7 @@ public class Board {
             newFen+="/";
         }
 
-        newFen = newFen.substring(0,newFen.length()-2);
+        newFen = newFen.substring(0,newFen.length()-1);
 
         if(this.isCurrentPlayerIsWhite()){
             newFen+=" w";
@@ -574,8 +575,8 @@ public class Board {
 
         newFen += " "+enPassants;
 
-        newFen += " " +this.getHalfMoveCount(); //TODO: implement halbzüge
-        newFen += " " +this.getNextMoveCount(); //TODO: implement move count
+        newFen += " " +this.getHalfMoveCount();
+        newFen += " " +this.getNextMoveCount();
 
 
         return newFen;
