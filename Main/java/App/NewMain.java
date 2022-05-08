@@ -7,16 +7,18 @@ public class NewMain {
     public static void main(String[] args) {
 
         MoveGenerator mg = new MoveGenerator();
-        Board b1 = new Board("k7/8/8/2r5/2P1p3/2PKP3/2PPP3/8 w - - 0 1");
+        Board b1 = new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 
 
         while(true){
 
-            System.out.println("neue Runde");
+
             String validMoves = mg.validMoves(b1);
             //
             mg.selectAndMakeMove(b1, validMoves);
-            System.out.println(b1.getFen());
+            System.out.println("FEN Representation: " + b1.getFen());
+
+            b1.drawBoard();
 
             if(b1.isGameOver()){
 

@@ -420,7 +420,13 @@ public class MoveGenerator {
 
 
         //Debugging:
-        System.out.println("I made this move: "+move+ " which is: "+convertMoveDigitsToField(move.charAt(0),move.charAt(1))+"->"+convertMoveDigitsToField(move.charAt(2),move.charAt(3)));
+        String player ="";
+        if(b.isCurrentPlayerIsWhite()){
+            player = "White";
+        }else{
+            player = "Black";
+        }
+        System.out.println(player+" played: "+convertMoveDigitsToField(move.charAt(0),move.charAt(1))+"->"+convertMoveDigitsToField(move.charAt(2),move.charAt(3)));
 
 
             String oldFEN = b.getFen().split(" ")[0]; //für 50-Zug-Remis-Regel

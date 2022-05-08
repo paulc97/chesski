@@ -137,9 +137,9 @@ public class MoveTests {
             timesEnd += endepoch - startEpoch ;
         }
 
-        System.out.println("Generating Start Position took "+timesStart+" Milliseconds");
-        System.out.println("Generating Mid Position took "+timesMid+" Milliseconds");
-        System.out.println("Generating End Position took "+timesEnd+" Milliseconds");
+        System.out.println("Generating Start Position took "+(timesStart*0.000002)+" Milliseconds");
+        System.out.println("Generating Mid Position took "+(timesMid*0.000002)+" Milliseconds");
+        System.out.println("Generating End Position took "+(timesEnd*0.000002)+" Milliseconds");
 
 
     }

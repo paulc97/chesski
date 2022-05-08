@@ -604,5 +604,56 @@ public class Board {
         return newFen;
     }
 
-}
+    public void drawBoard() {
+
+        String chessBoard[][] = new String[8][8];
+        for (int i = 0; i < 64; i++) {
+            chessBoard[i / 8][i % 8] = " ";
+        }
+        for (int i = 0; i < 64; i++) {
+            if (((this.getWhitePawns() >> i) & 1) == 1) {
+                chessBoard[i / 8][i % 8] = "P";
+            }
+            if (((this.getWhiteKnights() >> i) & 1) == 1) {
+                chessBoard[i / 8][i % 8] = "N";
+            }
+            if (((this.getWhiteBishops() >> i) & 1) == 1) {
+                chessBoard[i / 8][i % 8] = "B";
+            }
+            if (((this.getWhiteRooks() >> i) & 1) == 1) {
+                chessBoard[i / 8][i % 8] = "R";
+            }
+            if (((this.getWhiteQueen() >> i) & 1) == 1) {
+                chessBoard[i / 8][i % 8] = "Q";
+            }
+            if (((this.getWhiteKing() >> i) & 1) == 1) {
+                chessBoard[i / 8][i % 8] = "K";
+            }
+            if (((this.getBlackPawns() >> i) & 1) == 1) {
+                chessBoard[i / 8][i % 8] = "p";
+            }
+            if (((this.getBlackKnights() >> i) & 1) == 1) {
+                chessBoard[i / 8][i % 8] = "n";
+            }
+            if (((this.getBlackBishops() >> i) & 1) == 1) {
+                chessBoard[i / 8][i % 8] = "b";
+            }
+            if (((this.getBlackRooks() >> i) & 1) == 1) {
+                chessBoard[i / 8][i % 8] = "r";
+            }
+            if (((this.getBlackQueen() >> i) & 1) == 1) {
+                chessBoard[i / 8][i % 8] = "q";
+            }
+            if (((this.getBlackKing() >> i) & 1) == 1) {
+                chessBoard[i / 8][i % 8] = "k";
+            }
+        }
+
+        for (int i=0;i<8;i++) {
+            System.out.println(Arrays.toString(chessBoard[i]));
+        }
+
+    }
+
+    }
 
