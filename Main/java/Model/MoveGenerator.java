@@ -398,6 +398,9 @@ public class MoveGenerator {
         long oldWhitePawns = b.getWhitePawns();
         long oldBlackPawns = b.getBlackPawns();
 
+        long oldWhiteKing = b.getWhiteKing();
+        long oldBlackKing = b.getBlackKing();
+
         //Castling (muss ->vor<- Änderung auf Bitboard durchgeführt werden)
         if (Character.isDigit(move.charAt(3))) {//'regular' move
             int start=(Character.getNumericValue(move.charAt(0))*8)+(Character.getNumericValue(move.charAt(0+1)));
@@ -413,9 +416,7 @@ public class MoveGenerator {
         b.setEnPassantBitboardFile(makeMoveEP(b.getWhitePawns()|b.getBlackPawns(),move));
         b.setEnPassants(makeMoveEPString(b.getWhitePawns()|b.getBlackPawns(),move));
 
-        //Castling auch vor Änderung der King Position??
-        b.setWhiteRooks(makeMoveCastle(b.getWhiteRooks(), b.getWhiteKing()|b.getBlackKing(), move, 'R'));
-        b.setBlackRooks(makeMoveCastle(b.getBlackRooks(), b.getWhiteKing()|b.getBlackKing(), move, 'r'));
+
 
         b.setWhitePawns(makeMove(b.getWhitePawns(), move, 'P'));
         b.setWhiteKnights(makeMove(b.getWhiteKnights(), move, 'N'));
@@ -429,6 +430,10 @@ public class MoveGenerator {
         b.setBlackRooks(makeMove(b.getBlackRooks(), move, 'r'));
         b.setBlackQueen(makeMove(b.getBlackQueen(), move, 'q'));
         b.setBlackKing(makeMove(b.getBlackKing(), move, 'k'));
+
+        //Castling auch vor Änderung der King Position??
+        b.setWhiteRooks(makeMoveCastle(b.getWhiteRooks(), oldWhiteKing|oldBlackKing, move, 'R'));
+        b.setBlackRooks(makeMoveCastle(b.getBlackRooks(), oldWhiteKing|oldBlackKing, move, 'r'));
 
 
 
