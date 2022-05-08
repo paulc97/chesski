@@ -61,7 +61,7 @@ public class BoardTests {
         Board b1 = new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq f4 0 1");
         String validMoves = mg.validMoves(b1);
         mg.selectAndMakeMove(b1, validMoves);
-        System.out.println(b1.getFen());
+        System.out.println(b1.bitboardsToFenParser());
     }
 
     @Test

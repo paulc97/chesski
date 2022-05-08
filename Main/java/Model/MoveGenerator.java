@@ -4,9 +4,7 @@ import Model.Pieces.King;
 import Model.Pieces.Knights;
 import Model.Pieces.Pawns;
 import Model.Pieces.SlidingPieces;
-import jdk.swing.interop.SwingInterOpUtils;
 
-import java.util.Arrays;
 import static Model.Mask.*;
 
 
@@ -62,7 +60,7 @@ public class MoveGenerator {
 
     //gibt Bitboard mit allen Positionen auf denen White Landen könnte (inkl. eigener weißer Figuren)
     // wenn dann mit BlackKing-Bitboard verundet (&) eine 1 ergibt, könnte BlackKing geschlagen
-    public long unsafeForBlack(Board b) {
+    public long fieldsAttackedByWhite(Board b) {
         long unsafe;
        // OCCUPIED=WP|WN|WB|WR|WQ|WK|BP|BN|BB|BR|BQ|BK;
         //pawn
@@ -134,7 +132,7 @@ public class MoveGenerator {
         unsafe |= possibility;
         return unsafe;
     }
-    public long unsafeForWhite(Board b) {
+    public long fieldsAttackedByBlack(Board b) {
         long unsafe;
         //OCCUPIED=WP|WN|WB|WR|WQ|WK|BP|BN|BB|BR|BQ|BK;
         //pawn
@@ -210,7 +208,7 @@ public class MoveGenerator {
 
     //TODO: static or non-static?
     //ändert für 1 Bitboard ("long board") die Positionen, nachdem "String move" ausgeführt wurde
-    public static long makeMove(long board, String move, char type) {
+    public static long executeMoveforOneBitboard(long board, String move, char type) {
         if (Character.isDigit(move.charAt(3))) {//'regular' move
             int start=(Character.getNumericValue(move.charAt(0))*8)+(Character.getNumericValue(move.charAt(1)));
             int end=(Character.getNumericValue(move.charAt(2))*8)+(Character.getNumericValue(move.charAt(3)));
@@ -249,7 +247,7 @@ public class MoveGenerator {
         return board;
     }
 
-    public static long makeMoveCastle(long rookBoard, long kingBoard, String move, char type) {
+    public static long executeCastling(long rookBoard, long kingBoard, String move, char type) {
         int start=(Character.getNumericValue(move.charAt(0))*8)+(Character.getNumericValue(move.charAt(1)));
         if ((((kingBoard>>>start)&1)==1)&&(("0402".equals(move))||("0406".equals(move))||("7472".equals(move))||("7476".equals(move)))) {//'regular' move
             if (type=='R') {
@@ -272,7 +270,7 @@ public class MoveGenerator {
     }
 
     //when pawn moves forward 2 spaces, then on that file an en passant can happen
-    public static long makeMoveEP(long board,String move) {
+    /*public static long makeMoveEP(long board,String move) {
         if (Character.isDigit(move.charAt(3))) {
             int start=(Character.getNumericValue(move.charAt(0))*8)+(Character.getNumericValue(move.charAt(1)));
             if ((Math.abs(move.charAt(0)-move.charAt(2))==2)&&(((board>>>start)&1)==1)) {//pawn double push
@@ -283,9 +281,9 @@ public class MoveGenerator {
             }
         }
         return 0; //-> no en passant allowed
-    }
+    }*/
 
-    public static String makeMoveEPString(long board,String move) {
+    public static String executeEnPassant(long board, String move) {
         if (Character.isDigit(move.charAt(3))) {
             int start=(Character.getNumericValue(move.charAt(0))*8)+(Character.getNumericValue(move.charAt(1)));
             if ((Math.abs(move.charAt(0)-move.charAt(2))==2)&&(((board>>>start)&1)==1)) {//pawn double push
@@ -314,7 +312,7 @@ public class MoveGenerator {
         char f =(char)(97+(file-48));
         int r = (Math.abs(rank-48-8));
         return ""+f+r;
-    }
+    }  //TODO: fix for Queenpromotion/Ep Notation
 
 
 
@@ -329,25 +327,25 @@ public class MoveGenerator {
 
         for (int i=0;i<moves.length();i+=4) {
 
-            Board tempB = new Board(b.getFen());
+            Board tempB = new Board(b.bitboardsToFenParser());
 
-            tempB.setWhitePawns(makeMove(b.getWhitePawns(), moves.substring(i,i+4), 'P'));
-            tempB.setWhiteKnights(makeMove(b.getWhiteKnights(), moves.substring(i,i+4), 'N'));
-            tempB.setWhiteBishops(makeMove(b.getWhiteBishops(), moves.substring(i,i+4), 'B'));
-            tempB.setWhiteRooks(makeMove(b.getWhiteRooks(), moves.substring(i,i+4), 'R'));
-            tempB.setWhiteQueen(makeMove(b.getWhiteQueen(), moves.substring(i,i+4), 'Q'));
-            tempB.setWhiteKing(makeMove(b.getWhiteKing(), moves.substring(i,i+4), 'K'));
-            tempB.setBlackPawns(makeMove(b.getBlackPawns(), moves.substring(i,i+4), 'p'));
-            tempB.setBlackKnights(makeMove(b.getBlackKnights(), moves.substring(i,i+4), 'n'));
-            tempB.setBlackBishops(makeMove(b.getBlackBishops(), moves.substring(i,i+4), 'b'));
-            tempB.setBlackRooks(makeMove(b.getBlackRooks(), moves.substring(i,i+4), 'r'));
-            tempB.setBlackQueen(makeMove(b.getBlackQueen(), moves.substring(i,i+4), 'q'));
-            tempB.setBlackKing(makeMove(b.getBlackKing(), moves.substring(i,i+4), 'k'));
-            tempB.setEnPassantBitboardFile(makeMoveEP(b.getWhitePawns()|b.getBlackPawns(),moves.substring(i,i+4)));
-            tempB.setEnPassants(makeMoveEPString(b.getWhitePawns()|b.getBlackPawns(),moves.substring(i,i+4)));
+            tempB.setWhitePawns(executeMoveforOneBitboard(b.getWhitePawns(), moves.substring(i,i+4), 'P'));
+            tempB.setWhiteKnights(executeMoveforOneBitboard(b.getWhiteKnights(), moves.substring(i,i+4), 'N'));
+            tempB.setWhiteBishops(executeMoveforOneBitboard(b.getWhiteBishops(), moves.substring(i,i+4), 'B'));
+            tempB.setWhiteRooks(executeMoveforOneBitboard(b.getWhiteRooks(), moves.substring(i,i+4), 'R'));
+            tempB.setWhiteQueen(executeMoveforOneBitboard(b.getWhiteQueen(), moves.substring(i,i+4), 'Q'));
+            tempB.setWhiteKing(executeMoveforOneBitboard(b.getWhiteKing(), moves.substring(i,i+4), 'K'));
+            tempB.setBlackPawns(executeMoveforOneBitboard(b.getBlackPawns(), moves.substring(i,i+4), 'p'));
+            tempB.setBlackKnights(executeMoveforOneBitboard(b.getBlackKnights(), moves.substring(i,i+4), 'n'));
+            tempB.setBlackBishops(executeMoveforOneBitboard(b.getBlackBishops(), moves.substring(i,i+4), 'b'));
+            tempB.setBlackRooks(executeMoveforOneBitboard(b.getBlackRooks(), moves.substring(i,i+4), 'r'));
+            tempB.setBlackQueen(executeMoveforOneBitboard(b.getBlackQueen(), moves.substring(i,i+4), 'q'));
+            tempB.setBlackKing(executeMoveforOneBitboard(b.getBlackKing(), moves.substring(i,i+4), 'k'));
+            //tempB.setEnPassantBitboardFile(makeMoveEP(b.getWhitePawns()|b.getBlackPawns(),moves.substring(i,i+4)));
+            tempB.setEnPassants(executeEnPassant(b.getWhitePawns()|b.getBlackPawns(),moves.substring(i,i+4)));
 
-            tempB.setWhiteRooks(makeMoveCastle(tempB.getWhiteRooks(), b.getWhiteKing()|b.getBlackKing(), moves.substring(i,i+4), 'R'));
-            tempB.setBlackRooks(makeMoveCastle(tempB.getBlackRooks(), b.getWhiteKing()|b.getBlackKing(), moves.substring(i,i+4), 'r'));
+            tempB.setWhiteRooks(executeCastling(tempB.getWhiteRooks(), b.getWhiteKing()|b.getBlackKing(), moves.substring(i,i+4), 'R'));
+            tempB.setBlackRooks(executeCastling(tempB.getBlackRooks(), b.getWhiteKing()|b.getBlackKing(), moves.substring(i,i+4), 'r'));
 
                 tempB.setWhiteToCastleKingside(b.isWhiteToCastleKingside());
                 tempB.setWhiteToCastleQueenside(b.isWhiteToCastleQueenside());
@@ -367,8 +365,8 @@ public class MoveGenerator {
 
 
                 //check if own King is NOT in danger after move
-                if (((tempB.getWhiteKing()&unsafeForWhite(tempB))==0 && b.isCurrentPlayerIsWhite()) ||
-                        ((tempB.getBlackKing()&unsafeForBlack(tempB))==0 && !b.isCurrentPlayerIsWhite())) {
+                if (((tempB.getWhiteKing()& fieldsAttackedByBlack(tempB))==0 && b.isCurrentPlayerIsWhite()) ||
+                        ((tempB.getBlackKing()& fieldsAttackedByWhite(tempB))==0 && !b.isCurrentPlayerIsWhite())) {
                     //add current move to validMoves if king is not in danger
                     validMoves += moves.substring(i,i+4);
 
@@ -390,7 +388,7 @@ public class MoveGenerator {
 
 
 
-                if((unsafeForWhite(b)&b.getWhiteKing())!=0){
+                if((fieldsAttackedByBlack(b)&b.getWhiteKing())!=0){
                     //Weißer König wird angegriffen
                     b.setGameOver(true);
                     b.setWhiteWon(false);
@@ -398,7 +396,7 @@ public class MoveGenerator {
                 }
 
             }else { //Schwarz am Zug
-                if((unsafeForBlack(b)&b.getBlackKing())!=0){
+                if((fieldsAttackedByWhite(b)&b.getBlackKing())!=0){
                     b.setGameOver(true);
                     b.setWhiteWon(true);
                     return;
@@ -429,7 +427,7 @@ public class MoveGenerator {
         System.out.println(player+" played: "+convertMoveDigitsToField(move.charAt(0),move.charAt(1))+"->"+convertMoveDigitsToField(move.charAt(2),move.charAt(3)));
 
 
-            String oldFEN = b.getFen().split(" ")[0]; //für 50-Zug-Remis-Regel
+            String oldFEN = b.bitboardsToFenParser().split(" ")[0]; //für 50-Zug-Remis-Regel
         long oldWhitePawns = b.getWhitePawns();
         long oldBlackPawns = b.getBlackPawns();
 
@@ -448,27 +446,27 @@ public class MoveGenerator {
         }
 
         //En Passant (muss ->vor<- Änderung auf Bitboard durchgeführt werden)
-        b.setEnPassantBitboardFile(makeMoveEP(b.getWhitePawns()|b.getBlackPawns(),move));
-        b.setEnPassants(makeMoveEPString(b.getWhitePawns()|b.getBlackPawns(),move));
+        //b.setEnPassantBitboardFile(makeMoveEP(b.getWhitePawns()|b.getBlackPawns(),move));
+        b.setEnPassants(executeEnPassant(b.getWhitePawns()|b.getBlackPawns(),move));
 
 
 
-        b.setWhitePawns(makeMove(b.getWhitePawns(), move, 'P'));
-        b.setWhiteKnights(makeMove(b.getWhiteKnights(), move, 'N'));
-        b.setWhiteBishops(makeMove(b.getWhiteBishops(), move, 'B'));
-        b.setWhiteRooks(makeMove(b.getWhiteRooks(), move, 'R'));
-        b.setWhiteQueen(makeMove(b.getWhiteQueen(), move, 'Q'));
-        b.setWhiteKing(makeMove(b.getWhiteKing(), move, 'K'));
-        b.setBlackPawns(makeMove(b.getBlackPawns(), move, 'p'));
-        b.setBlackKnights(makeMove(b.getBlackKnights(), move, 'n'));
-        b.setBlackBishops(makeMove(b.getBlackBishops(), move, 'b'));
-        b.setBlackRooks(makeMove(b.getBlackRooks(), move, 'r'));
-        b.setBlackQueen(makeMove(b.getBlackQueen(), move, 'q'));
-        b.setBlackKing(makeMove(b.getBlackKing(), move, 'k'));
+        b.setWhitePawns(executeMoveforOneBitboard(b.getWhitePawns(), move, 'P'));
+        b.setWhiteKnights(executeMoveforOneBitboard(b.getWhiteKnights(), move, 'N'));
+        b.setWhiteBishops(executeMoveforOneBitboard(b.getWhiteBishops(), move, 'B'));
+        b.setWhiteRooks(executeMoveforOneBitboard(b.getWhiteRooks(), move, 'R'));
+        b.setWhiteQueen(executeMoveforOneBitboard(b.getWhiteQueen(), move, 'Q'));
+        b.setWhiteKing(executeMoveforOneBitboard(b.getWhiteKing(), move, 'K'));
+        b.setBlackPawns(executeMoveforOneBitboard(b.getBlackPawns(), move, 'p'));
+        b.setBlackKnights(executeMoveforOneBitboard(b.getBlackKnights(), move, 'n'));
+        b.setBlackBishops(executeMoveforOneBitboard(b.getBlackBishops(), move, 'b'));
+        b.setBlackRooks(executeMoveforOneBitboard(b.getBlackRooks(), move, 'r'));
+        b.setBlackQueen(executeMoveforOneBitboard(b.getBlackQueen(), move, 'q'));
+        b.setBlackKing(executeMoveforOneBitboard(b.getBlackKing(), move, 'k'));
 
         //Castling auch vor Änderung der King Position??
-        b.setWhiteRooks(makeMoveCastle(b.getWhiteRooks(), oldWhiteKing|oldBlackKing, move, 'R'));
-        b.setBlackRooks(makeMoveCastle(b.getBlackRooks(), oldWhiteKing|oldBlackKing, move, 'r'));
+        b.setWhiteRooks(executeCastling(b.getWhiteRooks(), oldWhiteKing|oldBlackKing, move, 'R'));
+        b.setBlackRooks(executeCastling(b.getBlackRooks(), oldWhiteKing|oldBlackKing, move, 'r'));
 
 
 
@@ -478,7 +476,7 @@ public class MoveGenerator {
         if(b.getWhitePawns()!=oldWhitePawns||b.getBlackPawns()!=oldBlackPawns){ //wurde ein Bauer bewegt?(/geschlagen)
             b.setHalfMoveCount(-1);
         } else {  //wurde eine Figur geschlagen?
-            String newFEN = b.getFen().split(" ")[0]; //für 50-Zug-Remis-Regel;
+            String newFEN = b.bitboardsToFenParser().split(" ")[0]; //für 50-Zug-Remis-Regel;
 
             int oldFigureCount =0;
             for (int i =0; i<oldFEN.length();i++){
@@ -575,25 +573,25 @@ public class MoveGenerator {
 
             for (int i=0;i<moves.length();i+=4) {
 
-                Board tempB = new Board(b.getFen());
+                Board tempB = new Board(b.bitboardsToFenParser());
 
-                tempB.setWhitePawns(makeMove(b.getWhitePawns(), moves.substring(i,i+4), 'P'));
-                tempB.setWhiteKnights(makeMove(b.getWhiteKnights(), moves.substring(i,i+4), 'N'));
-                tempB.setWhiteBishops(makeMove(b.getWhiteBishops(), moves.substring(i,i+4), 'B'));
-                tempB.setWhiteRooks(makeMove(b.getWhiteRooks(), moves.substring(i,i+4), 'R'));
-                tempB.setWhiteQueen(makeMove(b.getWhiteQueen(), moves.substring(i,i+4), 'Q'));
-                tempB.setWhiteKing(makeMove(b.getWhiteKing(), moves.substring(i,i+4), 'K'));
-                tempB.setBlackPawns(makeMove(b.getBlackPawns(), moves.substring(i,i+4), 'p'));
-                tempB.setBlackKnights(makeMove(b.getBlackKnights(), moves.substring(i,i+4), 'n'));
-                tempB.setBlackBishops(makeMove(b.getBlackBishops(), moves.substring(i,i+4), 'b'));
-                tempB.setBlackRooks(makeMove(b.getBlackRooks(), moves.substring(i,i+4), 'r'));
-                tempB.setBlackQueen(makeMove(b.getBlackQueen(), moves.substring(i,i+4), 'q'));
-                tempB.setBlackKing(makeMove(b.getBlackKing(), moves.substring(i,i+4), 'k'));
-                tempB.setEnPassantBitboardFile(makeMoveEP(b.getWhitePawns()|b.getBlackPawns(),moves.substring(i,i+4)));
-                tempB.setEnPassants(makeMoveEPString(b.getWhitePawns()|b.getBlackPawns(),moves.substring(i,i+4)));
+                tempB.setWhitePawns(executeMoveforOneBitboard(b.getWhitePawns(), moves.substring(i,i+4), 'P'));
+                tempB.setWhiteKnights(executeMoveforOneBitboard(b.getWhiteKnights(), moves.substring(i,i+4), 'N'));
+                tempB.setWhiteBishops(executeMoveforOneBitboard(b.getWhiteBishops(), moves.substring(i,i+4), 'B'));
+                tempB.setWhiteRooks(executeMoveforOneBitboard(b.getWhiteRooks(), moves.substring(i,i+4), 'R'));
+                tempB.setWhiteQueen(executeMoveforOneBitboard(b.getWhiteQueen(), moves.substring(i,i+4), 'Q'));
+                tempB.setWhiteKing(executeMoveforOneBitboard(b.getWhiteKing(), moves.substring(i,i+4), 'K'));
+                tempB.setBlackPawns(executeMoveforOneBitboard(b.getBlackPawns(), moves.substring(i,i+4), 'p'));
+                tempB.setBlackKnights(executeMoveforOneBitboard(b.getBlackKnights(), moves.substring(i,i+4), 'n'));
+                tempB.setBlackBishops(executeMoveforOneBitboard(b.getBlackBishops(), moves.substring(i,i+4), 'b'));
+                tempB.setBlackRooks(executeMoveforOneBitboard(b.getBlackRooks(), moves.substring(i,i+4), 'r'));
+                tempB.setBlackQueen(executeMoveforOneBitboard(b.getBlackQueen(), moves.substring(i,i+4), 'q'));
+                tempB.setBlackKing(executeMoveforOneBitboard(b.getBlackKing(), moves.substring(i,i+4), 'k'));
+                //tempB.setEnPassantBitboardFile(makeMoveEP(b.getWhitePawns()|b.getBlackPawns(),moves.substring(i,i+4)));
+                tempB.setEnPassants(executeEnPassant(b.getWhitePawns()|b.getBlackPawns(),moves.substring(i,i+4)));
 
-                tempB.setWhiteRooks(makeMoveCastle(tempB.getWhiteRooks(), b.getWhiteKing()|b.getBlackKing(), moves.substring(i,i+4), 'R'));
-                tempB.setBlackRooks(makeMoveCastle(tempB.getBlackRooks(), b.getWhiteKing()|b.getBlackKing(), moves.substring(i,i+4), 'r'));
+                tempB.setWhiteRooks(executeCastling(tempB.getWhiteRooks(), b.getWhiteKing()|b.getBlackKing(), moves.substring(i,i+4), 'R'));
+                tempB.setBlackRooks(executeCastling(tempB.getBlackRooks(), b.getWhiteKing()|b.getBlackKing(), moves.substring(i,i+4), 'r'));
 
                 tempB.setWhiteToCastleKingside(b.isWhiteToCastleKingside());
                 tempB.setWhiteToCastleQueenside(b.isWhiteToCastleQueenside());
@@ -613,8 +611,8 @@ public class MoveGenerator {
 
 
                 //check if own King is NOT in danger after move
-                if (((tempB.getWhiteKing()&unsafeForWhite(tempB))==0 && b.isCurrentPlayerIsWhite()) ||
-                        ((tempB.getBlackKing()&unsafeForBlack(tempB))==0 && !b.isCurrentPlayerIsWhite())) {
+                if (((tempB.getWhiteKing()& fieldsAttackedByBlack(tempB))==0 && b.isCurrentPlayerIsWhite()) ||
+                        ((tempB.getBlackKing()& fieldsAttackedByWhite(tempB))==0 && !b.isCurrentPlayerIsWhite())) {
                     //add current move to validMoves if king is not in danger
                     validMoves += moves.substring(i,i+4);
 

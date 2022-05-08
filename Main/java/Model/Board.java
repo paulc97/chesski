@@ -34,7 +34,7 @@ public class Board {
 
     //WIP EP start
     //ist File in der EnPassant möglich/erlaubt ist
-    private long enPassantBitboardFile =0L;
+    /*private long enPassantBitboardFile =0L;
     // eingefügt, um makeMove wie Video 16&17 zu machen
     //TODO: combine/integrate with privateString enPassants, fix BitboardGeneration correct
 
@@ -45,7 +45,7 @@ public class Board {
 
     public void setEnPassantBitboardFile(long enPassantBitboardFile) {
         this.enPassantBitboardFile = enPassantBitboardFile;
-    }
+    }*/
     //WIP EP ende
 
     /**
@@ -513,7 +513,7 @@ public class Board {
         return KIPlaysWhite == currentPlayerIsWhite;
     }
 
-    public String getFen() {
+    public String bitboardsToFenParser() {
 
         String chessBoard[][]=new String[8][8];
         for (int i=0;i<64;i++) {

@@ -1,15 +1,5 @@
 package Controller;
 
-import App.Main;
-import Model.Board;
-
-import javax.websocket.*;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.concurrent.CountDownLatch;
-import java.util.logging.Logger;
-
 public class WSController {
 
     /*    public Board board;

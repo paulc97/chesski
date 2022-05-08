@@ -1,128 +1,77 @@
 package App;
 
-import Controller.*;
-import org.glassfish.tyrus.client.ClientManager;
+import Model.Board;
+import Model.MoveGenerator;
 
-import javax.websocket.*;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.concurrent.CountDownLatch;
-import java.util.logging.Logger;
-
-@ClientEndpoint
 public class Main {
-    private static CountDownLatch latch;
-    private Logger logger = Logger.getLogger(this.getClass().getName());
-    private MessageEncoder me = new MessageEncoder();
-    private MessageDecoder md = new MessageDecoder();
+    public static void main(String[] args) {
 
-    //Config
-    private String userName="Maagnus";
-    private long playerId;
+        MoveGenerator mg = new MoveGenerator();
+        Board b1 = new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 
 
-    //Executed if connection gets established
-    @OnOpen
-    public void onOpen(Session session) {
-        logger.info("Connected. Session id: " + session.getId());
-        try {
-            //if no id is set create a new user
-                //send the message to the server
-                Message message = new Message(0, userName, playerId);
-                session.getBasicRemote().sendText(me.encode(message));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (EncodeException e) {
-            e.printStackTrace();
-        }
-    }
+        while(true){
 
-    //Executed if message arrives
-    @OnMessage
-    public String onMessage(String message, Session session) throws DecodeException {
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-        Response response = md.decode(message);
-        try {
-            logger.info("Received: " + message);
-            if (response.playerID != 0){
-                playerId = response.playerID;
-                System.out.println("Received player ID: "+ playerId);
-                //TODO send a message to join a game
+
+            String validMoves = mg.validMoves(b1);
+            //
+            mg.selectAndMakeMove(b1, validMoves);
+            System.out.println("FEN Representation: " + b1.bitboardsToFenParser());
+
+            b1.drawBoard();
+
+            if(b1.isGameOver()){
+
+                if(b1.isRemis()){
+                    System.out.println("Game Over - Remis");
+                    break;
+                } else {
+                    if(b1.isWhiteWon()){
+                        System.out.println("Game Over - White Won");
+                        break;
+                    } else {
+                        System.out.println("Game Over - Black Won");
+                        break;
+                    }
+                }
+
             }
 
+            /*
 
 
-                //TODO handle here all possible messages including move generation etc.
-            String userInput = bufferedReader.readLine();
-            return userInput;
 
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+
+            -ende, wenn König im Mittelfeld ->p
+
+            -ende, wenn keine legal moves von König ->p
+
+             -ende, wenn 50 Züge ohne schlagen/bauer ->c
+
+             //TODO: Reihenfolge beachten! (Ende nach 100 Halbzügen ohne schlagen/bauer, erst nach check ob könig in mitte/keine züge übrig!)
+             //Note: Dass Halbzüge hochgezählt und zurückgesetzt werden, wenn Bauer bewegt/Figur geschlagen, hab ich implementiert
+             //Dass das Game automatisch endet (-> Remis) wenn 100 Halbzüge erreicht, mach ich wenn du deine Spielenderkennungsaufgaben
+             // fertig hast, oder du machst es selbst, wenn es schnell geht :) - Viktoria
+
+
+
+               //TODO: Moves überprüfen
+
+
+           -------------------------nachdem Random Move gefixt--------------
+           rnbkqb1r/1p1ppp1p/7n/p1p3p1/1P2P2Q/P1P2P2/3P2PP/RNBK1BNR b KQkq - 0 7
+I made this move: 0033 which is: h8->e5 (ROOK macht Bishopzug)
+rnbkqb2/1p1ppp1p/7n/p1p1r1p1/1P2P2Q/P1P2P2/3P2PP/RNBK1BNR w KQkq - 1 7
+//kann sein dass 0033 h8->e5 nciht mehr stimmt, da waren auch iwo bugs drin, aber der Rook macht trzd noch bishop züge ^^;
+             */
+
+
+            //TODO: why 80708071 wenn König fehlt möglich?
+
+
+
+
         }
 
     }
-
-    @OnClose
-    public void onClose(Session session, CloseReason closeReason) {
-        logger.info(String.format("Session %s closed because of %s", session.getId(), closeReason));
-        latch.countDown();
-    }
-
-    public static void main(String[] args) throws InterruptedException {
-
-        //init Server
-        latch = new CountDownLatch(1);
-        ClientManager client = ClientManager.createClient();
-        try {
-            client.connectToServer(Main.class, new URI("ws://localhost:8025/websockets/game"));
-            latch.await();
-        } catch (DeploymentException | URISyntaxException | InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-
-
-    }
-
-        /*//create a user
-        String user = "Allman";
-
-
-        //get the ID for the user
-        WSController controller = new WSController();
-        String id = WSController.login(user);
-
-        //try to join a game
-        controller.joinGame(user, id);
-
-        //create a new Game on the server if not successfull
-        if (controller.board == null) {
-            controller.createGame(user, id);
-        }
-
-
-
-        while (!controller.board.isGameOver()){
-
-            //check if it's the turn of the KI
-            if(controller.board.KiIsPlaying()){
-
-            //TODO create and select moves and send it to the server
-
-            //TODO if a move is represented as fen string, implement a method to get a fen String out of a Board or Move
-                controller.commitMove("FEN");
-                Thread.sleep(2000);
-
-            } else {
-                Thread.sleep(500);
-                controller.updateGame(user, id);
-            }
-        }*/
-
-        
- }
-    
-
-
+}
