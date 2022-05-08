@@ -6,6 +6,8 @@ public class Board {
 
     //TODO: get the info which color the KI is playing (from the game server)
     private boolean gameOver = false;
+    private boolean whiteWon = false;
+    private boolean remis = false;
     private boolean KIPlaysWhite = true;
     private boolean currentPlayerIsWhite = false;
     private int halfMoveCount = 0; //TODO: change to short again if wished
@@ -174,6 +176,26 @@ public class Board {
 
     public boolean isGameOver() {
         return gameOver;
+    }
+
+    public void setGameOver(boolean gameOver) {
+        this.gameOver = gameOver;
+    }
+
+    public boolean isWhiteWon() {
+        return whiteWon;
+    }
+
+    public void setWhiteWon(boolean whiteWon) {
+        this.whiteWon = whiteWon;
+    }
+
+    public boolean isRemis() {
+        return remis;
+    }
+
+    public void setRemis(boolean remis) {
+        this.remis = remis;
     }
 
     public boolean isCurrentPlayerIsWhite() {

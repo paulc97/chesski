@@ -162,7 +162,7 @@ public class MoveTests {
         assertEquals(20, moveGenerator.getMoveCount(moveGenerator.validMoves(new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w - - 0 1"))));
         assertEquals(18, moveGenerator.getMoveCount(moveGenerator.validMoves(new Board("rnbqkbnr/1pppppp1/p6p/8/2B1P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 1 3"))));
         assertEquals(28, moveGenerator.getMoveCount(moveGenerator.validMoves(new Board("rnbqkbnr/ppppp1pp/8/5p2/3P4/8/PPP1PPPP/RNBQKBNR w KQkq - 0 2"))));
-        assertEquals(22, moveGenerator.getMoveCount(moveGenerator.validMoves(new Board("rnbqkbnr/pp1p1ppp/4p3/1Pp5/8/2N5/P1PPPPPP/R1BQKBNR w - - 0 1"))));
+        assertEquals(22, moveGenerator.getMoveCount(moveGenerator.validMoves(new Board("rnbqkbnr/pp1p1ppp/4p3/1Pp5/8/2N5/P1PPPPPP/R1BQKBNR w KQkq - 0 1"))));
         assertEquals(53, moveGenerator.getMoveCount(moveGenerator.validMoves(new Board("1rbqk2r/3nBppp/p2p4/3Qp3/Pp2P3/6PB/1PP1NP1P/R3K2R w KQ - 0 1"))));
         assertEquals(7, moveGenerator.getMoveCount(moveGenerator.validMoves(new Board("rnb1kbnr/pp1ppppp/2p5/q7/8/3P1P2/PPP1P1PP/RNBQKBNR w KQkq - 0 1"))));
         assertEquals(24, moveGenerator.getMoveCount(moveGenerator.validMoves(new Board("7k/7q/5pqp/6p1/NP3P1P/1KP3P1/2B5/8 b - - 0 1"))));
@@ -170,7 +170,7 @@ public class MoveTests {
         assertEquals(19, moveGenerator.getMoveCount(moveGenerator.validMoves(new Board("r7/P1P5/p7/P4k2/n7/P1P2K2/1BP2PBN/1QR2R1n w - - 0 1"))));//TODO:CheckPawnMovetest 16->19 weil Promotion 4 Möglichkeiten einzeln bewertet
         assertEquals(37, moveGenerator.getMoveCount(moveGenerator.validMoves(new Board("B3k2r/p1pqbppp/n2p3n/4p3/6b1/1PPPP1P1/P4P1P/RNBQK1NR b KQk - 0 16"))));
         assertEquals(29, moveGenerator.getMoveCount(moveGenerator.validMoves(new Board("rnb1kbnr/ppp2ppp/8/K2pP2q/5p2/3P4/PPP1B1PP/RNBQ2NR w - d6 0 14"))));
-        assertEquals(38, moveGenerator.getMoveCount(moveGenerator.validMoves(new Board("r1bq1r2/pp2n3/4N2k/3pPppP/1b1n2Q1/2N5/PP3PP1/R1B1K2R w - - 0 1"))));
+        assertEquals(40, moveGenerator.getMoveCount(moveGenerator.validMoves(new Board("r1bq1r2/pp2n3/4N2k/3pPppP/1b1n2Q1/2N5/PP3PP1/R1B1K2R w KQ g6 0 1"))));
         assertEquals(16, moveGenerator.getMoveCount(moveGenerator.validMoves(new Board("6k1/B5q1/KR6/8/8/8/6p1/8 w - - 0 1"))));
         assertEquals(28, moveGenerator.getMoveCount(moveGenerator.validMoves(new Board("6k1/B5q1/KR6/8/8/8/6p1/8 b - - 0 1"))));
         assertEquals(21, moveGenerator.getMoveCount(moveGenerator.validMoves(new Board("r3k2r/ppp1npbp/b3p1p1/8/8/4P3/PPP2PPP/R3K2R w KQkq - 0 1")))); //TODO:Check second Test from debugForumMives

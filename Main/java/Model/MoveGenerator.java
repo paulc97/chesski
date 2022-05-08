@@ -383,12 +383,41 @@ public class MoveGenerator {
         // String move = validMoves.substring(0,4); //-> ersten Move nehmen
 
 
+        if (validMoves=="") {
+
+            //wird angegriffen?
+            if(b.isCurrentPlayerIsWhite()){
+
+
+
+                if((unsafeForWhite(b)&b.getWhiteKing())!=0){
+                    //Weißer König wird angegriffen
+                    b.setGameOver(true);
+                    b.setWhiteWon(false);
+                    return;
+                }
+
+            }else { //Schwarz am Zug
+                if((unsafeForBlack(b)&b.getBlackKing())!=0){
+                    b.setGameOver(true);
+                    b.setWhiteWon(true);
+                    return;
+                }
+
+            }
+
+            //wird nicht angegriffen -> Remis
+            b.setGameOver(true);
+            b.setRemis(true);
+            return;
+        }
         //zufällige Zugauswahl
         //Min + (int)(Math.random() * ((Max - Min) + 1))
         int randomEndIndex = (1 + (int)(Math.random() * ((validMoves.length()/4 - 1) + 1)))*4; //TODO: dürfen wir Math.random benutzen?
         String move = validMoves.substring(randomEndIndex-4,randomEndIndex);
 
         //TODO: Error abfangen, wenn keine Moves mehr möglich? Spiel zuende
+
 
         //Debugging:
         System.out.println("I made this move: "+move+ " which is: "+convertMoveDigitsToField(move.charAt(0),move.charAt(1))+"->"+convertMoveDigitsToField(move.charAt(2),move.charAt(3)));
@@ -470,6 +499,28 @@ public class MoveGenerator {
             b.setHalfMoveCount(b.getHalfMoveCount()+1);
             b.setNextMoveCount(b.getNextMoveCount()+1); //"full" move after black
 
+        }
+
+
+        //Check if King is in CENTRE
+
+
+        if((CENTRE&b.getWhiteKing())!=0){
+            //Weißer König wird angegriffen
+            b.setGameOver(true);
+            b.setWhiteWon(true);
+            return;
+        }
+        if((CENTRE&b.getBlackKing())!=0){
+            b.setGameOver(true);
+            b.setWhiteWon(false);
+            return;
+        }
+
+        //50-Züge-Remis-Regel
+        if(b.getHalfMoveCount()>=100){
+            b.setGameOver(true);
+            b.setRemis(true);
         }
 
     }
