@@ -470,14 +470,6 @@ public class MoveGenerator {
     }
 
 
-
-
-
-
-
-
-
-
         public int getMoveCount(String list){
 
             return (list.replace("-","").length()/4);
@@ -500,6 +492,75 @@ public class MoveGenerator {
         public String checkQueenMoves(Board board){
 
             return slidingPieces.queenMoves(board);
+        }
+
+        public String checkpawnMoves(Board board){
+
+            return pawns.moves(board);
+        }
+
+        public String checkKingMove(Board board){
+
+            return king.moves(board);
+        }
+
+        public String checkValidKingMoves(Board b){
+
+            String validMoves = "";
+
+            String moves = checkKingMove(b);
+
+
+            for (int i=0;i<moves.length();i+=4) {
+
+                Board tempB = new Board(b.getFen());
+
+                tempB.setWhitePawns(makeMove(b.getWhitePawns(), moves.substring(i,i+4), 'P'));
+                tempB.setWhiteKnights(makeMove(b.getWhiteKnights(), moves.substring(i,i+4), 'N'));
+                tempB.setWhiteBishops(makeMove(b.getWhiteBishops(), moves.substring(i,i+4), 'B'));
+                tempB.setWhiteRooks(makeMove(b.getWhiteRooks(), moves.substring(i,i+4), 'R'));
+                tempB.setWhiteQueen(makeMove(b.getWhiteQueen(), moves.substring(i,i+4), 'Q'));
+                tempB.setWhiteKing(makeMove(b.getWhiteKing(), moves.substring(i,i+4), 'K'));
+                tempB.setBlackPawns(makeMove(b.getBlackPawns(), moves.substring(i,i+4), 'p'));
+                tempB.setBlackKnights(makeMove(b.getBlackKnights(), moves.substring(i,i+4), 'n'));
+                tempB.setBlackBishops(makeMove(b.getBlackBishops(), moves.substring(i,i+4), 'b'));
+                tempB.setBlackRooks(makeMove(b.getBlackRooks(), moves.substring(i,i+4), 'r'));
+                tempB.setBlackQueen(makeMove(b.getBlackQueen(), moves.substring(i,i+4), 'q'));
+                tempB.setBlackKing(makeMove(b.getBlackKing(), moves.substring(i,i+4), 'k'));
+                tempB.setEnPassantBitboardFile(makeMoveEP(b.getWhitePawns()|b.getBlackPawns(),moves.substring(i,i+4)));
+                tempB.setEnPassants(makeMoveEPString(b.getWhitePawns()|b.getBlackPawns(),moves.substring(i,i+4)));
+
+                tempB.setWhiteRooks(makeMoveCastle(tempB.getWhiteRooks(), b.getWhiteKing()|b.getBlackKing(), moves.substring(i,i+4), 'R'));
+                tempB.setBlackRooks(makeMoveCastle(tempB.getBlackRooks(), b.getWhiteKing()|b.getBlackKing(), moves.substring(i,i+4), 'r'));
+
+                tempB.setWhiteToCastleKingside(b.isWhiteToCastleKingside());
+                tempB.setWhiteToCastleQueenside(b.isWhiteToCastleQueenside());
+                tempB.setBlackToCastleKingside(b.isBlackToCastleKingside());
+                tempB.setBlackToCastleQueenside(b.isBlackToCastleQueenside());
+                if (Character.isDigit(moves.charAt(3))) {//'regular' move
+                    int start=(Character.getNumericValue(moves.charAt(i))*8)+(Character.getNumericValue(moves.charAt(i+1)));
+                    if (((1L<<start)&b.getWhiteKing())!=0) {tempB.setWhiteToCastleKingside(false); tempB.setWhiteToCastleQueenside(false);}
+                    if (((1L<<start)&b.getBlackKing())!=0) {tempB.setBlackToCastleKingside(false); tempB.setBlackToCastleQueenside(false);}
+                    if (((1L<<start)&b.getWhiteRooks()&(1L<<63))!=0) {tempB.setWhiteToCastleKingside(false);}
+                    if (((1L<<start)&b.getWhiteRooks()&(1L<<56))!=0) {tempB.setWhiteToCastleQueenside(false);}
+                    if (((1L<<start)&b.getBlackRooks()&(1L<<7))!=0) {tempB.setBlackToCastleKingside(false);}
+                    if (((1L<<start)&b.getBlackRooks()&1L)!=0) {tempB.setBlackToCastleQueenside(false);}
+                }
+
+                tempB.setCurrentPlayerIsWhite(!b.isCurrentPlayerIsWhite());
+
+
+                //check if own King is NOT in danger after move
+                if (((tempB.getWhiteKing()&unsafeForWhite(tempB))==0 && b.isCurrentPlayerIsWhite()) ||
+                        ((tempB.getBlackKing()&unsafeForBlack(tempB))==0 && !b.isCurrentPlayerIsWhite())) {
+                    //add current move to validMoves if king is not in danger
+                    validMoves += moves.substring(i,i+4);
+
+                }
+            }
+
+            return validMoves;
+
         }
 
 

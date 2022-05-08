@@ -40,7 +40,7 @@ public class SlidingPieces {
             while(i != 0)
             {
                 int iLocation=Long.numberOfTrailingZeros(i);
-                possibility=DAndAntiDMoves(iLocation,OCCUPIED)&~(b.getBlackPieces()|b.getWhiteKing());
+                possibility=HAndVMoves(iLocation,OCCUPIED)&~(b.getBlackPieces()|b.getWhiteKing());
                 long j=possibility&~(possibility-1);
                 while (j != 0)
                 {
