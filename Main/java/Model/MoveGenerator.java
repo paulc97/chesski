@@ -14,10 +14,10 @@ public class MoveGenerator {
     //TODO: why eigtl. non static?
 
 
-        Pawns pawns = new Pawns();
-        SlidingPieces slidingPieces = new SlidingPieces();
-        Knights knights = new Knights();
-        King king = new King();
+        static Pawns pawns = new Pawns();
+        static SlidingPieces slidingPieces = new SlidingPieces();
+        static Knights knights = new Knights();
+        static King king = new King();
 
 
         public String ownPossibleMoves(Board board) {
@@ -60,7 +60,7 @@ public class MoveGenerator {
 
     //gibt Bitboard mit allen Positionen auf denen White Landen könnte (inkl. eigener weißer Figuren)
     // wenn dann mit BlackKing-Bitboard verundet (&) eine 1 ergibt, könnte BlackKing geschlagen
-    public long fieldsAttackedByWhite(Board b) {
+    public static long fieldsAttackedByWhite(Board b) {
         long unsafe;
        // OCCUPIED=WP|WN|WB|WR|WQ|WK|BP|BN|BB|BR|BQ|BK;
         //pawn
@@ -97,7 +97,7 @@ public class MoveGenerator {
         while(i != 0)
         {
             int iLocation=Long.numberOfTrailingZeros(i);
-            possibility=slidingPieces.DAndAntiDMoves(iLocation,b.getAllPieces());
+            possibility= SlidingPieces.DAndAntiDMoves(iLocation,b.getAllPieces());
             unsafe |= possibility;
             QB&=~i;
             i=QB&~(QB-1);
@@ -108,7 +108,7 @@ public class MoveGenerator {
         while(i != 0)
         {
             int iLocation=Long.numberOfTrailingZeros(i);
-            possibility=slidingPieces.HAndVMoves(iLocation,b.getAllPieces());
+            possibility= SlidingPieces.HAndVMoves(iLocation,b.getAllPieces());
             unsafe |= possibility;
             QR&=~i;
             i=QR&~(QR-1);
@@ -132,7 +132,7 @@ public class MoveGenerator {
         unsafe |= possibility;
         return unsafe;
     }
-    public long fieldsAttackedByBlack(Board b) {
+    public static long fieldsAttackedByBlack(Board b) {
         long unsafe;
         //OCCUPIED=WP|WN|WB|WR|WQ|WK|BP|BN|BB|BR|BQ|BK;
         //pawn
@@ -169,7 +169,7 @@ public class MoveGenerator {
         while(i != 0)
         {
             int iLocation=Long.numberOfTrailingZeros(i);
-            possibility=slidingPieces.DAndAntiDMoves(iLocation,b.getAllPieces());
+            possibility= SlidingPieces.DAndAntiDMoves(iLocation,b.getAllPieces());
             unsafe |= possibility;
             QB&=~i;
             i=QB&~(QB-1);
@@ -180,7 +180,7 @@ public class MoveGenerator {
         while(i != 0)
         {
             int iLocation=Long.numberOfTrailingZeros(i);
-            possibility=slidingPieces.HAndVMoves(iLocation,b.getAllPieces());
+            possibility= SlidingPieces.HAndVMoves(iLocation,b.getAllPieces());
             unsafe |= possibility;
             QR&=~i;
             i=QR&~(QR-1);
@@ -377,11 +377,9 @@ public class MoveGenerator {
 
     }
 
-    public void selectAndMakeMove(Board b, String validMoves){
-        // String move = validMoves.substring(0,4); //-> ersten Move nehmen
+    public static void makeMove(Board b, String move){
 
-
-        if (validMoves=="") {
+        if (move == null || move.equals("")){
 
             //wird angegriffen?
             if(b.isCurrentPlayerIsWhite()){
@@ -409,13 +407,6 @@ public class MoveGenerator {
             b.setRemis(true);
             return;
         }
-        //zufällige Zugauswahl
-        //Min + (int)(Math.random() * ((Max - Min) + 1))
-        int randomEndIndex = (1 + (int)(Math.random() * ((validMoves.length()/4 - 1) + 1)))*4; //TODO: dürfen wir Math.random benutzen?
-        String move = validMoves.substring(randomEndIndex-4,randomEndIndex);
-
-        //TODO: Error abfangen, wenn keine Moves mehr möglich? Spiel zuende
-
 
         //Debugging:
         String player ="";
@@ -528,6 +519,23 @@ public class MoveGenerator {
         }
 
     }
+
+    public String moveSelector (Board b, String validMoves){
+        if (validMoves == null || validMoves.equals("")){
+            return validMoves;
+        }
+
+        //zufällige Zugauswahl
+        //Min + (int)(Math.random() * ((Max - Min) + 1))
+        int randomEndIndex = (1 + (int)(Math.random() * ((validMoves.length()/4 - 1) + 1)))*4; //TODO: dürfen wir Math.random benutzen?
+        String move = validMoves.substring(randomEndIndex-4,randomEndIndex);
+
+        //TODO: Error abfangen, wenn keine Moves mehr möglich? Spiel zuende
+
+        return move;
+    }
+
+
 
 
         public int getMoveCount(String list){

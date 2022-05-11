@@ -15,7 +15,7 @@ public class Main {
 
             String validMoves = mg.validMoves(b1);
             //
-            mg.selectAndMakeMove(b1, validMoves);
+            mg.makeMove(b1, mg.moveSelector(b1, validMoves));
             System.out.println("FEN Representation: " + b1.bitboardsToFenParser());
 
             b1.drawBoard();

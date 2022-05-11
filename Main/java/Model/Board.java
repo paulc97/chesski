@@ -1,8 +1,12 @@
 package Model;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
-public class Board {
+import static Model.Mask.CENTRE;
+import static Model.MoveGenerator.*;
+
+public class Board implements Comparable <Board> {
 
     //TODO: get the info which color the KI is playing (from the game server)
     private boolean gameOver = false;
@@ -32,6 +36,10 @@ public class Board {
             blackRooks=0L,
             blackPawns=0L;
 
+    private ArrayList<Board> successorBoards = new ArrayList<>();
+    private int assessmentValue = 0;
+    private String createdByMove = "";
+
     //WIP EP start
     //ist File in der EnPassant möglich/erlaubt ist
     /*private long enPassantBitboardFile =0L;
@@ -54,10 +62,6 @@ public class Board {
      */
     public Board(String fenString) {
         this.fenToBitboardParser(fenString);
-    }
-
-    public Board(Board currentBoard, Move move){
-        //TODO: To be implemented if move object structure is known
     }
 
     /**
@@ -167,6 +171,60 @@ public class Board {
         } else {
             return Long.parseLong("1" + boardMask.substring(2), 2)*2;
         }
+    }
+
+    public Board createBoardFromMove (String move){
+        Board newBoard = new Board(this.bitboardsToFenParser());
+        makeMove(newBoard, move);
+        return newBoard;}
+
+
+    /**
+     * Creates all possible successor boards for this board (1 level), including assessment and sorting by assessment
+     */
+    public void generateSuccessorBoards(Board b, String validMoves){
+        for (int i=0;i<validMoves.length();i+=4) {
+            String move = validMoves.substring(i,i+4);
+            Board newBoard = createBoardFromMove(move);
+            newBoard.setCreatedByMove(move);
+            newBoard.assessBoard();
+            successorBoards.add(newBoard);
+        }
+        successorBoards.sort(Board::compareTo);
+    }
+
+
+    /**
+     * Sets and returns the assessment value for the board
+     * The board is assessed from the perspective of the current player
+     */
+    public int assessBoard(){
+
+        if((fieldsAttackedByBlack(this) & this.getWhiteKing()) != 0){
+            if(currentPlayerIsWhite){
+            this.assessmentValue = -1000000;
+            } else {
+            this.assessmentValue = 1000000;
+            }
+        }
+        if((fieldsAttackedByWhite(this) & this.getBlackKing())!=0){
+            if (currentPlayerIsWhite) {
+                this.assessmentValue = 1000000;
+            } else {
+                this.assessmentValue = -1000000;
+            }
+        }
+
+        //Count material
+        this.assessmentValue += Long.bitCount(this.getOwnPawns())-Long.bitCount(this.getOppositePawns());
+        this.assessmentValue += (Long.bitCount(this.getOwnKnights())-Long.bitCount(this.getOppositeKnights()))*2;
+        this.assessmentValue += (Long.bitCount(this.getOwnRooks())-Long.bitCount(this.getOppositeRooks()))*3;
+        this.assessmentValue += (Long.bitCount(this.getOwnBishops())-Long.bitCount(this.getOppositeBishops()))*3;
+        this.assessmentValue += (Long.bitCount(this.getOwnQueen())-Long.bitCount(this.getOppositeQueen()))*9;
+
+        //TODO: Assess positions
+
+        return this.assessmentValue;
     }
 
 
@@ -299,6 +357,21 @@ public class Board {
         }
     }
 
+    public ArrayList<Board> getSuccessorBoards() {
+        return successorBoards;
+    }
+
+    public String getCreatedByMove() {
+        return createdByMove;
+    }
+
+    public void setCreatedByMove(String createdByMove) {
+        this.createdByMove = createdByMove;
+    }
+
+    public int getAssessmentValue() {
+        return assessmentValue;
+    }
 
     public void setWhiteKing(long whiteKing) {
         this.whiteKing = whiteKing;
@@ -655,5 +728,10 @@ public class Board {
 
     }
 
+    @Override
+    public int compareTo(Board o) {
+        return Integer.compare(this.assessmentValue, o.getAssessmentValue());
     }
+
+}
 

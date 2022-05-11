@@ -60,7 +60,7 @@ public class BoardTests {
         MoveGenerator mg = new MoveGenerator();
         Board b1 = new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq f4 0 1");
         String validMoves = mg.validMoves(b1);
-        mg.selectAndMakeMove(b1, validMoves);
+        mg.makeMove(b1, mg.moveSelector(b1, validMoves));
         System.out.println(b1.bitboardsToFenParser());
     }
 

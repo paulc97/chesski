@@ -23,7 +23,7 @@ public class MoveTests {
         Board b1 = new Board("7r/Pn6/8/8/8/8/2K4p/k1n5 w KQkq - 4 265");
         System.out.println(b1.bitboardsToFenParser());
         String valMoves = moveGenerator.validMoves(b1);
-        moveGenerator.selectAndMakeMove(b1,valMoves);
+        moveGenerator.makeMove(b1,moveGenerator.moveSelector(b1, valMoves));
         System.out.println(b1.bitboardsToFenParser());
     }
 
@@ -33,7 +33,7 @@ public class MoveTests {
         System.out.println(b1.bitboardsToFenParser());
         String valMoves = moveGenerator.validMoves(b1);
         System.out.println(valMoves);
-        moveGenerator.selectAndMakeMove(b1,"34WE");
+        moveGenerator.makeMove(b1,"34WE");
         System.out.println(b1.bitboardsToFenParser());
     }
 
@@ -43,7 +43,7 @@ public class MoveTests {
         System.out.println(b1.bitboardsToFenParser());
         String valMoves = moveGenerator.validMoves(b1);
         System.out.println(valMoves); //TODO: Why castling kein valid move hier um aus Schach zu bringen?
-        moveGenerator.selectAndMakeMove(b1,valMoves);
+        moveGenerator.makeMove(b1,moveGenerator.moveSelector(b1, valMoves));
         System.out.println(b1.bitboardsToFenParser());
     }
     @Test
@@ -52,7 +52,7 @@ public class MoveTests {
         System.out.println(b1.bitboardsToFenParser());
         String valMoves = moveGenerator.validMoves(b1);
         System.out.println(valMoves);
-        moveGenerator.selectAndMakeMove(b1,"0402");
+        moveGenerator.makeMove(b1,"0402");
         System.out.println(b1.bitboardsToFenParser());
     }
 
