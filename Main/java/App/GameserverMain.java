@@ -23,9 +23,9 @@ public class GameserverMain {
     private MessageDecoder md = new MessageDecoder();
 
     //Config
-    private String userName1="Player3301";
+    private String userName1="Player3781";
     private long playerId1 = 0;
-    private String userName2="Player4500";
+    private String userName2="Player4700";
     private long playerId2 = 0;
     private int gameId1 = 0;
     private int gameId2 = 0;
@@ -136,7 +136,7 @@ public class GameserverMain {
                 String move = "";
                 move += MoveGenerator.convert0IndexMoveDigitsToField(moveBitboardPosition.charAt(0), moveBitboardPosition.charAt(1));
                 move += MoveGenerator.convert0IndexMoveDigitsToField(moveBitboardPosition.charAt(2), moveBitboardPosition.charAt(3));
-                System.out.println("Received FEN: "+ag.fen);
+                System.out.println("Received FEN: "+ag.fen+" for game with ID: "+ag.ID);
                 System.out.println("Received moves from engine: "+validMoves);
                 System.out.println("Selected move: "+moveBitboardPosition);
                 System.out.println("Going to Submit translated move: "+move);
