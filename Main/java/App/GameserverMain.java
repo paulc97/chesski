@@ -23,9 +23,9 @@ public class GameserverMain {
     private MessageDecoder md = new MessageDecoder();
 
     //Config
-    private String userName1="Player3781";
+    private String userName1="Player4";
     private long playerId1 = 0;
-    private String userName2="Player4700";
+    private String userName2="Player6";
     private long playerId2 = 0;
     private int gameId1 = 0;
     private int gameId2 = 0;
@@ -82,41 +82,61 @@ public class GameserverMain {
 
                     for (Game game : games) {
                         //change to <=1 to find games with one player
-                        if (game.players.length == 0) {
+                        if (game.players.length <= 1) {
 
+                            if(gameId2 == 0){
+                            MessageObj response2 = new MessageObj(3, userName2, playerId2, game.id, 1);
+                            session.getBasicRemote().sendText(me.encode(response2));
+                            gameId2 = game.id;
+                            System.out.println("Joined game... set game ID2 to: " + gameId2);
+
+                            //request game list and leave
+                                MessageObj response3 = new MessageObj(1);
+                                session.getBasicRemote().sendText(me.encode(response3));
+                                return;
+                            }
                             if (gameId1 == 0) {
                                 MessageObj response = new MessageObj(3, userName1, playerId1, game.id, 1);
                                 session.getBasicRemote().sendText(me.encode(response));
                                 gameId1 = game.id;
                                 System.out.println("Joined game... set game ID1 to: " + gameId1);
-                                if (gameId2 == 0) {
-                                    // get the other player is still waiting for a game request the new game list
-                                    MessageObj messageObj = new MessageObj(1);
-                                    session.getBasicRemote().sendText(g.toJson(messageObj));
-                                }
-                                return;
                             }
-                            if (gameId2 == 0) {
-                                //Uncomment the next two lines to play with two players
-                                MessageObj response = new MessageObj(3, userName2, playerId2, game.id, 1);
-                                session.getBasicRemote().sendText(me.encode(response));
-
-                                gameId2 = game.id;
-                                System.out.println("Joined game... set game ID2 to: " + gameId2);
-
                                 return;
                             }
                         }
-                    }
+
 
                 //if empty create a new game
-                    if((gameId1 == 0 || gameId2 == 0)) {
+                    if((gameId2 == 0)) {
                         MessageObj response = new MessageObj(2, userName1, playerId1, "KingOfTheHill");
                         session.getBasicRemote().sendText(me.encode(response));
-                        MessageObj response2 = new MessageObj(1);
-                        session.getBasicRemote().sendText(me.encode(response2));
                     }
 
+                return;
+            }
+
+            //handle created game
+            if(message.substring(0,3).equals("{\"n")){
+                Game game = g.fromJson(message, Game.class);
+                System.out.println("Joined game/New game created!");
+                MessageObj response2 = new MessageObj(1);
+                session.getBasicRemote().sendText(me.encode(response2));
+                //a newly created game is always assigned to player1 as only player1 creates a game
+
+/*                MoveGenerator mg = new MoveGenerator();
+                Board b = new Board(game.state.board);
+                String validMoves = mg.validMoves(b);
+                String moveBitboardPosition = mg.moveSelector(b, validMoves);
+                String move = "";
+                move += MoveGenerator.convert0IndexMoveDigitsToField(moveBitboardPosition.charAt(0), moveBitboardPosition.charAt(1));
+                move += MoveGenerator.convert0IndexMoveDigitsToField(moveBitboardPosition.charAt(2), moveBitboardPosition.charAt(3));
+                System.out.println("Received FEN: "+game.state.board+" for game with ID: "+game.id);
+                System.out.println("Received moves from engine: "+validMoves);
+                System.out.println("Selected move: "+moveBitboardPosition);
+                System.out.println("Going to Submit translated move: "+move);
+                System.out.println("-----------------------------------------------------");
+                MessageObj response = new MessageObj(4,  userName1, move, playerId1, gameId1);
+                session.getBasicRemote().sendText(me.encode(response));*/
                 return;
             }
 
@@ -132,7 +152,6 @@ public class GameserverMain {
                 Board b = new Board(ag.fen);
                 String validMoves = mg.validMoves(b);
                 String moveBitboardPosition = mg.moveSelector(b, validMoves);
-                System.out.println(moveBitboardPosition);
                 String move = "";
                 move += MoveGenerator.convert0IndexMoveDigitsToField(moveBitboardPosition.charAt(0), moveBitboardPosition.charAt(1));
                 move += MoveGenerator.convert0IndexMoveDigitsToField(moveBitboardPosition.charAt(2), moveBitboardPosition.charAt(3));
@@ -140,6 +159,7 @@ public class GameserverMain {
                 System.out.println("Received moves from engine: "+validMoves);
                 System.out.println("Selected move: "+moveBitboardPosition);
                 System.out.println("Going to Submit translated move: "+move);
+                System.out.println("-----------------------------------------------------");
 
                 if (ag.currentPlayer.playerName.equals(userName1) && ag.currentPlayer.playerID == playerId1){
                     MessageObj response = new MessageObj(4,  userName1, move, playerId1, gameId1);
