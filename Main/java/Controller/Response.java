@@ -2,6 +2,6 @@ package Controller;
 
 public class Response {
 
-    public String username;
+    public String playerName;
     public long playerID;
 }

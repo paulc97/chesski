@@ -314,6 +314,12 @@ public class MoveGenerator {
         return ""+f+r;
     }  //TODO: fix for Queenpromotion/Ep Notation
 
+    public static String convert0IndexMoveDigitsToField (char rank, char file){
+        char f =(char)(97+(file-48));
+        int r = (char)(8 - Character.getNumericValue(rank));
+        return ""+f+r;
+    }  //TODO: fix for Queenpromotion/Ep Notation
+
 
 
 
@@ -525,9 +531,11 @@ public class MoveGenerator {
             return validMoves;
         }
 
+        //TODO implement here the min max logic and iterate over the "successorBoards" of b to find the best move...
+
         //zufällige Zugauswahl
         //Min + (int)(Math.random() * ((Max - Min) + 1))
-        int randomEndIndex = (1 + (int)(Math.random() * ((validMoves.length()/4 - 1) + 1)))*4; //TODO: dürfen wir Math.random benutzen?
+        int randomEndIndex = Math.abs(1 + (int)(Math.random() * ((validMoves.length()/4 - 1) + 1)))*4; //TODO: dürfen wir Math.random benutzen?
         String move = validMoves.substring(randomEndIndex-4,randomEndIndex);
 
         //TODO: Error abfangen, wenn keine Moves mehr möglich? Spiel zuende

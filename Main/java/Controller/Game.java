@@ -8,5 +8,6 @@ public class Game {
     public int id;
     public String[] players;
     State state;
+    CurrentPlayer currentPlayer;
 
 }
