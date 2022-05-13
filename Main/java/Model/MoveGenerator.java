@@ -612,7 +612,7 @@ public class MoveGenerator {
                 Board newBoard = b.createBoardFromMove(move);
                 newBoard.setCreatedByMove(move);
 
-                int currentEval = Integer.parseInt(alphaBeta(newBoard, depth-1, alpha, beta, true).substring(4,5));
+                int currentEval = Integer.parseInt(alphaBeta(newBoard, depth-1, alpha, beta, true).substring(4));
                 if (currentEval < beta){
                     bestMove = move;
                     beta = currentEval;
@@ -674,7 +674,7 @@ public class MoveGenerator {
                 Board newBoard = b.createBoardFromMove(move);
                 newBoard.setCreatedByMove(move);
 
-                int currentEval = Integer.parseInt(minMax(newBoard, depth-1, true).substring(4,5));
+                int currentEval = Integer.parseInt(minMax(newBoard, depth-1, true).substring(4));
                 if (currentEval < min){
                     bestMove = move;
                     min = currentEval;
