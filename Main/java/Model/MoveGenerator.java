@@ -533,6 +533,14 @@ public class MoveGenerator {
 
         //TODO implement here the min max logic and iterate over the "successorBoards" of b to find the best move...
 
+        int suchtiefe = 1;
+        String bestMoveFromAlphaBeta = alphaBeta(b, suchtiefe, -Integer.MAX_VALUE, Integer.MAX_VALUE, true).substring(0,4);
+        //TODO: initial alpha -Infinity, beta +Infinity
+
+        String bestMoveFromMinMax = minMax(b, suchtiefe, true);
+
+
+
         //zufällige Zugauswahl
         //Min + (int)(Math.random() * ((Max - Min) + 1))
         int randomEndIndex = Math.abs(1 + (int)(Math.random() * ((validMoves.length()/4 - 1) + 1)))*4; //TODO: dürfen wir Math.random benutzen?
@@ -541,6 +549,140 @@ public class MoveGenerator {
         //TODO: Error abfangen, wenn keine Moves mehr möglich? Spiel zuende
 
         return move;
+    }
+
+
+
+    //TODO: generell mal überlegen, ob wir auf einem einzigen Board (static) arbeiten wollen und dann mit make/undo moves
+    //oder immer viele einzelne Boards generieren wollen?
+    //ersteres wahrscheinlich aufwandärmer hinsichtlich rechenzeit etc.?
+
+    //TODO: sollte intial nicht mit suchtiefe 0 aufgerufen werden, sonst (ergibt ja auch keinen sinn) fehler wegen getCreatedByMove...
+
+    /**
+     *
+     * @param b
+     * @param depth
+     * @param alpha
+     * @param beta
+     * @param isMaxPlayer
+     * @return String in this format: XXXXY.. where XXXX is representation of move and Y.. value of Bewertungsfunktion
+     */
+    public String alphaBeta (Board b, int depth, int alpha, int beta, boolean isMaxPlayer){
+
+
+        String moveList = this.validMoves(b);
+
+        if(depth == 0 || b.isGameOver()||moveList.equals("")){
+            //TODO: "gameOver" wird momentan am Anfang von makeMove gesetzt, wenn eigener Player Schachmatt ist
+            //wenn am Ende von Make move noch "gameOver" gesetzt würde, wenn anderer Player Schachmatt ist (oder gleich am Ende von validMoves, wenn das leer ist
+            //dann könnte man hier die moveList auch erst nach dem check dass nicht gameOver ist generieren und so evtl. Zeit sparen
+            //momentan könnte moveList jedoch noch "" sein ohne dass gameOver schon gesetzt wurde
+            //TODO: muss dan bei der Bewertungsfunktion überprüft werden, ob gerade verloren ist/König im Schachmatt steht?
+            return b.getCreatedByMove() + b.assessBoard(); //TODO: wann wird created by move gesetzt?
+        }
+
+
+
+        if(isMaxPlayer){
+            String bestMove = "";
+            for(int i = 0; i<moveList.length(); i+=4){
+
+                String move = moveList.substring(i,i+4);
+                Board newBoard = b.createBoardFromMove(move);
+                newBoard.setCreatedByMove(move);
+
+                int currentEval = Integer.parseInt(alphaBeta(newBoard, depth-1, alpha, beta, false).substring(4));
+                if(currentEval > alpha){
+                    bestMove = move; //equiv. zu b.getCreatedByMove();
+                    alpha = currentEval;
+                }
+                //alpha = Math.max(alpha,currentEval); wird redundant, siehe 2 Zeilen vorher
+
+                if (beta<alpha){
+                    break; //beta-cutoff
+                }
+            }
+            return bestMove + alpha;
+        } else {
+            String bestMove= "";
+            for(int i = 0; i<moveList.length(); i+=4){
+
+                String move = moveList.substring(i,i+4);
+                Board newBoard = b.createBoardFromMove(move);
+                newBoard.setCreatedByMove(move);
+
+                int currentEval = Integer.parseInt(alphaBeta(newBoard, depth-1, alpha, beta, true).substring(4,5));
+                if (currentEval < beta){
+                    bestMove = move;
+                    beta = currentEval;
+                }
+                //beta = Math.min(beta, currentEval);
+
+                if (beta < alpha){
+                    break; //alpha-cutoff
+                }
+
+            }
+            return bestMove + beta;
+        }
+    }
+
+
+    //das gleiche wie alphaBeta nur ohne cutoffs
+    public String minMax (Board b, int depth, boolean isMaxPlayer){
+
+
+        String moveList = this.validMoves(b);
+
+        if(depth == 0 || b.isGameOver()||moveList.equals("")){
+            //TODO: "gameOver" wird momentan am Anfang von makeMove gesetzt, wenn eigener Player Schachmatt ist
+            //wenn am Ende von Make move noch "gameOver" gesetzt würde, wenn anderer Player Schachmatt ist (oder gleich am Ende von validMoves, wenn das leer ist
+            //dann könnte man hier die moveList auch erst nach dem check dass nicht gameOver ist generieren und so evtl. Zeit sparen
+            //momentan könnte moveList jedoch noch "" sein ohne dass gameOver schon gesetzt wurde
+            //TODO: muss dan bei der Bewertungsfunktion überprüft werden, ob gerade verloren ist/König im Schachmatt steht?
+            return b.getCreatedByMove() + b.assessBoard(); //TODO: wann wird created by move gesetzt?
+        }
+
+
+
+        if(isMaxPlayer){
+            String bestMove = "";
+            int max = -Integer.MAX_VALUE;
+            for(int i = 0; i<moveList.length(); i+=4){
+
+                String move = moveList.substring(i,i+4);
+                Board newBoard = b.createBoardFromMove(move);
+                newBoard.setCreatedByMove(move);
+
+                int currentEval = Integer.parseInt(minMax(newBoard, depth-1, false).substring(4));
+                if(currentEval > max){
+                    bestMove = move; //equiv. zu b.getCreatedByMove();
+                    max = currentEval;
+                }
+
+
+
+            }
+            return bestMove + max;
+        } else {
+            String bestMove= "";
+            int min = Integer.MAX_VALUE;
+            for(int i = 0; i<moveList.length(); i+=4){
+
+                String move = moveList.substring(i,i+4);
+                Board newBoard = b.createBoardFromMove(move);
+                newBoard.setCreatedByMove(move);
+
+                int currentEval = Integer.parseInt(minMax(newBoard, depth-1, true).substring(4,5));
+                if (currentEval < min){
+                    bestMove = move;
+                    min = currentEval;
+                }
+
+            }
+            return bestMove + min;
+        }
     }
 
 

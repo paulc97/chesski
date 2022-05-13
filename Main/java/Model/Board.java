@@ -177,6 +177,7 @@ public class Board implements Comparable <Board> {
         Board newBoard = new Board(this.bitboardsToFenParser());
         makeMove(newBoard, move);
         return newBoard;}
+        //TODO: vllt hier schon createdByMove(move) unterbringen?
 
 
     /**

@@ -17,6 +17,11 @@ public class MoveTests {
         moveGenerator = new MoveGenerator();
     }
 
+    @Test
+    void substringTest(){
+        System.out.println("12345000".substring(4));
+    }
+
 
     @Test
     void validMovesTest2(){
