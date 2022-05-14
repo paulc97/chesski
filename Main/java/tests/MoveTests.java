@@ -22,6 +22,19 @@ public class MoveTests {
         System.out.println("12345000".substring(4));
     }
 
+    @Test
+    void assessmentTest1(){
+        board = new Board("3k4/8/3q4/4P3/8/8/8/4K3 b - - 0 1");
+        System.out.println(board.assessBoard());
+    }
+
+    @Test
+    void minmaxTest1(){
+        board = new Board("4k2n/8/N4q2/1P6/3PPPP1/6P1/1P6/2R1K3 w - - 0 1");
+        String result = moveGenerator.minMax(board, 2, true);
+        System.out.println("result is: " + result);
+    }
+
 
     @Test
     void validMovesTest2(){

@@ -579,7 +579,10 @@ public class MoveGenerator {
             //dann könnte man hier die moveList auch erst nach dem check dass nicht gameOver ist generieren und so evtl. Zeit sparen
             //momentan könnte moveList jedoch noch "" sein ohne dass gameOver schon gesetzt wurde
             //TODO: muss dan bei der Bewertungsfunktion überprüft werden, ob gerade verloren ist/König im Schachmatt steht?
-            return b.getCreatedByMove() + b.assessBoard(); //TODO: wann wird created by move gesetzt?
+            String score = String.valueOf(b.assessBoardFromOwnPerspective());
+
+            System.out.println(b.getCreatedByMove() + score);
+            return b.getCreatedByMove() + score; //TODO: wann wird created by move gesetzt?
         }
 
 
@@ -634,6 +637,7 @@ public class MoveGenerator {
 
 
         String moveList = this.validMoves(b);
+        System.out.println("Valid Move List: " + moveList);
 
         if(depth == 0 || b.isGameOver()||moveList.equals("")){
             //TODO: "gameOver" wird momentan am Anfang von makeMove gesetzt, wenn eigener Player Schachmatt ist
@@ -641,46 +645,65 @@ public class MoveGenerator {
             //dann könnte man hier die moveList auch erst nach dem check dass nicht gameOver ist generieren und so evtl. Zeit sparen
             //momentan könnte moveList jedoch noch "" sein ohne dass gameOver schon gesetzt wurde
             //TODO: muss dan bei der Bewertungsfunktion überprüft werden, ob gerade verloren ist/König im Schachmatt steht?
-            return b.getCreatedByMove() + b.assessBoard(); //TODO: wann wird created by move gesetzt?
+
+            String score = String.valueOf(b.assessBoardFromOwnPerspective());
+
+            System.out.println(b.getCreatedByMove() + score);
+            return b.getCreatedByMove() + score; //TODO: wann wird created by move gesetzt?
         }
 
 
 
         if(isMaxPlayer){
+            System.out.println("This is max player");
             String bestMove = "";
             int max = -Integer.MAX_VALUE;
             for(int i = 0; i<moveList.length(); i+=4){
 
                 String move = moveList.substring(i,i+4);
+
+                System.out.println("Iteration: " + i + " with move: " + move);
                 Board newBoard = b.createBoardFromMove(move);
                 newBoard.setCreatedByMove(move);
 
-                int currentEval = Integer.parseInt(minMax(newBoard, depth-1, false).substring(4));
+                String zwischenergebnis = minMax(newBoard, depth-1, false);
+                System.out.println("zwischenergebnis: " + zwischenergebnis);
+                int currentEval = Integer.parseInt(zwischenergebnis.substring(4));
+                System.out.println("currentEval: "+ currentEval + "in iteration (max): " + i + "of move: " + move);
                 if(currentEval > max){
                     bestMove = move; //equiv. zu b.getCreatedByMove();
                     max = currentEval;
+                    System.out.println("was greater!");
                 }
 
 
 
             }
+            System.out.println("best move(max): " + bestMove + "with score: " + max);
             return bestMove + max;
         } else {
+            System.out.println("This is min player");
             String bestMove= "";
             int min = Integer.MAX_VALUE;
             for(int i = 0; i<moveList.length(); i+=4){
 
                 String move = moveList.substring(i,i+4);
+                System.out.println("Iteration: " + i + " with move: " + move);
+
+
                 Board newBoard = b.createBoardFromMove(move);
                 newBoard.setCreatedByMove(move);
 
                 int currentEval = Integer.parseInt(minMax(newBoard, depth-1, true).substring(4));
+                System.out.println("currentEval: "+ currentEval + "in iteration (min): " + i + "of move: " + move);
                 if (currentEval < min){
                     bestMove = move;
                     min = currentEval;
+                    System.out.println("was lower!");
                 }
 
             }
+            System.out.println("best move(min): " + bestMove + "with score: " + min);
             return bestMove + min;
         }
     }

@@ -225,7 +225,29 @@ public class Board implements Comparable <Board> {
 
         //TODO: Assess positions
 
+
+
+        //TODO: AssessBoard wird jetzt immer verändert je öfter man die Methode aufruft, richtig? kann das geändert werden?
+
         return this.assessmentValue;
+    }
+
+    //Für MiniMax brauchen wir aber tatsächlich immer nur die Bewertungsfunktion von einer perspektive
+    //bei den MinKnoten sollen ja die kleinsten Werte (schlechtesten aus MaxPlayers perspektive ausgewählt werden)
+    public int assessBoardFromOwnPerspective(){ //TODO: kann weg, wenn wir uns drauf geeignigt haben, was assessBoard zurückgibt
+        if (KIPlaysWhite){//momentan immer true
+            if(currentPlayerIsWhite){
+                return this.assessBoard();
+            } else {
+                return this.assessBoard() *(-1);
+            }
+        } else {
+            if(currentPlayerIsWhite){
+                return this.assessBoard()  *(-1);
+            } else {
+                return this.assessBoard();
+            }
+        }
     }
 
 
@@ -275,84 +297,84 @@ public class Board implements Comparable <Board> {
 
 
     public long getOppositeKing() {
-        if(isKIPlayingWhite()) {return blackKing;}
+        if(isCurrentPlayerIsWhite()) {return blackKing;}
         else {
             return whiteKing;
         }
     }
 
     public long getOppositeQueen() {
-        if(isKIPlayingWhite()) {return blackQueen;}
+        if(isCurrentPlayerIsWhite()) {return blackQueen;}
         else {
             return whiteQueen;
         }
     }
 
     public long getOppositeKnights() {
-        if(isKIPlayingWhite()) {return blackKnights;}
+        if(isCurrentPlayerIsWhite()) {return blackKnights;}
         else {
             return whiteKnights;
         }
     }
 
     public long getOppositeBishops() {
-        if(isKIPlayingWhite()) {return blackBishops;}
+        if(isCurrentPlayerIsWhite()) {return blackBishops;}
         else {
             return whiteBishops;
         }
     }
 
     public long getOppositeRooks() {
-        if(isKIPlayingWhite()) {return blackRooks;}
+        if(isCurrentPlayerIsWhite()) {return blackRooks;}
         else {
             return whiteRooks;
         }
     }
 
     public long getOppositePawns() {
-        if(isKIPlayingWhite()) {return blackPawns;}
+        if(isCurrentPlayerIsWhite()) {return blackPawns;}
         else {
             return whitePawns;
         }
     }
 
     public long getOwnKing() {
-        if(isKIPlayingWhite()) {return whiteKing;}
+        if(isCurrentPlayerIsWhite()) {return whiteKing;}
         else {
             return blackKing;
         }
     }
 
     public long getOwnQueen() {
-        if(isKIPlayingWhite()) {return whiteQueen;}
+        if(isCurrentPlayerIsWhite()) {return whiteQueen;}
         else {
             return blackQueen;
         }
     }
 
     public long getOwnKnights() {
-        if(isKIPlayingWhite()) {return whiteKnights;}
+        if(isCurrentPlayerIsWhite()) {return whiteKnights;}
         else {
             return blackKnights;
         }
     }
 
     public long getOwnBishops() {
-        if(isKIPlayingWhite()) {return whiteBishops;}
+        if(isCurrentPlayerIsWhite()) {return whiteBishops;}
         else {
             return blackBishops;
         }
     }
 
     public long getOwnRooks() {
-        if(isKIPlayingWhite()) {return whiteRooks;}
+        if(isCurrentPlayerIsWhite()) {return whiteRooks;}
         else {
             return blackRooks;
         }
     }
 
     public long getOwnPawns() {
-        if(isKIPlayingWhite()) {return whitePawns;}
+        if(isCurrentPlayerIsWhite()) {return whitePawns;}
         else {
             return blackPawns;
         }
