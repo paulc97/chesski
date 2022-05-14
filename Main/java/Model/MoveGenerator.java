@@ -10,6 +10,8 @@ import static Model.Mask.*;
 
 public class MoveGenerator {
 
+    private static boolean outOfTime = false; //used for Iterative Deepening
+    //https://github.com/nealyoung/CS171/blob/master/AI.java
 
     //TODO: why eigtl. non static?
 
@@ -534,10 +536,13 @@ public class MoveGenerator {
         //TODO implement here the min max logic and iterate over the "successorBoards" of b to find the best move...
 
         int suchtiefe = 1;
-        String bestMoveFromAlphaBeta = alphaBeta(b, suchtiefe, -Integer.MAX_VALUE, Integer.MAX_VALUE, true).substring(0,4);
-        //TODO: initial alpha -Infinity, beta +Infinity
+        String bestMoveFromAlphaBeta = alphaBeta(b, suchtiefe, Integer.MIN_VALUE, Integer.MAX_VALUE, true).substring(0,4);
 
         String bestMoveFromMinMax = minMax(b, suchtiefe, true);
+
+        //Iterative Deepening Search (ohne Zugsortierung)
+        long timeLimit = 4000;  //TODO: dynamisches Zeitmanagement je nach Spielsituation
+        String bestMoveFromIDS = iterativeDeepeningSearch(b, timeLimit);
 
 
 
@@ -705,6 +710,102 @@ public class MoveGenerator {
             }
             System.out.println("best move(min): " + bestMove + "with score: " + min);
             return bestMove + min;
+        }
+    }
+
+    //IDS
+    public String iterativeDeepeningSearch(Board b, long timeLimt){
+        long startTime = System.currentTimeMillis();
+        long endTime = startTime + timeLimt;
+        int depth = 1;
+        String bestMoveSoFar ="";
+        outOfTime = false;
+
+        while(true){
+            long currentTime = System.currentTimeMillis();
+            if (currentTime >= endTime){
+                break;
+            }
+
+            String result = alphaBetaTimeLimit(b, depth, Integer.MIN_VALUE, Integer.MAX_VALUE, true, currentTime, endTime-currentTime); //TODO
+
+            if(!outOfTime){ //ohne den check könnte bestMoveSoFar mit move aus unkomplettierter Suche überschrieben werden, der könnte (momentan noch) schlechter sein
+                bestMoveSoFar = result;
+            }
+            depth++;
+            System.out.println("Increased depth, current:" + depth);
+        }
+        return bestMoveSoFar;
+    }
+
+    //Alpha-Beta with Time-Limit for IDS
+    //TODO: aktualisieren, falls alphaBeta Methode verändert wird
+    public String alphaBetaTimeLimit (Board b, int depth, int alpha, int beta, boolean isMaxPlayer, long startTime, long timeLimit){
+
+        long currentTime = System.currentTimeMillis();
+        long elapsedTime = (currentTime - startTime);
+        if(elapsedTime >= timeLimit){
+            outOfTime = true;
+        }
+
+        String moveList = this.validMoves(b);
+
+        if(outOfTime || depth == 0 || b.isGameOver()||moveList.equals("")){
+            String score = String.valueOf(b.assessBoardFromOwnPerspective());
+            if(outOfTime){
+                System.out.println("Out of Time!");
+            }
+            System.out.println(b.getCreatedByMove() + score);
+            return b.getCreatedByMove() + score;
+        }
+
+
+
+        if(isMaxPlayer){
+            String bestMove = "";
+            for(int i = 0; i<moveList.length(); i+=4){
+                if(outOfTime) break; //TODO: richtig?
+                String move = moveList.substring(i,i+4);
+                Board newBoard = b.createBoardFromMove(move);
+                newBoard.setCreatedByMove(move);
+
+                String zwischenergebnis = alphaBetaTimeLimit(newBoard, depth-1, alpha, beta, false, startTime, timeLimit);
+                System.out.println("move:" + move + "ze(max): "+zwischenergebnis);
+                int currentEval = Integer.parseInt(zwischenergebnis.substring(4));
+                if(currentEval > alpha){
+                    bestMove = move; //equiv. zu b.getCreatedByMove();
+                    alpha = currentEval;
+                }
+                //alpha = Math.max(alpha,currentEval); wird redundant, siehe 2 Zeilen vorher
+
+                if (beta<alpha){
+                    break; //beta-cutoff
+                }
+            }
+            return bestMove + alpha;
+        } else {
+            String bestMove= "";
+            for(int i = 0; i<moveList.length(); i+=4){
+                if(outOfTime) break; //TODO: richtig?
+                String move = moveList.substring(i,i+4);
+                Board newBoard = b.createBoardFromMove(move);
+                newBoard.setCreatedByMove(move);
+
+                String zwischenergebnis = alphaBetaTimeLimit(newBoard, depth-1, alpha, beta, true, startTime, timeLimit);
+                System.out.println("move:" + move + "ze: "+ zwischenergebnis);
+                int currentEval = Integer.parseInt(zwischenergebnis.substring(4));
+                if (currentEval < beta){
+                    bestMove = move;
+                    beta = currentEval;
+                }
+                //beta = Math.min(beta, currentEval);
+
+                if (beta < alpha){
+                    break; //alpha-cutoff
+                }
+
+            }
+            return bestMove + beta;
         }
     }
 

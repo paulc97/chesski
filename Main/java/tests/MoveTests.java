@@ -31,9 +31,39 @@ public class MoveTests {
     @Test
     void minmaxTest1(){
         board = new Board("4k2n/8/N4q2/1P6/3PPPP1/6P1/1P6/2R1K3 w - - 0 1");
+        String result = moveGenerator.minMax(board, 1, true);
+        System.out.println("result is: " + result);
+    }
+
+    @Test
+    void minmaxTest2(){
+        board = new Board("4k2n/8/N4q2/1P6/3PPPP1/6P1/1P6/2R1K3 w - - 0 1");
         String result = moveGenerator.minMax(board, 2, true);
         System.out.println("result is: " + result);
     }
+
+    @Test
+    void alphaBetaTest1(){
+        board = new Board("4k2n/8/N4q2/1P6/3PPPP1/6P1/1P6/2R1K3 w - - 0 1");
+        String result = moveGenerator.alphaBeta(board, 1, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
+        System.out.println("result is: " + result);
+    }
+
+    @Test
+    void alphaBetaTest2(){
+        board = new Board("4k2n/8/N4q2/1P6/3PPPP1/6P1/1P6/2R1K3 w - - 0 1");
+        String result = moveGenerator.alphaBeta(board, 2, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
+        System.out.println("result is: " + result);
+    }
+
+
+    @Test
+    void iterativeDeepeningSearch(){
+        board = new Board("4k2n/8/N4q2/1P6/3PPPP1/6P1/1P6/2R1K3 w - - 0 1");
+        String result = moveGenerator.iterativeDeepeningSearch(board, 3000);
+        System.out.println("result is: " + result);
+    }
+    //bei timeLimit 6000 Error bei "move:2012ze(max): 3" -> IndexOutOfBounds (getCreatedByMove erfolgt nicht) in suchtiefe 4
 
 
     @Test
