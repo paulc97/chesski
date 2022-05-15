@@ -14,17 +14,19 @@ import java.util.concurrent.CountDownLatch;
 import java.util.logging.Logger;
 
 @ClientEndpoint
-public class GameserverMain {
+public class GameserverMainSinglePlayer {
     private static CountDownLatch latch;
     private Logger logger = Logger.getLogger(this.getClass().getName());
     private MessageEncoder me = new MessageEncoder();
 
     //Config
-    private final String userName1="Player1";
+    private final String userName1="PLayer1";
     private long playerId1 = 0;
-    private final String userName2="Player2";
-    private long playerId2 = 0;
     private int gameId1 = 0;
+
+    //obsolete as this is the single player version
+    private final String userName2="Zonk";
+    private long playerId2 = 0;
     private int gameId2 = 0;
 
 
@@ -38,8 +40,8 @@ public class GameserverMain {
                 //send the message to the server
                 MessageObj messageObj = new MessageObj(0, userName1, playerId1);
                 session.getBasicRemote().sendText(me.encode(messageObj));
-                messageObj = new MessageObj(0, userName2, playerId2);
-                session.getBasicRemote().sendText(me.encode(messageObj));
+                //messageObj = new MessageObj(0, userName2, playerId2);
+                //session.getBasicRemote().sendText(me.encode(messageObj));
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (EncodeException e) {
@@ -66,7 +68,9 @@ public class GameserverMain {
                     System.out.println("Received player2 ID: "+ playerId2);}
 
                 // get the game List to join a game
-                if (!(playerId1 == 0 || playerId2 == 0)){
+                if (!(playerId1 == 0
+                        //|| playerId2 == 0
+                )){
                 MessageObj messageObj = new MessageObj(1);
                 session.getBasicRemote().sendText(g.toJson(messageObj));}
                 return;
@@ -99,22 +103,27 @@ public class GameserverMain {
 
                             }
                             //comment if you want to play with one user...
-                            if (gameId2 == 0 && !player2registered) {
+/*                            if (gameId2 == 0 && !player2registered) {
                                 MessageObj response = new MessageObj(3, userName2, playerId2, game.id, 1);
                                 session.getBasicRemote().sendText(g.toJson(response, MessageObj.class));
                                 gameId2 = game.id;
                                 System.out.println("Joined game... set game ID2 to: " + gameId2);
-                            }
+                            }*/
 
 
-                            if (!(gameId2 == 0 || gameId1 == 0)){
+                            if (!(
+                                    //gameId2 == 0 ||
+                                    gameId1 == 0
+                            )){
                                 return;}
                             }
                         }
 
 
                 //if empty create a new game
-                    if(gameId2 == 0 || gameId1 == 0) {
+                    if(
+                            //gameId2 == 0 ||
+                        gameId1 == 0) {
                         MessageObj response = new MessageObj(2, userName1, playerId1, "KingOfTheHill");
                         session.getBasicRemote().sendText(me.encode(response));
                     }
@@ -197,7 +206,7 @@ public class GameserverMain {
         latch = new CountDownLatch(1);
         ClientManager client = ClientManager.createClient();
         try {
-            client.connectToServer(GameserverMain.class, new URI("ws://localhost:8025/websockets/game"));
+            client.connectToServer(GameserverMainSinglePlayer.class, new URI("ws://localhost:8025/websockets/game"));
             latch.await();
         } catch (DeploymentException | URISyntaxException | InterruptedException e) {
             throw new RuntimeException(e);

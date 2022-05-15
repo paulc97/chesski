@@ -316,11 +316,16 @@ public class MoveGenerator {
         return ""+f+r;
     }  //TODO: fix for Queenpromotion/Ep Notation
 
+
     public static String convert0IndexMoveDigitsToField (char rank, char file){
+
+        if (file == 'P' || file == 'E'){
+            return ""+rank+file;
+        }
         char f =(char)(97+(file-48));
         int r = (char)(8 - Character.getNumericValue(rank));
         return ""+f+r;
-    }  //TODO: fix for Queenpromotion/Ep Notation
+    }
 
 
 
@@ -536,24 +541,24 @@ public class MoveGenerator {
         //TODO implement here the min max logic and iterate over the "successorBoards" of b to find the best move...
 
         int suchtiefe = 1;
-        String bestMoveFromAlphaBeta = alphaBeta(b, suchtiefe, Integer.MIN_VALUE, Integer.MAX_VALUE, true).substring(0,4);
+        //String bestMoveFromAlphaBeta = alphaBeta(b, suchtiefe, Integer.MIN_VALUE, Integer.MAX_VALUE, true).substring(0,4);
 
-        String bestMoveFromMinMax = minMax(b, suchtiefe, true);
+        //String bestMoveFromMinMax = minMax(b, suchtiefe, true);
 
         //Iterative Deepening Search (ohne Zugsortierung)
-        long timeLimit = 4000;  //TODO: dynamisches Zeitmanagement je nach Spielsituation
-        String bestMoveFromIDS = iterativeDeepeningSearch(b, timeLimit);
+        //long timeLimit = 4000;  //TODO: dynamisches Zeitmanagement je nach Spielsituation
+        //String bestMoveFromIDS = iterativeDeepeningSearch(b, timeLimit);
 
 
 
         //zufällige Zugauswahl
         //Min + (int)(Math.random() * ((Max - Min) + 1))
         int randomEndIndex = Math.abs(1 + (int)(Math.random() * ((validMoves.length()/4 - 1) + 1)))*4; //TODO: dürfen wir Math.random benutzen?
-        String move = validMoves.substring(randomEndIndex-4,randomEndIndex);
+        String randomMove = validMoves.substring(randomEndIndex-4,randomEndIndex);
 
         //TODO: Error abfangen, wenn keine Moves mehr möglich? Spiel zuende
 
-        return move;
+        return randomMove;
     }
 
 

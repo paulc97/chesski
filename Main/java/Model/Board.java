@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import static Model.Mask.CENTRE;
+import static Model.Mask.EXTENDED_CENTRE;
 import static Model.MoveGenerator.*;
 
 public class Board implements Comparable <Board> {
@@ -201,7 +202,11 @@ public class Board implements Comparable <Board> {
      */
     public int assessBoard(){
 
-        if((fieldsAttackedByBlack(this) & this.getWhiteKing()) != 0){
+        // define assessment values for certain positions
+        int kingInExtendedCenter = 3;
+
+        if((fieldsAttackedByBlack(this) & this.getWhiteKing()) != 0)
+        {
             if(currentPlayerIsWhite){
             this.assessmentValue = -1000000;
             } else {
@@ -215,6 +220,12 @@ public class Board implements Comparable <Board> {
                 this.assessmentValue = -1000000;
             }
         }
+        if ((this.getOwnKing() & CENTRE) != 0){
+            return this.assessmentValue = 1000000;
+        }
+        if ((this.getOppositeKing() & CENTRE) != 0){
+            return this.assessmentValue = -1000000;
+        }
 
         //Count material
         this.assessmentValue += Long.bitCount(this.getOwnPawns())-Long.bitCount(this.getOppositePawns());
@@ -224,10 +235,13 @@ public class Board implements Comparable <Board> {
         this.assessmentValue += (Long.bitCount(this.getOwnQueen())-Long.bitCount(this.getOppositeQueen()))*9;
 
         //TODO: Assess positions
-
+        if ((getOwnKing() & EXTENDED_CENTRE) != 0){
+            this.assessmentValue += kingInExtendedCenter;
+        }
 
 
         //TODO: AssessBoard wird jetzt immer verändert je öfter man die Methode aufruft, richtig? kann das geändert werden?
+        //Til: Bitte genauer erklären, verstehe die Frage nicht so richtig.
 
         return this.assessmentValue;
     }
@@ -605,9 +619,6 @@ public class Board implements Comparable <Board> {
         this.halfMoveCount++;
     }
 
-    public boolean KiIsPlaying(){
-        return KIPlaysWhite == currentPlayerIsWhite;
-    }
 
     public String bitboardsToFenParser() {
 
@@ -702,7 +713,7 @@ public class Board implements Comparable <Board> {
 
     public void drawBoard() {
 
-        String chessBoard[][] = new String[8][8];
+        String[][] chessBoard = new String[8][8];
         for (int i = 0; i < 64; i++) {
             chessBoard[i / 8][i % 8] = " ";
         }
