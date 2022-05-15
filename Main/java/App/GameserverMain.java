@@ -20,12 +20,11 @@ public class GameserverMain {
     private static CountDownLatch latch;
     private Logger logger = Logger.getLogger(this.getClass().getName());
     private MessageEncoder me = new MessageEncoder();
-    private MessageDecoder md = new MessageDecoder();
 
     //Config
-    private String userName1="Player4";
+    private final String userName1="Player4";
     private long playerId1 = 0;
-    private String userName2="Player6";
+    private final String userName2="Player6";
     private long playerId2 = 0;
     private int gameId1 = 0;
     private int gameId2 = 0;
@@ -60,12 +59,12 @@ public class GameserverMain {
 
             //Handling to register users on the game server
             if (message.contains("\"playerID\":") && (playerId1 == 0 || playerId2 == 0)){
-                Response response = md.decode(message);
-                if (response.playerName.equals(userName1)){
-                playerId1 = response.playerID;
+                Player registeredPlayer = g.fromJson(message, Player.class);
+                if (registeredPlayer.playerName.equals(userName1)){
+                playerId1 = registeredPlayer.playerID;
                 System.out.println("Received player1 ID: "+ playerId1);}
                 else {
-                    playerId2 = response.playerID;
+                    playerId2 = registeredPlayer.playerID;
                     System.out.println("Received player2 ID: "+ playerId2);}
 
                 // get the game List to join a game
@@ -173,8 +172,6 @@ public class GameserverMain {
             }
 
         } catch (EncodeException | IOException e) {
-            e.printStackTrace();
-        } catch (DecodeException e) {
             e.printStackTrace();
         }
 
