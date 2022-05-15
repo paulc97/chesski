@@ -38,6 +38,7 @@ public class Pawns implements Piece {
                 }
             }
 
+            //TODO adjust promotion moves for game server implementation to source/target/piece
             //y1,y2,Promotion Type,"P"
             PAWN_MOVES = (b.getWhitePawns() >> 7) & (b.getBlackPieces() & ~b.getBlackKing()) & RANK_8 & ~FILE_A;//pawn promotion by capture right
             for (int i = Long.numberOfTrailingZeros(PAWN_MOVES); i < 64 - Long.numberOfLeadingZeros(PAWN_MOVES); i++) {
