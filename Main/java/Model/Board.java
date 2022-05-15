@@ -9,13 +9,12 @@ import static Model.MoveGenerator.*;
 
 public class Board implements Comparable <Board> {
 
-    //TODO: get the info which color the KI is playing (from the game server)
     private boolean gameOver = false;
     private boolean whiteWon = false;
     private boolean remis = false;
     private boolean KIPlaysWhite = true;
     private boolean currentPlayerIsWhite = false;
-    private int halfMoveCount = 0; //TODO: change to short again if wished
+    private int halfMoveCount = 0;
     private int nextMoveCount = 0;
     private boolean whiteToCastleKingside = false;
     private boolean whiteToCastleQueenside = false;
@@ -226,6 +225,10 @@ public class Board implements Comparable <Board> {
         if ((this.getOppositeKing() & CENTRE) != 0){
             return this.assessmentValue = -1000000;
         }
+
+
+
+
 
         //Count material
         this.assessmentValue += Long.bitCount(this.getOwnPawns())-Long.bitCount(this.getOppositePawns());
