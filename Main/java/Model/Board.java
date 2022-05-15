@@ -3,8 +3,7 @@ package Model;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import static Model.Mask.CENTRE;
-import static Model.Mask.EXTENDED_CENTRE;
+import static Model.Mask.*;
 import static Model.MoveGenerator.*;
 
 public class Board implements Comparable <Board> {
@@ -199,7 +198,7 @@ public class Board implements Comparable <Board> {
      * Sets and returns the assessment value for the board
      * The board is assessed from the perspective of the current player
      */
-    public int assessBoard(){
+    public double assessBoard(){
 
         // define assessment values for certain positions
         int kingInExtendedCenter = 3;
@@ -228,8 +227,6 @@ public class Board implements Comparable <Board> {
 
 
 
-
-
         //Count material
         this.assessmentValue += Long.bitCount(this.getOwnPawns())-Long.bitCount(this.getOppositePawns());
         this.assessmentValue += (Long.bitCount(this.getOwnKnights())-Long.bitCount(this.getOppositeKnights()))*3;
@@ -242,6 +239,19 @@ public class Board implements Comparable <Board> {
             this.assessmentValue += kingInExtendedCenter;
         }
 
+        if (isCurrentPlayerIsWhite()){
+            //Evaluate Pawn positions
+            this.assessmentValue += (Long.bitCount(this.getOwnPawns()&RankMasks8[6])*5);
+            this.assessmentValue += (Long.bitCount(this.getOwnPawns()&RankMasks8[5]));
+            this.assessmentValue += (Long.bitCount((this.getOwnPawns()&RankMasks8[5]) & FileMasks8[2] & FileMasks8[3] & FileMasks8[4] & FileMasks8[5]));
+            this.assessmentValue += (Long.bitCount((this.getOwnPawns()&RankMasks8[5]) & FileMasks8[3] & FileMasks8[4]));
+            this.assessmentValue += (Long.bitCount(this.getOwnPawns()&RankMasks8[4])*0.5);
+            this.assessmentValue += (Long.bitCount((this.getOwnPawns()&RankMasks8[4]) & FileMasks8[2] & FileMasks8[3] & FileMasks8[4] & FileMasks8[5])*0.5);
+            this.assessmentValue += (Long.bitCount((this.getOwnPawns()&RankMasks8[4]) & FileMasks8[3] & FileMasks8[4])*1.5);
+            this.assessmentValue += (Long.bitCount((this.getOwnPawns()&RankMasks8[3]) & FileMasks8[3] & FileMasks8[4])*2);
+            //TODO to be discussed if we want to continue
+        }
+
 
         //TODO: AssessBoard wird jetzt immer verändert je öfter man die Methode aufruft, richtig? kann das geändert werden?
         //Til: Bitte genauer erklären, verstehe die Frage nicht so richtig.
@@ -251,7 +261,7 @@ public class Board implements Comparable <Board> {
 
     //Für MiniMax brauchen wir aber tatsächlich immer nur die Bewertungsfunktion von einer perspektive
     //bei den MinKnoten sollen ja die kleinsten Werte (schlechtesten aus MaxPlayers perspektive ausgewählt werden)
-    public int assessBoardFromOwnPerspective(){ //TODO: kann weg, wenn wir uns drauf geeignigt haben, was assessBoard zurückgibt
+    public double assessBoardFromOwnPerspective(){ //TODO: kann weg, wenn wir uns drauf geeignigt haben, was assessBoard zurückgibt
         if (KIPlaysWhite){//momentan immer true
             if(currentPlayerIsWhite){
                 return this.assessBoard();
