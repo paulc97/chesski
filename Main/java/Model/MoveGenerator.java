@@ -543,11 +543,11 @@ public class MoveGenerator {
         int suchtiefe = 1;
         //String bestMoveFromAlphaBeta = alphaBeta(b, suchtiefe, Integer.MIN_VALUE, Integer.MAX_VALUE, true).substring(0,4);
 
-        //String bestMoveFromMinMax = minMax(b, suchtiefe, true);
+        String bestMoveFromMinMax = minMax(b, suchtiefe, true).substring(0,4);
 
         //Iterative Deepening Search (ohne Zugsortierung)
-        //long timeLimit = 4000;  //TODO: dynamisches Zeitmanagement je nach Spielsituation
-        //String bestMoveFromIDS = iterativeDeepeningSearch(b, timeLimit);
+        long timeLimit = 4000;  //TODO: dynamisches Zeitmanagement je nach Spielsituation
+        String bestMoveFromIDS = iterativeDeepeningSearch(b, timeLimit).substring(0,4);
 
 
 
@@ -557,8 +557,8 @@ public class MoveGenerator {
         String randomMove = validMoves.substring(randomEndIndex-4,randomEndIndex);
 
         //TODO: Error abfangen, wenn keine Moves mehr möglich? Spiel zuende
-
-        return randomMove;
+        System.out.println("Best move from min max: "+bestMoveFromMinMax );
+        return bestMoveFromMinMax;
     }
 
 

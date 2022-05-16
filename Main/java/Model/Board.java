@@ -198,7 +198,11 @@ public class Board implements Comparable <Board> {
      * Sets and returns the assessment value for the board
      * The board is assessed from the perspective of the current player
      */
-    public double assessBoard(){
+    //TODO check if double works
+    public int assessBoard(){
+
+        this.assessmentValue = 0;
+
 
         // define assessment values for certain positions
         int kingInExtendedCenter = 3;
@@ -239,6 +243,7 @@ public class Board implements Comparable <Board> {
             this.assessmentValue += kingInExtendedCenter;
         }
 
+/*
         if (isCurrentPlayerIsWhite()){
             //Evaluate Pawn positions
             this.assessmentValue += (Long.bitCount(this.getOwnPawns()&RankMasks8[6])*5);
@@ -251,17 +256,15 @@ public class Board implements Comparable <Board> {
             this.assessmentValue += (Long.bitCount((this.getOwnPawns()&RankMasks8[3]) & FileMasks8[3] & FileMasks8[4])*2);
             //TODO to be discussed if we want to continue
         }
+*/
 
 
-        //TODO: AssessBoard wird jetzt immer verändert je öfter man die Methode aufruft, richtig? kann das geändert werden?
-        //Til: Bitte genauer erklären, verstehe die Frage nicht so richtig.
-
-        return this.assessmentValue;
+        return (int)this.assessmentValue;
     }
 
     //Für MiniMax brauchen wir aber tatsächlich immer nur die Bewertungsfunktion von einer perspektive
     //bei den MinKnoten sollen ja die kleinsten Werte (schlechtesten aus MaxPlayers perspektive ausgewählt werden)
-    public double assessBoardFromOwnPerspective(){ //TODO: kann weg, wenn wir uns drauf geeignigt haben, was assessBoard zurückgibt
+    public int assessBoardFromOwnPerspective(){ //TODO: kann weg, wenn wir uns drauf geeignigt haben, was assessBoard zurückgibt
         if (KIPlaysWhite){//momentan immer true
             if(currentPlayerIsWhite){
                 return this.assessBoard();
