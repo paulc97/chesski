@@ -329,7 +329,7 @@ public class MoveGenerator {
 
 
 
-
+    //TODO: static machen? oder assess-Funktion in moveGenerator auslagern?
     //"valid" i.e. eigener King ist danach nicht (mehr) im Schach
     //public static void perft(long WP,long WN,long WB,long WR,long WQ,long WK,long BP,long BN,long BB,long BR,long BQ,long BK,long EP,boolean CWK,boolean CWQ,boolean CBK,boolean CBQ,boolean WhiteToMove,int depth)
     public String validMoves(Board b)
@@ -582,6 +582,7 @@ public class MoveGenerator {
 
 
         String moveList = this.validMoves(b);
+        System.out.println("move list:" + moveList);
 
         if(depth == 0 || b.isGameOver()||moveList.equals("")){
             //TODO: "gameOver" wird momentan am Anfang von makeMove gesetzt, wenn eigener Player Schachmatt ist
@@ -606,13 +607,17 @@ public class MoveGenerator {
                 newBoard.setCreatedByMove(move);
 
                 int currentEval = Integer.parseInt(alphaBeta(newBoard, depth-1, alpha, beta, false).substring(4));
+                System.out.println("alpha was:" + alpha);
+                System.out.println("beta was:" + beta);
                 if(currentEval >= alpha){
                     bestMove = move; //equiv. zu b.getCreatedByMove();
                     alpha = currentEval;
                 }
+                System.out.println("alpha is:" + alpha);
                 //alpha = Math.max(alpha,currentEval); wird redundant, siehe 2 Zeilen vorher
 
-                if (beta<alpha){
+                if (beta<=alpha){
+                    System.out.println("Beta cutoff!");
                     break; //beta-cutoff
                 }
             }
@@ -626,13 +631,17 @@ public class MoveGenerator {
                 newBoard.setCreatedByMove(move);
 
                 int currentEval = Integer.parseInt(alphaBeta(newBoard, depth-1, alpha, beta, true).substring(4));
+                System.out.println("beta was:" + beta);
+                System.out.println("alpha was:" + alpha);
                 if (currentEval <= beta){
                     bestMove = move;
                     beta = currentEval;
                 }
+                System.out.println("beta is:" + beta);
                 //beta = Math.min(beta, currentEval);
 
-                if (beta < alpha){
+                if (beta <= alpha){
+                    System.out.println("Alpha cutoff!");
                     break; //alpha-cutoff
                 }
 
@@ -779,13 +788,23 @@ public class MoveGenerator {
                 String zwischenergebnis = alphaBetaTimeLimit(newBoard, depth-1, alpha, beta, false, startTime, timeLimit);
                 System.out.println("move:" + move + "ze(max): "+zwischenergebnis);
                 int currentEval = Integer.parseInt(zwischenergebnis.substring(4));
+                System.out.println("currentEval is:" + currentEval);
+                System.out.println("alpha was:" + alpha);
+                System.out.println("beta was:" + beta);
                 if(currentEval >= alpha){
                     bestMove = move; //equiv. zu b.getCreatedByMove();
+
                     alpha = currentEval;
                 }
+                System.out.println("best Move is currently" + bestMove);
+                if(bestMove.equals("")){
+                    System.out.println("nothing!");
+                }
+                System.out.println("alpha is:" + alpha);
                 //alpha = Math.max(alpha,currentEval); wird redundant, siehe 2 Zeilen vorher
 
-                if (beta<alpha){
+                if (beta<=alpha){
+                    System.out.println("Beta cutoff!");
                     break; //beta-cutoff
                 }
             }
@@ -803,13 +822,23 @@ public class MoveGenerator {
                 String zwischenergebnis = alphaBetaTimeLimit(newBoard, depth-1, alpha, beta, true, startTime, timeLimit);
                 System.out.println("move:" + move + "ze: "+ zwischenergebnis);
                 int currentEval = Integer.parseInt(zwischenergebnis.substring(4));
+                System.out.println("currentEval is:" + currentEval);
+                System.out.println("beta was:" + beta);
+                System.out.println("alpha was:" + alpha);
                 if (currentEval <= beta){
                     bestMove = move;
+
                     beta = currentEval;
                 }
+                System.out.println("best move is currently:" + bestMove);
+                if(bestMove.equals("")){
+                    System.out.println("nothing!");
+                }
+                System.out.println("beta is:" + beta );
                 //beta = Math.min(beta, currentEval);
 
-                if (beta < alpha){
+                if (beta <= alpha){
+                    System.out.println("Alpha cutoff!");
                     break; //alpha-cutoff
                 }
 

@@ -8,6 +8,8 @@ import static Model.MoveGenerator.*;
 
 public class Board implements Comparable <Board> {
 
+    private MoveGenerator moveGenerator = new MoveGenerator();
+
     private boolean gameOver = false;
     private boolean whiteWon = false;
     private boolean remis = false;
@@ -203,6 +205,10 @@ public class Board implements Comparable <Board> {
 
         this.assessmentValue = 0;
 
+        //TODO: vllt assessBoard in MoveGenerator auslagern, damit Instanzvariable nicht benötigt? oder entsprechene Methoden im MoveGenerator static machen
+        String ownValidMoves = moveGenerator.validMoves(this);
+
+
 
         // define assessment values for certain positions
         int kingInExtendedCenter = 3;
@@ -211,6 +217,9 @@ public class Board implements Comparable <Board> {
         {
             if(currentPlayerIsWhite){
             this.assessmentValue = -1000000;
+                if(ownValidMoves.equals("")){
+                    this.assessmentValue = -10000000; //Spieler ist Schachmatt
+                }
             } else {
             this.assessmentValue = 1000000;
             }
@@ -220,6 +229,9 @@ public class Board implements Comparable <Board> {
                 this.assessmentValue = 1000000;
             } else {
                 this.assessmentValue = -1000000;
+                if(ownValidMoves.equals("")){
+                    this.assessmentValue = -10000000; //Spieler ist Schachmatt
+                }
             }
         }
         if ((this.getOwnKing() & CENTRE) != 0){

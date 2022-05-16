@@ -37,9 +37,12 @@ public class MoveTests {
 
     @Test
     void minmaxTest2(){
-        board = new Board("4k2n/8/N4q2/1P6/3PPPP1/6P1/1P6/2R1K3 w - - 0 1");
-        String result = moveGenerator.minMax(board, 2, true);
+        board = new Board("2Q5/6K1/1p2N3/1r1p1k2/1r2R1N1/5n2/2p5/8 w - - 0 1");
+        String result = moveGenerator.minMax(board, 4, true);
         System.out.println("result is: " + result);
+        String move = result.substring(0,4);
+        System.out.println(moveGenerator.convertMoveDigitsToField(move.charAt(0),move.charAt(1)) + "->" + moveGenerator.convertMoveDigitsToField(move.charAt(2),move.charAt(3)));
+
     }
 
     @Test
@@ -51,19 +54,28 @@ public class MoveTests {
 
     @Test
     void alphaBetaTest2(){
-        board = new Board("4k2n/8/N4q2/1P6/3PPPP1/6P1/1P6/2R1K3 w - - 0 1");
-        String result = moveGenerator.alphaBeta(board, 2, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
+        board = new Board("K7/8/8/8/8/8/8/2k5 w - - 0 1");
+        String result = moveGenerator.alphaBeta(board, 4, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
         System.out.println("result is: " + result);
+        String move = result.substring(0,4);
+        System.out.println(moveGenerator.convertMoveDigitsToField(move.charAt(0),move.charAt(1)) + "->" + moveGenerator.convertMoveDigitsToField(move.charAt(2),move.charAt(3)));
     }
 
 
     @Test
     void iterativeDeepeningSearch(){
         board = new Board("4k2n/8/N4q2/1P6/3PPPP1/6P1/1P6/2R1K3 w - - 0 1");
-        String result = moveGenerator.iterativeDeepeningSearch(board, 6000);
+        String result = moveGenerator.iterativeDeepeningSearch(board, 1000);
         System.out.println("result is: " + result);
     }
     //TODO: bei timeLimit 6000 Error bei "move:2012ze(max): 3" -> IndexOutOfBounds (getCreatedByMove erfolgt nicht) in suchtiefe 4
+
+    @Test
+    void iterativeDeepeningSearch2(){
+        board = new Board("2Q5/6K1/1p2N3/1r1p1k2/1r2R1N1/5n2/2p5/8 w - - 0 1");
+        String result = moveGenerator.iterativeDeepeningSearch(board, 10000);
+        System.out.println("result is: " + result);
+    }
 
 
     @Test
