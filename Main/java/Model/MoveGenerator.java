@@ -606,7 +606,7 @@ public class MoveGenerator {
                 newBoard.setCreatedByMove(move);
 
                 int currentEval = Integer.parseInt(alphaBeta(newBoard, depth-1, alpha, beta, false).substring(4));
-                if(currentEval > alpha){
+                if(currentEval >= alpha){
                     bestMove = move; //equiv. zu b.getCreatedByMove();
                     alpha = currentEval;
                 }
@@ -626,7 +626,7 @@ public class MoveGenerator {
                 newBoard.setCreatedByMove(move);
 
                 int currentEval = Integer.parseInt(alphaBeta(newBoard, depth-1, alpha, beta, true).substring(4));
-                if (currentEval < beta){
+                if (currentEval <= beta){
                     bestMove = move;
                     beta = currentEval;
                 }
@@ -680,7 +680,7 @@ public class MoveGenerator {
                 System.out.println("zwischenergebnis: " + zwischenergebnis);
                 int currentEval = Integer.parseInt(zwischenergebnis.substring(4));
                 System.out.println("currentEval: "+ currentEval + "in iteration (max): " + i + "of move: " + move);
-                if(currentEval > max){
+                if(currentEval >= max){
                     bestMove = move; //equiv. zu b.getCreatedByMove();
                     max = currentEval;
                     System.out.println("was greater!");
@@ -706,7 +706,7 @@ public class MoveGenerator {
 
                 int currentEval = Integer.parseInt(minMax(newBoard, depth-1, true).substring(4));
                 System.out.println("currentEval: "+ currentEval + "in iteration (min): " + i + "of move: " + move);
-                if (currentEval < min){
+                if (currentEval <= min){
                     bestMove = move;
                     min = currentEval;
                     System.out.println("was lower!");
@@ -760,6 +760,7 @@ public class MoveGenerator {
             if(outOfTime){
                 System.out.println("Out of Time!");
             }
+            System.out.println("b currently assessed, was created by move" + b.getCreatedByMove());
             System.out.println(b.getCreatedByMove() + score);
             return b.getCreatedByMove() + score;
         }
@@ -773,11 +774,12 @@ public class MoveGenerator {
                 String move = moveList.substring(i,i+4);
                 Board newBoard = b.createBoardFromMove(move);
                 newBoard.setCreatedByMove(move);
+                System.out.println("max" + "board was created by move:" + move);
 
                 String zwischenergebnis = alphaBetaTimeLimit(newBoard, depth-1, alpha, beta, false, startTime, timeLimit);
                 System.out.println("move:" + move + "ze(max): "+zwischenergebnis);
                 int currentEval = Integer.parseInt(zwischenergebnis.substring(4));
-                if(currentEval > alpha){
+                if(currentEval >= alpha){
                     bestMove = move; //equiv. zu b.getCreatedByMove();
                     alpha = currentEval;
                 }
@@ -787,6 +789,7 @@ public class MoveGenerator {
                     break; //beta-cutoff
                 }
             }
+            System.out.println("max out of for:" + bestMove + alpha);
             return bestMove + alpha;
         } else {
             String bestMove= "";
@@ -795,11 +798,12 @@ public class MoveGenerator {
                 String move = moveList.substring(i,i+4);
                 Board newBoard = b.createBoardFromMove(move);
                 newBoard.setCreatedByMove(move);
+                System.out.println("min" + "board was created by move:" + move);
 
                 String zwischenergebnis = alphaBetaTimeLimit(newBoard, depth-1, alpha, beta, true, startTime, timeLimit);
                 System.out.println("move:" + move + "ze: "+ zwischenergebnis);
                 int currentEval = Integer.parseInt(zwischenergebnis.substring(4));
-                if (currentEval < beta){
+                if (currentEval <= beta){
                     bestMove = move;
                     beta = currentEval;
                 }
@@ -810,6 +814,7 @@ public class MoveGenerator {
                 }
 
             }
+            System.out.println("min out of for:" + bestMove + beta);
             return bestMove + beta;
         }
     }
