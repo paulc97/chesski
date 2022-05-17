@@ -24,7 +24,7 @@ public class MoveTests {
 
     @Test
     void assessmentTest1(){
-        board = new Board("3k4/8/3q4/4P3/8/8/8/4K3 b - - 0 1");
+        board = new Board("3N4/6K1/1p6/1r1p1k2/1rP1P1N1/2Q1Rn2/2p5/1PPP4 w - - 0 1");
         System.out.println(board.assessBoard());
     }
 
@@ -65,6 +65,15 @@ public class MoveTests {
     void alphaBetaTest3(){
         board = new Board("2Q5/6K1/1p2N3/1r1p1k2/1r2R1N1/5n2/2p5/8 w - - 0 1");
         String result = moveGenerator.alphaBeta(board, 5, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
+        System.out.println("result is: " + result);
+        String move = result.substring(0,4);
+        System.out.println(moveGenerator.convertMoveDigitsToField(move.charAt(0),move.charAt(1)) + "->" + moveGenerator.convertMoveDigitsToField(move.charAt(2),move.charAt(3)));
+    }
+
+    @Test
+    void alphaBetaTestForum(){
+        board = new Board("krr3rr/pp6/8/8/8/3K4/8/8 b - - 0 1");
+        String result = moveGenerator.alphaBeta(board, 7, Integer.MIN_VALUE, Integer.MAX_VALUE, false);
         System.out.println("result is: " + result);
         String move = result.substring(0,4);
         System.out.println(moveGenerator.convertMoveDigitsToField(move.charAt(0),move.charAt(1)) + "->" + moveGenerator.convertMoveDigitsToField(move.charAt(2),move.charAt(3)));

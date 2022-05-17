@@ -235,10 +235,11 @@ public class Board implements Comparable <Board> {
             }
         }
         if ((this.getOwnKing() & CENTRE) != 0){
-            return this.assessmentValue = 1000000;
+            return this.assessmentValue = 10000000; //Spieler hat gewonnen
         }
         if ((this.getOppositeKing() & CENTRE) != 0){
-            return this.assessmentValue = -1000000;
+            return this.assessmentValue = -10000000; //Spieler hat verloren (schlechterer Wert, als Spieler befindet sich im Schach)
+            //TODO: wenn nurnoch pseudilegale Züge generieren: Wert anpassen, sodass Schach(matt) im Vergleich anders bewertet wird
         }
 
 
@@ -269,6 +270,44 @@ public class Board implements Comparable <Board> {
             //TODO to be discussed if we want to continue
         }
 */
+        //TODO: double vs int bzw. alles (auch oberen Teil, in dems um Schach(matt) geht) *10
+        //Mobilität
+        this.assessmentValue += (int) moveGenerator.getMoveCount(ownValidMoves)*0.1;
+
+        //Attacked Pieces
+        if (currentPlayerIsWhite){
+            long attackedPawns = Long.bitCount((fieldsAttackedByBlack(this) & this.getOwnPawns()));
+            long attackedQueens = Long.bitCount(fieldsAttackedByBlack(this) & this.getOwnQueen());
+            long attackedPieces = Long.bitCount(fieldsAttackedByBlack(this) & (this.getOwnBishops() | this.getOwnKnights() | this.getOwnRooks()));
+            System.out.println("APA" + attackedPawns + "AQ" + attackedQueens + "API" + attackedPieces);
+            this.assessmentValue -= (1.5*attackedPieces+0.2*attackedPawns+4*attackedQueens);
+        } else {
+            long attackedPawns = Long.bitCount((fieldsAttackedByWhite(this) & this.getOwnPawns()));
+            long attackedQueens = Long.bitCount(fieldsAttackedByWhite(this) & this.getOwnQueen());
+            long attackedPieces = Long.bitCount(fieldsAttackedByWhite(this) & (this.getOwnBishops() | this.getOwnKnights() | this.getOwnRooks()));
+            System.out.println("APA" + attackedPawns + "AQ" + attackedQueens + "API" + attackedPieces);
+            this.assessmentValue -= (1.5*attackedPieces+0.2*attackedPawns+4*attackedQueens);
+        }
+        //Hanging Pieces
+        if(currentPlayerIsWhite){
+            long hangingPawns = Long.bitCount(fieldsAttackedByBlack(this) &~fieldsAttackedByWhite(this) & this.getOwnPawns());
+            long hangingPieces = Long.bitCount(fieldsAttackedByBlack(this) &~fieldsAttackedByWhite(this) & (this.getOwnBishops() | this.getOwnKnights() | this.getOwnRooks()));
+            long hangingQueen = Long.bitCount(fieldsAttackedByBlack(this) &~fieldsAttackedByWhite(this) & this.getOwnQueen());
+            this.assessmentValue -= (3*hangingPieces+0.5*hangingPawns+7*hangingQueen);
+        } else {
+            long hangingPawns = Long.bitCount(~fieldsAttackedByBlack(this) &fieldsAttackedByWhite(this) & this.getOwnPawns());
+            long hangingPieces = Long.bitCount(~fieldsAttackedByBlack(this) &fieldsAttackedByWhite(this) & (this.getOwnBishops() | this.getOwnKnights() | this.getOwnRooks()));
+            long hangingQueen = Long.bitCount(~fieldsAttackedByBlack(this) &fieldsAttackedByWhite(this) & this.getOwnQueen());
+            this.assessmentValue -= (3*hangingPieces+0.5*hangingPawns+7*hangingQueen);
+        }
+        //Doppelbauern
+        for (int i = 0; i<8; i++){
+            if (Long.bitCount(FileMasks8[i]& this.getOwnPawns())>1){
+                this.assessmentValue -= 0.5;
+                System.out.println("Doppelbauer in" + i);
+            }
+        }
+        //TODO: isolierte Bauern if wished
 
 
         return (int)this.assessmentValue;
@@ -277,6 +316,7 @@ public class Board implements Comparable <Board> {
     //Für MiniMax brauchen wir aber tatsächlich immer nur die Bewertungsfunktion von einer perspektive
     //bei den MinKnoten sollen ja die kleinsten Werte (schlechtesten aus MaxPlayers perspektive ausgewählt werden)
     public int assessBoardFromOwnPerspective(){ //TODO: kann weg, wenn wir uns drauf geeignigt haben, was assessBoard zurückgibt
+        //TODO: wenn KI gegen sich selbst spielt, immer KIPlaysWhite switchen nach jedem Zug
         if (KIPlaysWhite){//momentan immer true
             if(currentPlayerIsWhite){
                 return this.assessBoard();
