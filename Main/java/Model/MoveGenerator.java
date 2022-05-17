@@ -324,17 +324,19 @@ public class MoveGenerator {
         //check for promotion
         if (moveBitboardPosition.charAt(3) == 'P') {
             if (b.isCurrentPlayerIsWhite()){
-                move += (char)(97+(moveBitboardPosition.charAt(0)-48));
+                move += Character.toString((char)((97+(moveBitboardPosition.charAt(0)-48))));
                 move += "7";
-                move += (char)(97+(moveBitboardPosition.charAt(1)-48));
+                move += Character.toString((char)(97+(moveBitboardPosition.charAt(1)-48)));
                 move += "8";
-                move += moveBitboardPosition.charAt(2);
+                move += Character.toString(moveBitboardPosition.charAt(2));
+                return move;
             } else {
-                move += (char)(97+(moveBitboardPosition.charAt(0)-48));
+                move += Character.toString((char)((97+(moveBitboardPosition.charAt(0)-48))));
+                move += "2";
+                move += Character.toString((char)(97+(moveBitboardPosition.charAt(1)-48)));
                 move += "1";
-                move += (char)(97+(moveBitboardPosition.charAt(1)-48));
-                move += "0";
-                move += moveBitboardPosition.charAt(2);
+                move += Character.toString(moveBitboardPosition.charAt(2));
+                return move;
             }
 
         }
