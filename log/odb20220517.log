@@ -1,0 +1,567 @@
+------------------------------------------------------------------------------------------------------------------------
+
+[2022-05-17 21:01:19 #1 store] 
+Database 'C:\Users\tgold\Documents\Studium\KI-PR\ChessKI\db\game.odb' is opened by 21780@LAPTOP-ETRR513P
+
+[2022-05-17 21:01:19 #2 store] 
+Configuration path: ?
+
+[2022-05-17 21:01:19 #3 type.registry] 
+New type de.tu_berlin.pjki_server.game_engine.Observer
+
+[2022-05-17 21:01:19 #4 type.registry] 
+New type de.tu_berlin.pjki_server.game_engine.entities.AbstractPlayer
+
+[2022-05-17 21:01:19 #5 type.registry] 
+New type de.tu_berlin.pjki_server.game_engine.entities.Player
+
+[2022-05-17 21:01:19 #6 type] 
+Type de.tu_berlin.pjki_server.game_engine.entities.AbstractPlayer is not enhanced.
+
+[2022-05-17 21:01:19 #7 type] 
+Type de.tu_berlin.pjki_server.game_engine.entities.Player is not enhanced.
+
+[2022-05-17 21:01:19 #8 type.registry] 
+New type de.tu_berlin.pjki_server.server_interface.GameServerEndpoint
+
+[2022-05-17 21:01:19 #9 type.registry] 
+New type javax.websocket.Session
+
+[2022-05-17 21:01:19 #10 type.registry] 
+New type de.tu_berlin.pjki_server.game_engine.Subject
+
+[2022-05-17 21:01:19 #11 type.registry] 
+New type com.google.gson.JsonSerializer
+
+[2022-05-17 21:01:19 #12 type.registry] 
+New type de.tu_berlin.pjki_server.game_engine.AbstractGame
+
+[2022-05-17 21:01:19 #13 type.registry] 
+New type de.tu_berlin.pjki_server.KingOfTheHill
+
+[2022-05-17 21:01:19 #14 type] 
+Type de.tu_berlin.pjki_server.game_engine.AbstractGame is not enhanced.
+
+[2022-05-17 21:01:19 #15 type.registry] 
+New type de.tu_berlin.pjki_server.game_engine.State
+
+[2022-05-17 21:01:19 #16 type.registry] 
+New type java.util.logging.Logger
+
+[2022-05-17 21:01:19 #17 type] 
+Type de.tu_berlin.pjki_server.KingOfTheHill is not enhanced.
+
+[2022-05-17 21:01:19 #18 type.registry] 
+New type com.github.bhlangonijr.chesslib.BoardEvent
+
+[2022-05-17 21:01:19 #19 type.registry] 
+New type com.github.bhlangonijr.chesslib.Board
+
+[2022-05-17 21:01:19 #20 type.registry] 
+New type java.util.ArrayList<java.lang.Object>
+
+[2022-05-17 21:01:19 #21 type.registry] 
+New type java.util.ArrayList<de.tu_berlin.pjki_server.game_engine.entities.AbstractPlayer>
+
+[2022-05-17 21:01:19 #22 type.registry] 
+New type java.util.ArrayList<java.lang.String>
+
+------------------------------------------------------------------------------------------------------------------------
+
+[2022-05-17 21:15:12 #1 store] 
+Database 'C:\Users\tgold\Documents\Studium\KI-PR\ChessKI\db\game.odb' is opened by 11128@LAPTOP-ETRR513P
+
+[2022-05-17 21:15:12 #2 store] 
+Configuration path: ?
+
+[2022-05-17 21:15:12 #3 type.registry] 
+New type de.tu_berlin.pjki_server.game_engine.Observer
+
+[2022-05-17 21:15:12 #4 type.registry] 
+New type de.tu_berlin.pjki_server.game_engine.entities.AbstractPlayer
+
+[2022-05-17 21:15:12 #5 type.registry] 
+New type de.tu_berlin.pjki_server.game_engine.entities.Player
+
+[2022-05-17 21:15:12 #6 type] 
+Type de.tu_berlin.pjki_server.game_engine.entities.AbstractPlayer is not enhanced.
+
+[2022-05-17 21:15:12 #7 type] 
+Type de.tu_berlin.pjki_server.game_engine.entities.Player is not enhanced.
+
+[2022-05-17 21:15:12 #8 type.registry] 
+New type de.tu_berlin.pjki_server.server_interface.GameServerEndpoint
+
+[2022-05-17 21:15:12 #9 type.registry] 
+New type javax.websocket.Session
+
+[2022-05-17 21:15:12 #10 type.registry] 
+New type de.tu_berlin.pjki_server.game_engine.Subject
+
+[2022-05-17 21:15:12 #11 type.registry] 
+New type com.google.gson.JsonSerializer
+
+[2022-05-17 21:15:12 #12 type.registry] 
+New type de.tu_berlin.pjki_server.game_engine.AbstractGame
+
+[2022-05-17 21:15:12 #13 type.registry] 
+New type de.tu_berlin.pjki_server.KingOfTheHill
+
+[2022-05-17 21:15:12 #14 type] 
+Type de.tu_berlin.pjki_server.game_engine.AbstractGame is not enhanced.
+
+[2022-05-17 21:15:12 #15 type.registry] 
+New type de.tu_berlin.pjki_server.game_engine.State
+
+[2022-05-17 21:15:12 #16 type.registry] 
+New type java.util.logging.Logger
+
+[2022-05-17 21:15:12 #17 type] 
+Type de.tu_berlin.pjki_server.KingOfTheHill is not enhanced.
+
+[2022-05-17 21:15:12 #18 type.registry] 
+New type com.github.bhlangonijr.chesslib.BoardEvent
+
+[2022-05-17 21:15:12 #19 type.registry] 
+New type com.github.bhlangonijr.chesslib.Board
+
+[2022-05-17 21:15:12 #20 type.registry] 
+New type java.util.ArrayList<java.lang.Object>
+
+[2022-05-17 21:15:12 #21 type.registry] 
+New type java.util.ArrayList<de.tu_berlin.pjki_server.game_engine.entities.AbstractPlayer>
+
+[2022-05-17 21:15:12 #22 type.registry] 
+New type java.util.ArrayList<java.lang.String>
+
+------------------------------------------------------------------------------------------------------------------------
+
+[2022-05-17 21:20:52 #1 store] 
+Database 'C:\Users\tgold\Documents\Studium\KI-PR\ChessKI\db\game.odb' is opened by 29596@LAPTOP-ETRR513P
+
+[2022-05-17 21:20:52 #2 store] 
+Configuration path: ?
+
+[2022-05-17 21:20:53 #3 type.registry] 
+New type de.tu_berlin.pjki_server.game_engine.Observer
+
+[2022-05-17 21:20:53 #4 type.registry] 
+New type de.tu_berlin.pjki_server.game_engine.entities.AbstractPlayer
+
+[2022-05-17 21:20:53 #5 type.registry] 
+New type de.tu_berlin.pjki_server.game_engine.entities.Player
+
+[2022-05-17 21:20:53 #6 type] 
+Type de.tu_berlin.pjki_server.game_engine.entities.AbstractPlayer is not enhanced.
+
+[2022-05-17 21:20:53 #7 type] 
+Type de.tu_berlin.pjki_server.game_engine.entities.Player is not enhanced.
+
+[2022-05-17 21:20:53 #8 type.registry] 
+New type de.tu_berlin.pjki_server.server_interface.GameServerEndpoint
+
+[2022-05-17 21:20:53 #9 type.registry] 
+New type javax.websocket.Session
+
+[2022-05-17 21:20:53 #10 type.registry] 
+New type de.tu_berlin.pjki_server.game_engine.Subject
+
+[2022-05-17 21:20:53 #11 type.registry] 
+New type com.google.gson.JsonSerializer
+
+[2022-05-17 21:20:53 #12 type.registry] 
+New type de.tu_berlin.pjki_server.game_engine.AbstractGame
+
+[2022-05-17 21:20:53 #13 type.registry] 
+New type de.tu_berlin.pjki_server.KingOfTheHill
+
+[2022-05-17 21:20:53 #14 type] 
+Type de.tu_berlin.pjki_server.game_engine.AbstractGame is not enhanced.
+
+[2022-05-17 21:20:53 #15 type.registry] 
+New type de.tu_berlin.pjki_server.game_engine.State
+
+[2022-05-17 21:20:53 #16 type.registry] 
+New type java.util.logging.Logger
+
+[2022-05-17 21:20:53 #17 type] 
+Type de.tu_berlin.pjki_server.KingOfTheHill is not enhanced.
+
+[2022-05-17 21:20:53 #18 type.registry] 
+New type com.github.bhlangonijr.chesslib.BoardEvent
+
+[2022-05-17 21:20:53 #19 type.registry] 
+New type com.github.bhlangonijr.chesslib.Board
+
+[2022-05-17 21:20:53 #20 type.registry] 
+New type java.util.ArrayList<java.lang.Object>
+
+[2022-05-17 21:20:53 #21 type.registry] 
+New type java.util.ArrayList<de.tu_berlin.pjki_server.game_engine.entities.AbstractPlayer>
+
+[2022-05-17 21:20:53 #22 type.registry] 
+New type java.util.ArrayList<java.lang.String>
+
+------------------------------------------------------------------------------------------------------------------------
+
+[2022-05-17 21:25:39 #1 store] 
+Database 'C:\Users\tgold\Documents\Studium\KI-PR\ChessKI\db\game.odb' has been recovered (tr. 1-10)
+
+[2022-05-17 21:25:39 #2 store] 
+Database 'C:\Users\tgold\Documents\Studium\KI-PR\ChessKI\db\game.odb' is opened by 15972@LAPTOP-ETRR513P
+
+[2022-05-17 21:25:39 #3 store] 
+Configuration path: ?
+
+[2022-05-17 21:25:40 #4 type] 
+Type de.tu_berlin.pjki_server.game_engine.entities.AbstractPlayer is not enhanced.
+
+[2022-05-17 21:25:40 #5 type] 
+Type de.tu_berlin.pjki_server.game_engine.entities.Player is not enhanced.
+
+[2022-05-17 21:25:40 #6 type] 
+Type de.tu_berlin.pjki_server.game_engine.AbstractGame is not enhanced.
+
+[2022-05-17 21:25:40 #7 type] 
+Type de.tu_berlin.pjki_server.KingOfTheHill is not enhanced.
+
+------------------------------------------------------------------------------------------------------------------------
+
+[2022-05-17 21:37:20 #1 store] 
+Database 'C:\Users\tgold\Documents\Studium\KI-PR\ChessKI\db\game.odb' is opened by 23588@LAPTOP-ETRR513P
+
+[2022-05-17 21:37:20 #2 store] 
+Configuration path: ?
+
+[2022-05-17 21:37:20 #3 type.registry] 
+New type de.tu_berlin.pjki_server.game_engine.Observer
+
+[2022-05-17 21:37:20 #4 type.registry] 
+New type de.tu_berlin.pjki_server.game_engine.entities.AbstractPlayer
+
+[2022-05-17 21:37:20 #5 type.registry] 
+New type de.tu_berlin.pjki_server.game_engine.entities.Player
+
+[2022-05-17 21:37:20 #6 type] 
+Type de.tu_berlin.pjki_server.game_engine.entities.AbstractPlayer is not enhanced.
+
+[2022-05-17 21:37:20 #7 type] 
+Type de.tu_berlin.pjki_server.game_engine.entities.Player is not enhanced.
+
+[2022-05-17 21:37:20 #8 type.registry] 
+New type de.tu_berlin.pjki_server.server_interface.GameServerEndpoint
+
+[2022-05-17 21:37:20 #9 type.registry] 
+New type javax.websocket.Session
+
+[2022-05-17 21:37:20 #10 type.registry] 
+New type de.tu_berlin.pjki_server.game_engine.Subject
+
+[2022-05-17 21:37:20 #11 type.registry] 
+New type com.google.gson.JsonSerializer
+
+[2022-05-17 21:37:20 #12 type.registry] 
+New type de.tu_berlin.pjki_server.game_engine.AbstractGame
+
+[2022-05-17 21:37:20 #13 type.registry] 
+New type de.tu_berlin.pjki_server.KingOfTheHill
+
+[2022-05-17 21:37:20 #14 type] 
+Type de.tu_berlin.pjki_server.game_engine.AbstractGame is not enhanced.
+
+[2022-05-17 21:37:20 #15 type.registry] 
+New type de.tu_berlin.pjki_server.game_engine.State
+
+[2022-05-17 21:37:20 #16 type.registry] 
+New type java.util.logging.Logger
+
+[2022-05-17 21:37:20 #17 type] 
+Type de.tu_berlin.pjki_server.KingOfTheHill is not enhanced.
+
+[2022-05-17 21:37:20 #18 type.registry] 
+New type com.github.bhlangonijr.chesslib.BoardEvent
+
+[2022-05-17 21:37:20 #19 type.registry] 
+New type com.github.bhlangonijr.chesslib.Board
+
+[2022-05-17 21:37:20 #20 type.registry] 
+New type java.util.ArrayList<java.lang.Object>
+
+[2022-05-17 21:37:20 #21 type.registry] 
+New type java.util.ArrayList<de.tu_berlin.pjki_server.game_engine.entities.AbstractPlayer>
+
+[2022-05-17 21:37:20 #22 type.registry] 
+New type java.util.ArrayList<java.lang.String>
+
+------------------------------------------------------------------------------------------------------------------------
+
+[2022-05-17 21:42:34 #1 store] 
+Database 'C:\Users\tgold\Documents\Studium\KI-PR\ChessKI\db\game.odb' is opened by 1804@LAPTOP-ETRR513P
+
+[2022-05-17 21:42:34 #2 store] 
+Configuration path: ?
+
+[2022-05-17 21:42:34 #3 type.registry] 
+New type de.tu_berlin.pjki_server.game_engine.Observer
+
+[2022-05-17 21:42:34 #4 type.registry] 
+New type de.tu_berlin.pjki_server.game_engine.entities.AbstractPlayer
+
+[2022-05-17 21:42:34 #5 type.registry] 
+New type de.tu_berlin.pjki_server.game_engine.entities.Player
+
+[2022-05-17 21:42:34 #6 type] 
+Type de.tu_berlin.pjki_server.game_engine.entities.AbstractPlayer is not enhanced.
+
+[2022-05-17 21:42:34 #7 type] 
+Type de.tu_berlin.pjki_server.game_engine.entities.Player is not enhanced.
+
+[2022-05-17 21:42:34 #8 type.registry] 
+New type de.tu_berlin.pjki_server.server_interface.GameServerEndpoint
+
+[2022-05-17 21:42:34 #9 type.registry] 
+New type javax.websocket.Session
+
+[2022-05-17 21:42:34 #10 type.registry] 
+New type de.tu_berlin.pjki_server.game_engine.Subject
+
+[2022-05-17 21:42:34 #11 type.registry] 
+New type com.google.gson.JsonSerializer
+
+[2022-05-17 21:42:34 #12 type.registry] 
+New type de.tu_berlin.pjki_server.game_engine.AbstractGame
+
+[2022-05-17 21:42:34 #13 type.registry] 
+New type de.tu_berlin.pjki_server.KingOfTheHill
+
+[2022-05-17 21:42:34 #14 type] 
+Type de.tu_berlin.pjki_server.game_engine.AbstractGame is not enhanced.
+
+[2022-05-17 21:42:34 #15 type.registry] 
+New type de.tu_berlin.pjki_server.game_engine.State
+
+[2022-05-17 21:42:34 #16 type.registry] 
+New type java.util.logging.Logger
+
+[2022-05-17 21:42:34 #17 type] 
+Type de.tu_berlin.pjki_server.KingOfTheHill is not enhanced.
+
+[2022-05-17 21:42:34 #18 type.registry] 
+New type com.github.bhlangonijr.chesslib.BoardEvent
+
+[2022-05-17 21:42:34 #19 type.registry] 
+New type com.github.bhlangonijr.chesslib.Board
+
+[2022-05-17 21:42:34 #20 type.registry] 
+New type java.util.ArrayList<java.lang.Object>
+
+[2022-05-17 21:42:34 #21 type.registry] 
+New type java.util.ArrayList<de.tu_berlin.pjki_server.game_engine.entities.AbstractPlayer>
+
+[2022-05-17 21:42:34 #22 type.registry] 
+New type java.util.ArrayList<java.lang.String>
+
+------------------------------------------------------------------------------------------------------------------------
+
+[2022-05-17 21:50:23 #1 store] 
+Database 'C:\Users\tgold\Documents\Studium\KI-PR\ChessKI\db\game.odb' is opened by 16924@LAPTOP-ETRR513P
+
+[2022-05-17 21:50:23 #2 store] 
+Configuration path: ?
+
+[2022-05-17 21:50:23 #3 type.registry] 
+New type de.tu_berlin.pjki_server.game_engine.Observer
+
+[2022-05-17 21:50:23 #4 type.registry] 
+New type de.tu_berlin.pjki_server.game_engine.entities.AbstractPlayer
+
+[2022-05-17 21:50:23 #5 type.registry] 
+New type de.tu_berlin.pjki_server.game_engine.entities.Player
+
+[2022-05-17 21:50:23 #6 type] 
+Type de.tu_berlin.pjki_server.game_engine.entities.AbstractPlayer is not enhanced.
+
+[2022-05-17 21:50:23 #7 type] 
+Type de.tu_berlin.pjki_server.game_engine.entities.Player is not enhanced.
+
+[2022-05-17 21:50:23 #8 type.registry] 
+New type de.tu_berlin.pjki_server.server_interface.GameServerEndpoint
+
+[2022-05-17 21:50:23 #9 type.registry] 
+New type javax.websocket.Session
+
+[2022-05-17 21:50:23 #10 type.registry] 
+New type de.tu_berlin.pjki_server.game_engine.Subject
+
+[2022-05-17 21:50:23 #11 type.registry] 
+New type com.google.gson.JsonSerializer
+
+[2022-05-17 21:50:23 #12 type.registry] 
+New type de.tu_berlin.pjki_server.game_engine.AbstractGame
+
+[2022-05-17 21:50:23 #13 type.registry] 
+New type de.tu_berlin.pjki_server.KingOfTheHill
+
+[2022-05-17 21:50:23 #14 type] 
+Type de.tu_berlin.pjki_server.game_engine.AbstractGame is not enhanced.
+
+[2022-05-17 21:50:23 #15 type.registry] 
+New type de.tu_berlin.pjki_server.game_engine.State
+
+[2022-05-17 21:50:23 #16 type.registry] 
+New type java.util.logging.Logger
+
+[2022-05-17 21:50:23 #17 type] 
+Type de.tu_berlin.pjki_server.KingOfTheHill is not enhanced.
+
+[2022-05-17 21:50:23 #18 type.registry] 
+New type com.github.bhlangonijr.chesslib.BoardEvent
+
+[2022-05-17 21:50:23 #19 type.registry] 
+New type com.github.bhlangonijr.chesslib.Board
+
+[2022-05-17 21:50:23 #20 type.registry] 
+New type java.util.ArrayList<java.lang.Object>
+
+[2022-05-17 21:50:23 #21 type.registry] 
+New type java.util.ArrayList<de.tu_berlin.pjki_server.game_engine.entities.AbstractPlayer>
+
+[2022-05-17 21:50:23 #22 type.registry] 
+New type java.util.ArrayList<java.lang.String>
+
+------------------------------------------------------------------------------------------------------------------------
+
+[2022-05-17 21:58:37 #1 store] 
+Database 'C:\Users\tgold\Documents\Studium\KI-PR\ChessKI\db\game.odb' is opened by 14940@LAPTOP-ETRR513P
+
+[2022-05-17 21:58:37 #2 store] 
+Configuration path: ?
+
+[2022-05-17 21:58:37 #3 type.registry] 
+New type de.tu_berlin.pjki_server.game_engine.Observer
+
+[2022-05-17 21:58:37 #4 type.registry] 
+New type de.tu_berlin.pjki_server.game_engine.entities.AbstractPlayer
+
+[2022-05-17 21:58:37 #5 type.registry] 
+New type de.tu_berlin.pjki_server.game_engine.entities.Player
+
+[2022-05-17 21:58:37 #6 type] 
+Type de.tu_berlin.pjki_server.game_engine.entities.AbstractPlayer is not enhanced.
+
+[2022-05-17 21:58:37 #7 type] 
+Type de.tu_berlin.pjki_server.game_engine.entities.Player is not enhanced.
+
+[2022-05-17 21:58:37 #8 type.registry] 
+New type de.tu_berlin.pjki_server.server_interface.GameServerEndpoint
+
+[2022-05-17 21:58:37 #9 type.registry] 
+New type javax.websocket.Session
+
+[2022-05-17 21:58:37 #10 type.registry] 
+New type de.tu_berlin.pjki_server.game_engine.Subject
+
+[2022-05-17 21:58:37 #11 type.registry] 
+New type com.google.gson.JsonSerializer
+
+[2022-05-17 21:58:37 #12 type.registry] 
+New type de.tu_berlin.pjki_server.game_engine.AbstractGame
+
+[2022-05-17 21:58:37 #13 type.registry] 
+New type de.tu_berlin.pjki_server.KingOfTheHill
+
+[2022-05-17 21:58:37 #14 type] 
+Type de.tu_berlin.pjki_server.game_engine.AbstractGame is not enhanced.
+
+[2022-05-17 21:58:37 #15 type.registry] 
+New type de.tu_berlin.pjki_server.game_engine.State
+
+[2022-05-17 21:58:37 #16 type.registry] 
+New type java.util.logging.Logger
+
+[2022-05-17 21:58:37 #17 type] 
+Type de.tu_berlin.pjki_server.KingOfTheHill is not enhanced.
+
+[2022-05-17 21:58:37 #18 type.registry] 
+New type com.github.bhlangonijr.chesslib.BoardEvent
+
+[2022-05-17 21:58:37 #19 type.registry] 
+New type com.github.bhlangonijr.chesslib.Board
+
+[2022-05-17 21:58:37 #20 type.registry] 
+New type java.util.ArrayList<java.lang.Object>
+
+[2022-05-17 21:58:37 #21 type.registry] 
+New type java.util.ArrayList<de.tu_berlin.pjki_server.game_engine.entities.AbstractPlayer>
+
+[2022-05-17 21:58:37 #22 type.registry] 
+New type java.util.ArrayList<java.lang.String>
+
+------------------------------------------------------------------------------------------------------------------------
+
+[2022-05-17 22:04:30 #1 store] 
+Database 'C:\Users\tgold\Documents\Studium\KI-PR\ChessKI\db\game.odb' is opened by 19872@LAPTOP-ETRR513P
+
+[2022-05-17 22:04:30 #2 store] 
+Configuration path: ?
+
+[2022-05-17 22:04:31 #3 type.registry] 
+New type de.tu_berlin.pjki_server.game_engine.Observer
+
+[2022-05-17 22:04:31 #4 type.registry] 
+New type de.tu_berlin.pjki_server.game_engine.entities.AbstractPlayer
+
+[2022-05-17 22:04:31 #5 type.registry] 
+New type de.tu_berlin.pjki_server.game_engine.entities.Player
+
+[2022-05-17 22:04:31 #6 type] 
+Type de.tu_berlin.pjki_server.game_engine.entities.AbstractPlayer is not enhanced.
+
+[2022-05-17 22:04:31 #7 type] 
+Type de.tu_berlin.pjki_server.game_engine.entities.Player is not enhanced.
+
+[2022-05-17 22:04:31 #8 type.registry] 
+New type de.tu_berlin.pjki_server.server_interface.GameServerEndpoint
+
+[2022-05-17 22:04:31 #9 type.registry] 
+New type javax.websocket.Session
+
+[2022-05-17 22:04:31 #10 type.registry] 
+New type de.tu_berlin.pjki_server.game_engine.Subject
+
+[2022-05-17 22:04:31 #11 type.registry] 
+New type com.google.gson.JsonSerializer
+
+[2022-05-17 22:04:31 #12 type.registry] 
+New type de.tu_berlin.pjki_server.game_engine.AbstractGame
+
+[2022-05-17 22:04:31 #13 type.registry] 
+New type de.tu_berlin.pjki_server.KingOfTheHill
+
+[2022-05-17 22:04:31 #14 type] 
+Type de.tu_berlin.pjki_server.game_engine.AbstractGame is not enhanced.
+
+[2022-05-17 22:04:31 #15 type.registry] 
+New type de.tu_berlin.pjki_server.game_engine.State
+
+[2022-05-17 22:04:31 #16 type.registry] 
+New type java.util.logging.Logger
+
+[2022-05-17 22:04:31 #17 type] 
+Type de.tu_berlin.pjki_server.KingOfTheHill is not enhanced.
+
+[2022-05-17 22:04:31 #18 type.registry] 
+New type com.github.bhlangonijr.chesslib.BoardEvent
+
+[2022-05-17 22:04:31 #19 type.registry] 
+New type com.github.bhlangonijr.chesslib.Board
+
+[2022-05-17 22:04:31 #20 type.registry] 
+New type java.util.ArrayList<java.lang.Object>
+
+[2022-05-17 22:04:31 #21 type.registry] 
+New type java.util.ArrayList<de.tu_berlin.pjki_server.game_engine.entities.AbstractPlayer>
+
+[2022-05-17 22:04:31 #22 type.registry] 
+New type java.util.ArrayList<java.lang.String>
+

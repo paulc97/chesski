@@ -317,7 +317,7 @@ public class MoveGenerator {
     }  //TODO: fix for Queenpromotion/Ep Notation
 
 
-    public static String convert0IndexMoveDigitsToField (String moveBitboardPosition, Board b){
+    public static String convertInternalMoveToGameserverMove(String moveBitboardPosition, Board b){
 
         String move = "";
 
@@ -563,7 +563,9 @@ public class MoveGenerator {
     public String moveSelector(Board b, String validMoves, long usedTimeInMs) {
 
         int panicModeThresholdInMs = 2000;
-        int firstMoveThresholdMoves = 10;
+
+        //defines the number of moves to use deepening search
+        int firstMoveThresholdMoves = 0;
 
         if (validMoves == null || validMoves.equals("")) {
             return validMoves;
@@ -578,13 +580,14 @@ public class MoveGenerator {
         }
 
         if (b.getNextMoveCount() < firstMoveThresholdMoves * 2) {
-
+            System.out.println("Using iterative deepening search for move generation");
             //Iterative Deepening Search (ohne Zugsortierung)
             long timeLimit = timeCalculator(b);
             return iterativeDeepeningSearch(b, timeLimit).substring(0, 4);
         }
 
         int suchtiefe = depthCalculator(b);
+        System.out.println("Using alpha beta search for move generation");
         return alphaBeta(b, suchtiefe, Integer.MIN_VALUE, Integer.MAX_VALUE, true).substring(0, 4);
 
         //String bestMoveFromMinMax = minMax(b, suchtiefe, true).substring(0,4);

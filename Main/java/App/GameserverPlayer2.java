@@ -66,7 +66,7 @@ public class GameserverPlayer2 {
 
                     String validMoves = mg.validMoves(b);
                     String moveBitboardPosition = mg.moveSelector(b, validMoves, usedTime);
-                    String move = MoveGenerator.convert0IndexMoveDigitsToField(moveBitboardPosition, b);
+                    String move = MoveGenerator.convertInternalMoveToGameserverMove(moveBitboardPosition, b);
                     System.out.println("Active Player: " + userName1);
                     System.out.println("Received FEN: " + ag.fen + " for game with ID: " + ag.ID);
                     System.out.println("Received moves from engine: " + validMoves);
