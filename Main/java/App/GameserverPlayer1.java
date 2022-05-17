@@ -18,6 +18,7 @@ public class GameserverPlayer1 {
     private static CountDownLatch latch;
     private Logger logger = Logger.getLogger(this.getClass().getName());
     private MessageEncoder me = new MessageEncoder();
+    private long usedTime = 0;
 
     //Config
     private final String userName1 = "Player1";
@@ -58,15 +59,14 @@ public class GameserverPlayer1 {
                 }
 
                 if (ag.currentPlayer.playerName.equals(userName1)) {
+                    long startTime = System.currentTimeMillis();
                     System.out.println("Starting move generation!");
                     MoveGenerator mg = new MoveGenerator();
                     Board b = new Board(ag.fen);
 
                     String validMoves = mg.validMoves(b);
-                    String moveBitboardPosition = mg.moveSelector(b, validMoves);
-                    String move = "";
-                    move += MoveGenerator.convert0IndexMoveDigitsToField(moveBitboardPosition.charAt(0), moveBitboardPosition.charAt(1));
-                    move += MoveGenerator.convert0IndexMoveDigitsToField(moveBitboardPosition.charAt(2), moveBitboardPosition.charAt(3));
+                    String moveBitboardPosition = mg.moveSelector(b, validMoves, usedTime);
+                    String move = MoveGenerator.convert0IndexMoveDigitsToField(moveBitboardPosition, b);
                     System.out.println("Active Player: " + userName1);
                     System.out.println("Received FEN: " + ag.fen + " for game with ID: " + ag.ID);
                     System.out.println("Received moves from engine: " + validMoves);
@@ -75,7 +75,7 @@ public class GameserverPlayer1 {
                     System.out.println("-----------------------------------------------------");
                     MessageObj response = new MessageObj(4, userName1, move, playerId1, gameId1);
                     session.getBasicRemote().sendText(me.encode(response));
-
+                    usedTime += (System.currentTimeMillis() - startTime);
                 }
             }
 

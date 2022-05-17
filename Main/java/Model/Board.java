@@ -22,7 +22,7 @@ public class Board implements Comparable <Board> {
     private boolean blackToCastleKingside = false;
     private boolean blackToCastleQueenside = false;
     private String enPassants = "";
-
+    long gameTimeLimit = 120000;
     private long
             whiteKing=0L,
             whiteQueen=0L,
@@ -628,6 +628,10 @@ public class Board implements Comparable <Board> {
 
     public void setEnPassants(String enPassants) {
         this.enPassants = enPassants;
+    }
+
+    public long getGameTimeLimitInMs() {
+        return gameTimeLimit;
     }
 
     /**

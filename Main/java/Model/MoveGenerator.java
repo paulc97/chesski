@@ -317,14 +317,39 @@ public class MoveGenerator {
     }  //TODO: fix for Queenpromotion/Ep Notation
 
 
-    public static String convert0IndexMoveDigitsToField (char rank, char file){
+    public static String convert0IndexMoveDigitsToField (String moveBitboardPosition, Board b){
 
-        if (file == 'P' || file == 'E'){
-            return ""+rank+file;
+        String move = "";
+
+        //check for promotion
+        if (moveBitboardPosition.charAt(3) == 'P') {
+            if (b.isCurrentPlayerIsWhite()){
+                move += (char)(97+(moveBitboardPosition.charAt(0)-48));
+                move += "7";
+                move += (char)(97+(moveBitboardPosition.charAt(1)-48));
+                move += "8";
+                move += moveBitboardPosition.charAt(2);
+            } else {
+                move += (char)(97+(moveBitboardPosition.charAt(0)-48));
+                move += "1";
+                move += (char)(97+(moveBitboardPosition.charAt(1)-48));
+                move += "0";
+                move += moveBitboardPosition.charAt(2);
+            }
+
         }
-        char f =(char)(97+(file-48));
-        int r = (char)(8 - Character.getNumericValue(rank));
-        return ""+f+r;
+
+        if (moveBitboardPosition.charAt(3) == 'E') {
+            //TODO: Add case handling for enpassant
+            return move;
+        }
+
+        move += (char)(97+(moveBitboardPosition.charAt(1)-48));
+        move += (Math.abs(moveBitboardPosition.charAt(0)-48-8));
+        move += (char)(97+(moveBitboardPosition.charAt(3)-48));
+        move += (Math.abs(moveBitboardPosition.charAt(2)-48-8));
+        return move;
+
     }
 
 
@@ -533,32 +558,51 @@ public class MoveGenerator {
 
     }
 
-    public String moveSelector (Board b, String validMoves){
-        if (validMoves == null || validMoves.equals("")){
+    public String moveSelector(Board b, String validMoves, long usedTimeInMs) {
+
+        int panicModeThresholdInMs = 2000;
+        int firstMoveThresholdMoves = 10;
+
+        if (validMoves == null || validMoves.equals("")) {
             return validMoves;
         }
 
-        //TODO implement here the min max logic and iterate over the "successorBoards" of b to find the best move...
+        if ((b.getGameTimeLimitInMs() - usedTimeInMs) < panicModeThresholdInMs) {
+            System.out.println("Entered panic mode");
+            //zufällige Zugauswahl
+            //Min + (int)(Math.random() * ((Max - Min) + 1))
+            int randomEndIndex = Math.abs(1 + (int) (Math.random() * ((validMoves.length() / 4 - 1) + 1))) * 4;
+            return validMoves.substring(randomEndIndex - 4, randomEndIndex);
+        }
 
-        int suchtiefe = 1;
-        //String bestMoveFromAlphaBeta = alphaBeta(b, suchtiefe, Integer.MIN_VALUE, Integer.MAX_VALUE, true).substring(0,4);
+        if (b.getNextMoveCount() < firstMoveThresholdMoves * 2) {
 
-        String bestMoveFromMinMax = minMax(b, suchtiefe, true).substring(0,4);
+            //Iterative Deepening Search (ohne Zugsortierung)
+            long timeLimit = timeCalculator(b);
+            return iterativeDeepeningSearch(b, timeLimit).substring(0, 4);
+        }
 
-        //Iterative Deepening Search (ohne Zugsortierung)
-        long timeLimit = 4000;  //TODO: dynamisches Zeitmanagement je nach Spielsituation
-        String bestMoveFromIDS = iterativeDeepeningSearch(b, timeLimit).substring(0,4);
+        int suchtiefe = depthCalculator(b);
+        return alphaBeta(b, suchtiefe, Integer.MIN_VALUE, Integer.MAX_VALUE, true).substring(0, 4);
 
+        //String bestMoveFromMinMax = minMax(b, suchtiefe, true).substring(0,4);
 
+    }
 
-        //zufällige Zugauswahl
-        //Min + (int)(Math.random() * ((Max - Min) + 1))
-        int randomEndIndex = Math.abs(1 + (int)(Math.random() * ((validMoves.length()/4 - 1) + 1)))*4; //TODO: dürfen wir Math.random benutzen?
-        String randomMove = validMoves.substring(randomEndIndex-4,randomEndIndex);
+    public long timeCalculator(Board b){
+            long averageNumberOfMoves = 40;
+            return b.getGameTimeLimitInMs()/(averageNumberOfMoves);
+    }
 
-        //TODO: Error abfangen, wenn keine Moves mehr möglich? Spiel zuende
-        System.out.println("Best move from min max: "+bestMoveFromMinMax );
-        return bestMoveFromMinMax;
+    public int depthCalculator(Board b){
+        if (b.getNextMoveCount()/2 < 30){
+            return 3;
+        }
+        if (b.getNextMoveCount()/2 < 40){
+            return 4;
+        }
+        return 5;
+
     }
 
 

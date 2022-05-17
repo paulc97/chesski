@@ -6,16 +6,17 @@ import Model.MoveGenerator;
 public class Main {
     public static void main(String[] args) {
 
+
         MoveGenerator mg = new MoveGenerator();
         Board b1 = new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
-
+        long usedTime = 0;
 
         while(true){
 
-
+            long currentTime = System.currentTimeMillis();
             String validMoves = mg.validMoves(b1);
             //
-            MoveGenerator.makeMove(b1, mg.moveSelector(b1, validMoves));
+            MoveGenerator.makeMove(b1, mg.moveSelector(b1, validMoves, usedTime));
             System.out.println("FEN Representation: " + b1.bitboardsToFenParser());
 
             b1.drawBoard();
@@ -36,6 +37,8 @@ public class Main {
                 }
 
             }
+
+            usedTime += (System.currentTimeMillis()- currentTime);
 
             /*
 
