@@ -61,11 +61,20 @@ public class MoveTests {
         System.out.println(moveGenerator.convertMoveDigitsToField(move.charAt(0),move.charAt(1)) + "->" + moveGenerator.convertMoveDigitsToField(move.charAt(2),move.charAt(3)));
     }
 
+    @Test
+    void alphaBetaTest3(){
+        board = new Board("2Q5/6K1/1p2N3/1r1p1k2/1r2R1N1/5n2/2p5/8 w - - 0 1");
+        String result = moveGenerator.alphaBeta(board, 5, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
+        System.out.println("result is: " + result);
+        String move = result.substring(0,4);
+        System.out.println(moveGenerator.convertMoveDigitsToField(move.charAt(0),move.charAt(1)) + "->" + moveGenerator.convertMoveDigitsToField(move.charAt(2),move.charAt(3)));
+    }
+
 
     @Test
     void iterativeDeepeningSearch(){
         board = new Board("4k2n/8/N4q2/1P6/3PPPP1/6P1/1P6/2R1K3 w - - 0 1");
-        String result = moveGenerator.iterativeDeepeningSearch(board, 1000);
+        String result = moveGenerator.iterativeDeepeningSearch(board, 3000);
         System.out.println("result is: " + result);
     }
     //TODO: bei timeLimit 6000 Error bei "move:2012ze(max): 3" -> IndexOutOfBounds (getCreatedByMove erfolgt nicht) in suchtiefe 4
@@ -75,6 +84,8 @@ public class MoveTests {
         board = new Board("2Q5/6K1/1p2N3/1r1p1k2/1r2R1N1/5n2/2p5/8 w - - 0 1");
         String result = moveGenerator.iterativeDeepeningSearch(board, 10000);
         System.out.println("result is: " + result);
+        String move = result.substring(0,4);
+        System.out.println(moveGenerator.convertMoveDigitsToField(move.charAt(0),move.charAt(1)) + "->" + moveGenerator.convertMoveDigitsToField(move.charAt(2),move.charAt(3)));
     }
 
 

@@ -583,6 +583,7 @@ public class MoveGenerator {
 
         String moveList = this.validMoves(b);
         System.out.println("move list:" + moveList);
+        System.out.println("in depth:" + depth);
 
         if(depth == 0 || b.isGameOver()||moveList.equals("")){
             //TODO: "gameOver" wird momentan am Anfang von makeMove gesetzt, wenn eigener Player Schachmatt ist
@@ -599,7 +600,7 @@ public class MoveGenerator {
 
 
         if(isMaxPlayer){
-            String bestMove = "";
+            String bestMove = "9999";
             for(int i = 0; i<moveList.length(); i+=4){
 
                 String move = moveList.substring(i,i+4);
@@ -609,7 +610,7 @@ public class MoveGenerator {
                 int currentEval = Integer.parseInt(alphaBeta(newBoard, depth-1, alpha, beta, false).substring(4));
                 System.out.println("alpha was:" + alpha);
                 System.out.println("beta was:" + beta);
-                if(currentEval >= alpha){
+                if(currentEval > alpha){
                     bestMove = move; //equiv. zu b.getCreatedByMove();
                     alpha = currentEval;
                 }
@@ -623,7 +624,7 @@ public class MoveGenerator {
             }
             return bestMove + alpha;
         } else {
-            String bestMove= "";
+            String bestMove= "9999";
             for(int i = 0; i<moveList.length(); i+=4){
 
                 String move = moveList.substring(i,i+4);
@@ -633,7 +634,7 @@ public class MoveGenerator {
                 int currentEval = Integer.parseInt(alphaBeta(newBoard, depth-1, alpha, beta, true).substring(4));
                 System.out.println("beta was:" + beta);
                 System.out.println("alpha was:" + alpha);
-                if (currentEval <= beta){
+                if (currentEval < beta){
                     bestMove = move;
                     beta = currentEval;
                 }
@@ -689,7 +690,7 @@ public class MoveGenerator {
                 System.out.println("zwischenergebnis: " + zwischenergebnis);
                 int currentEval = Integer.parseInt(zwischenergebnis.substring(4));
                 System.out.println("currentEval: "+ currentEval + "in iteration (max): " + i + "of move: " + move);
-                if(currentEval >= max){
+                if(currentEval > max){
                     bestMove = move; //equiv. zu b.getCreatedByMove();
                     max = currentEval;
                     System.out.println("was greater!");
@@ -715,7 +716,7 @@ public class MoveGenerator {
 
                 int currentEval = Integer.parseInt(minMax(newBoard, depth-1, true).substring(4));
                 System.out.println("currentEval: "+ currentEval + "in iteration (min): " + i + "of move: " + move);
-                if (currentEval <= min){
+                if (currentEval < min){
                     bestMove = move;
                     min = currentEval;
                     System.out.println("was lower!");
@@ -774,7 +775,7 @@ public class MoveGenerator {
             return b.getCreatedByMove() + score;
         }
 
-
+        //https://stackoverflow.com/questions/15447580/java-minimax-alpha-beta-pruning-recursion-return
 
         if(isMaxPlayer){
             String bestMove = "";
@@ -785,13 +786,14 @@ public class MoveGenerator {
                 newBoard.setCreatedByMove(move);
                 System.out.println("max" + "board was created by move:" + move);
 
+                System.out.println("max: wird mit alpha" + alpha + "und beta:" + beta +"aufgerufen");
                 String zwischenergebnis = alphaBetaTimeLimit(newBoard, depth-1, alpha, beta, false, startTime, timeLimit);
                 System.out.println("move:" + move + "ze(max): "+zwischenergebnis);
                 int currentEval = Integer.parseInt(zwischenergebnis.substring(4));
                 System.out.println("currentEval is:" + currentEval);
                 System.out.println("alpha was:" + alpha);
                 System.out.println("beta was:" + beta);
-                if(currentEval >= alpha){
+                if(currentEval > alpha){
                     bestMove = move; //equiv. zu b.getCreatedByMove();
 
                     alpha = currentEval;
@@ -799,6 +801,7 @@ public class MoveGenerator {
                 System.out.println("best Move is currently" + bestMove);
                 if(bestMove.equals("")){
                     System.out.println("nothing!");
+                    bestMove = "9999";
                 }
                 System.out.println("alpha is:" + alpha);
                 //alpha = Math.max(alpha,currentEval); wird redundant, siehe 2 Zeilen vorher
@@ -819,13 +822,14 @@ public class MoveGenerator {
                 newBoard.setCreatedByMove(move);
                 System.out.println("min" + "board was created by move:" + move);
 
+                System.out.println("min: wird mit alpha" + alpha + "und beta:" + beta +"aufgerufen");
                 String zwischenergebnis = alphaBetaTimeLimit(newBoard, depth-1, alpha, beta, true, startTime, timeLimit);
                 System.out.println("move:" + move + "ze: "+ zwischenergebnis);
                 int currentEval = Integer.parseInt(zwischenergebnis.substring(4));
                 System.out.println("currentEval is:" + currentEval);
                 System.out.println("beta was:" + beta);
                 System.out.println("alpha was:" + alpha);
-                if (currentEval <= beta){
+                if (currentEval < beta){
                     bestMove = move;
 
                     beta = currentEval;
@@ -833,6 +837,7 @@ public class MoveGenerator {
                 System.out.println("best move is currently:" + bestMove);
                 if(bestMove.equals("")){
                     System.out.println("nothing!");
+                    bestMove = "9999";
                 }
                 System.out.println("beta is:" + beta );
                 //beta = Math.min(beta, currentEval);
