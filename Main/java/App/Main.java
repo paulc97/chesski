@@ -13,6 +13,12 @@ public class Main {
 
         while(true){
 
+            if (b1.isCurrentPlayerIsWhite()){
+                b1.setKIPlaysWhite(true);
+            } else {
+                b1.setKIPlaysWhite(false);
+            }
+
             long currentTime = System.currentTimeMillis();
             String validMoves = mg.validMoves(b1);
             //
@@ -39,6 +45,8 @@ public class Main {
             }
 
             usedTime += (System.currentTimeMillis()- currentTime);
+
+
 
             /*
 

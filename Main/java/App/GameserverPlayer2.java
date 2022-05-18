@@ -63,6 +63,11 @@ public class GameserverPlayer2 {
                     System.out.println("Starting move generation!");
                     MoveGenerator mg = new MoveGenerator();
                     Board b = new Board(ag.fen);
+                    if (b.isCurrentPlayerIsWhite()){
+                        b.setKIPlaysWhite(true);
+                    } else {
+                        b.setKIPlaysWhite(false);
+                    }
 
                     String validMoves = mg.validMoves(b);
                     String moveBitboardPosition = mg.moveSelector(b, validMoves, usedTime);

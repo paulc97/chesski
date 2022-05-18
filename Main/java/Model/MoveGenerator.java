@@ -21,6 +21,8 @@ public class MoveGenerator {
         static Knights knights = new Knights();
         static King king = new King();
 
+        int assessedLeaves = 0;
+
 
         public String ownPossibleMoves(Board board) {
             String list = "";
@@ -455,7 +457,7 @@ public class MoveGenerator {
         }else{
             player = "Black";
         }
-        System.out.println(player+" played: "+convertMoveDigitsToField(move.charAt(0),move.charAt(1))+"->"+convertMoveDigitsToField(move.charAt(2),move.charAt(3)));
+        //System.out.println(player+" played: "+convertMoveDigitsToField(move.charAt(0),move.charAt(1))+"->"+convertMoveDigitsToField(move.charAt(2),move.charAt(3)));
 
 
             String oldFEN = b.bitboardsToFenParser().split(" ")[0]; //für 50-Zug-Remis-Regel
@@ -565,7 +567,7 @@ public class MoveGenerator {
         int panicModeThresholdInMs = 2000;
 
         //defines the number of moves to use deepening search
-        int firstMoveThresholdMoves = 0;
+        int firstMoveThresholdMoves = 10;
 
         if (validMoves == null || validMoves.equals("")) {
             return validMoves;
@@ -595,16 +597,21 @@ public class MoveGenerator {
     }
 
     public long timeCalculator(Board b){
-            long averageNumberOfMoves = 40;
-            return b.getGameTimeLimitInMs()/(averageNumberOfMoves);
+            if (b.getNextMoveCount()<10){
+            long averageNumberOfMoves = 500;
+            return b.getGameTimeLimitInMs()/(averageNumberOfMoves);}
+            else {
+                long averageNumberOfMoves = 40;
+                return b.getGameTimeLimitInMs()/(averageNumberOfMoves);
+            }
     }
 
     public int depthCalculator(Board b){
-        if (b.getNextMoveCount()/2 < 30){
-            return 3;
+        if (b.getNextMoveCount()/2 < 10){
+            return 1;
         }
         if (b.getNextMoveCount()/2 < 40){
-            return 4;
+            return 3;
         }
         return 5;
 
@@ -628,13 +635,16 @@ public class MoveGenerator {
      * @return String in this format: XXXXY.. where XXXX is representation of move and Y.. value of Bewertungsfunktion
      */
     public String alphaBeta (Board b, int depth, int alpha, int beta, boolean isMaxPlayer){
-
+        //System.out.println("Is KI playing white: "+ b.isKIPlayingWhite());
+        //System.out.println("Current player is white: "+ b.isCurrentPlayerIsWhite());
+        //System.out.println("Is max player: "+isMaxPlayer);
 
         String moveList = this.validMoves(b);
-        System.out.println("move list:" + moveList);
-        System.out.println("in depth:" + depth);
+        //System.out.println("move list:" + moveList);
+        //System.out.println("in depth:" + depth);
 
         if(depth == 0 || b.isGameOver()||moveList.equals("")){
+            assessedLeaves++;
             //TODO: "gameOver" wird momentan am Anfang von makeMove gesetzt, wenn eigener Player Schachmatt ist
             //wenn am Ende von Make move noch "gameOver" gesetzt würde, wenn anderer Player Schachmatt ist (oder gleich am Ende von validMoves, wenn das leer ist
             //dann könnte man hier die moveList auch erst nach dem check dass nicht gameOver ist generieren und so evtl. Zeit sparen
@@ -642,7 +652,7 @@ public class MoveGenerator {
             //TODO: muss dan bei der Bewertungsfunktion überprüft werden, ob gerade verloren ist/König im Schachmatt steht?
             String score = String.valueOf(b.assessBoardFromOwnPerspective());
 
-            System.out.println(b.getCreatedByMove() + score);
+            //System.out.println(b.getCreatedByMove() + score);
             return b.getCreatedByMove() + score; //TODO: wann wird created by move gesetzt?
         }
 
@@ -657,17 +667,17 @@ public class MoveGenerator {
                 newBoard.setCreatedByMove(move);
 
                 int currentEval = Integer.parseInt(alphaBeta(newBoard, depth-1, alpha, beta, false).substring(4));
-                System.out.println("alpha was:" + alpha);
-                System.out.println("beta was:" + beta);
+                //System.out.println("alpha was:" + alpha);
+                //System.out.println("beta was:" + beta);
                 if(currentEval > alpha){
                     bestMove = move; //equiv. zu b.getCreatedByMove();
                     alpha = currentEval;
                 }
-                System.out.println("alpha is:" + alpha);
+                //System.out.println("alpha is:" + alpha);
                 //alpha = Math.max(alpha,currentEval); wird redundant, siehe 2 Zeilen vorher
 
                 if (beta<=alpha){
-                    System.out.println("Beta cutoff!");
+                    //System.out.println("Beta cutoff!");
                     break; //beta-cutoff
                 }
             }
@@ -681,17 +691,17 @@ public class MoveGenerator {
                 newBoard.setCreatedByMove(move);
 
                 int currentEval = Integer.parseInt(alphaBeta(newBoard, depth-1, alpha, beta, true).substring(4));
-                System.out.println("beta was:" + beta);
-                System.out.println("alpha was:" + alpha);
+                //System.out.println("beta was:" + beta);
+                //System.out.println("alpha was:" + alpha);
                 if (currentEval < beta){
                     bestMove = move;
                     beta = currentEval;
                 }
-                System.out.println("beta is:" + beta);
+                //System.out.println("beta is:" + beta);
                 //beta = Math.min(beta, currentEval);
 
                 if (beta <= alpha){
-                    System.out.println("Alpha cutoff!");
+                    //System.out.println("Alpha cutoff!");
                     break; //alpha-cutoff
                 }
 
@@ -706,9 +716,10 @@ public class MoveGenerator {
 
 
         String moveList = this.validMoves(b);
-        System.out.println("Valid Move List: " + moveList);
+        //System.out.println("Valid Move List: " + moveList);
 
         if(depth == 0 || b.isGameOver()||moveList.equals("")){
+            assessedLeaves++;
             //TODO: "gameOver" wird momentan am Anfang von makeMove gesetzt, wenn eigener Player Schachmatt ist
             //wenn am Ende von Make move noch "gameOver" gesetzt würde, wenn anderer Player Schachmatt ist (oder gleich am Ende von validMoves, wenn das leer ist
             //dann könnte man hier die moveList auch erst nach dem check dass nicht gameOver ist generieren und so evtl. Zeit sparen
@@ -717,62 +728,62 @@ public class MoveGenerator {
 
             String score = String.valueOf(b.assessBoardFromOwnPerspective());
 
-            System.out.println(b.getCreatedByMove() + score);
+            //System.out.println(b.getCreatedByMove() + score);
             return b.getCreatedByMove() + score; //TODO: wann wird created by move gesetzt?
         }
 
 
 
         if(isMaxPlayer){
-            System.out.println("This is max player");
+            //System.out.println("This is max player");
             String bestMove = "";
             int max = -Integer.MAX_VALUE;
             for(int i = 0; i<moveList.length(); i+=4){
 
                 String move = moveList.substring(i,i+4);
 
-                System.out.println("Iteration: " + i + " with move: " + move);
+                //System.out.println("Iteration: " + i + " with move: " + move);
                 Board newBoard = b.createBoardFromMove(move);
                 newBoard.setCreatedByMove(move);
 
                 String zwischenergebnis = minMax(newBoard, depth-1, false);
-                System.out.println("zwischenergebnis: " + zwischenergebnis);
+                //System.out.println("zwischenergebnis: " + zwischenergebnis);
                 int currentEval = Integer.parseInt(zwischenergebnis.substring(4));
-                System.out.println("currentEval: "+ currentEval + "in iteration (max): " + i + "of move: " + move);
+                //System.out.println("currentEval: "+ currentEval + "in iteration (max): " + i + "of move: " + move);
                 if(currentEval > max){
                     bestMove = move; //equiv. zu b.getCreatedByMove();
                     max = currentEval;
-                    System.out.println("was greater!");
+                    //System.out.println("was greater!");
                 }
 
 
 
             }
-            System.out.println("best move(max): " + bestMove + "with score: " + max);
+            //System.out.println("best move(max): " + bestMove + "with score: " + max);
             return bestMove + max;
         } else {
-            System.out.println("This is min player");
+            //System.out.println("This is min player");
             String bestMove= "";
             int min = Integer.MAX_VALUE;
             for(int i = 0; i<moveList.length(); i+=4){
 
                 String move = moveList.substring(i,i+4);
-                System.out.println("Iteration: " + i + " with move: " + move);
+                //System.out.println("Iteration: " + i + " with move: " + move);
 
 
                 Board newBoard = b.createBoardFromMove(move);
                 newBoard.setCreatedByMove(move);
 
                 int currentEval = Integer.parseInt(minMax(newBoard, depth-1, true).substring(4));
-                System.out.println("currentEval: "+ currentEval + "in iteration (min): " + i + "of move: " + move);
+                //System.out.println("currentEval: "+ currentEval + "in iteration (min): " + i + "of move: " + move);
                 if (currentEval < min){
                     bestMove = move;
                     min = currentEval;
-                    System.out.println("was lower!");
+                    //System.out.println("was lower!");
                 }
 
             }
-            System.out.println("best move(min): " + bestMove + "with score: " + min);
+            //System.out.println("best move(min): " + bestMove + "with score: " + min);
             return bestMove + min;
         }
     }
@@ -797,7 +808,7 @@ public class MoveGenerator {
                 bestMoveSoFar = result;
             }
             depth++;
-            System.out.println("Increased depth, current:" + depth);
+            //System.out.println("Increased depth, current:" + depth);
         }
         return bestMoveSoFar;
     }
@@ -805,6 +816,9 @@ public class MoveGenerator {
     //Alpha-Beta with Time-Limit for IDS
     //TODO: aktualisieren, falls alphaBeta Methode verändert wird
     public String alphaBetaTimeLimit (Board b, int depth, int alpha, int beta, boolean isMaxPlayer, long startTime, long timeLimit){
+        //System.out.println("Is KI playing white: "+ b.isKIPlayingWhite());
+        //System.out.println("Current player is white: "+ b.isCurrentPlayerIsWhite());
+        //System.out.println("Is max player: "+isMaxPlayer);
 
         long currentTime = System.currentTimeMillis();
         long elapsedTime = (currentTime - startTime);
@@ -815,12 +829,13 @@ public class MoveGenerator {
         String moveList = this.validMoves(b);
 
         if(outOfTime || depth == 0 || b.isGameOver()||moveList.equals("")){
+            assessedLeaves++;
             String score = String.valueOf(b.assessBoardFromOwnPerspective());
             if(outOfTime){
                 System.out.println("Out of Time!");
             }
-            System.out.println("b currently assessed, was created by move" + b.getCreatedByMove());
-            System.out.println(b.getCreatedByMove() + score);
+            //System.out.println("b currently assessed, was created by move" + b.getCreatedByMove());
+            //System.out.println(b.getCreatedByMove() + score);
             return b.getCreatedByMove() + score;
         }
 
@@ -833,34 +848,34 @@ public class MoveGenerator {
                 String move = moveList.substring(i,i+4);
                 Board newBoard = b.createBoardFromMove(move);
                 newBoard.setCreatedByMove(move);
-                System.out.println("max" + "board was created by move:" + move);
+                //System.out.println("max" + "board was created by move:" + move);
 
-                System.out.println("max: wird mit alpha" + alpha + "und beta:" + beta +"aufgerufen");
+                //System.out.println("max: wird mit alpha" + alpha + "und beta:" + beta +"aufgerufen");
                 String zwischenergebnis = alphaBetaTimeLimit(newBoard, depth-1, alpha, beta, false, startTime, timeLimit);
-                System.out.println("move:" + move + "ze(max): "+zwischenergebnis);
+                //System.out.println("move:" + move + "ze(max): "+zwischenergebnis);
                 int currentEval = Integer.parseInt(zwischenergebnis.substring(4));
-                System.out.println("currentEval is:" + currentEval);
-                System.out.println("alpha was:" + alpha);
-                System.out.println("beta was:" + beta);
+                //System.out.println("currentEval is:" + currentEval);
+                //System.out.println("alpha was:" + alpha);
+                //System.out.println("beta was:" + beta);
                 if(currentEval > alpha){
                     bestMove = move; //equiv. zu b.getCreatedByMove();
 
                     alpha = currentEval;
                 }
-                System.out.println("best Move is currently" + bestMove);
+                //System.out.println("best Move is currently" + bestMove);
                 if(bestMove.equals("")){
-                    System.out.println("nothing!");
+                    //System.out.println("nothing!");
                     bestMove = "9999";
                 }
-                System.out.println("alpha is:" + alpha);
+                //System.out.println("alpha is:" + alpha);
                 //alpha = Math.max(alpha,currentEval); wird redundant, siehe 2 Zeilen vorher
 
                 if (beta<=alpha){
-                    System.out.println("Beta cutoff!");
+                    //System.out.println("Beta cutoff!");
                     break; //beta-cutoff
                 }
             }
-            System.out.println("max out of for:" + bestMove + alpha);
+            //System.out.println("max out of for:" + bestMove + alpha);
             return bestMove + alpha;
         } else {
             String bestMove= "";
@@ -869,43 +884,49 @@ public class MoveGenerator {
                 String move = moveList.substring(i,i+4);
                 Board newBoard = b.createBoardFromMove(move);
                 newBoard.setCreatedByMove(move);
-                System.out.println("min" + "board was created by move:" + move);
+                //System.out.println("min" + "board was created by move:" + move);
 
-                System.out.println("min: wird mit alpha" + alpha + "und beta:" + beta +"aufgerufen");
+                //System.out.println("min: wird mit alpha" + alpha + "und beta:" + beta +"aufgerufen");
                 String zwischenergebnis = alphaBetaTimeLimit(newBoard, depth-1, alpha, beta, true, startTime, timeLimit);
-                System.out.println("move:" + move + "ze: "+ zwischenergebnis);
+                //System.out.println("move:" + move + "ze: "+ zwischenergebnis);
                 int currentEval = Integer.parseInt(zwischenergebnis.substring(4));
-                System.out.println("currentEval is:" + currentEval);
-                System.out.println("beta was:" + beta);
-                System.out.println("alpha was:" + alpha);
+                //System.out.println("currentEval is:" + currentEval);
+                //System.out.println("beta was:" + beta);
+                //System.out.println("alpha was:" + alpha);
                 if (currentEval < beta){
                     bestMove = move;
 
                     beta = currentEval;
                 }
-                System.out.println("best move is currently:" + bestMove);
+                //System.out.println("best move is currently:" + bestMove);
                 if(bestMove.equals("")){
-                    System.out.println("nothing!");
+                    //System.out.println("nothing!");
                     bestMove = "9999";
                 }
-                System.out.println("beta is:" + beta );
+                //System.out.println("beta is:" + beta );
                 //beta = Math.min(beta, currentEval);
 
                 if (beta <= alpha){
-                    System.out.println("Alpha cutoff!");
+                    //System.out.println("Alpha cutoff!");
                     break; //alpha-cutoff
                 }
 
             }
-            System.out.println("min out of for:" + bestMove + beta);
+            //System.out.println("min out of for:" + bestMove + beta);
             return bestMove + beta;
         }
     }
 
 
+    public int getAssessedLeaves() {
+        return assessedLeaves;
+    }
 
+    public void setAssessedLeaves(int assessedLeaves) {
+        this.assessedLeaves = assessedLeaves;
+    }
 
-        public int getMoveCount(String list){
+    public int getMoveCount(String list){
 
             return (list.replace("-","").length()/4);
 

@@ -41,6 +41,7 @@ public class Board implements Comparable <Board> {
     private int assessmentValue = 0;
     private String createdByMove = "";
 
+
     //WIP EP start
     //ist File in der EnPassant möglich/erlaubt ist
     /*private long enPassantBitboardFile =0L;
@@ -176,7 +177,11 @@ public class Board implements Comparable <Board> {
 
     public Board createBoardFromMove (String move){
         Board newBoard = new Board(this.bitboardsToFenParser());
+        if (!this.isKIPlayingWhite()){
+            newBoard.setKIPlaysWhite(false);
+        }
         makeMove(newBoard, move);
+
         return newBoard;}
         //TODO: vllt hier schon createdByMove(move) unterbringen?
 
@@ -279,13 +284,13 @@ public class Board implements Comparable <Board> {
             long attackedPawns = Long.bitCount((fieldsAttackedByBlack(this) & this.getOwnPawns()));
             long attackedQueens = Long.bitCount(fieldsAttackedByBlack(this) & this.getOwnQueen());
             long attackedPieces = Long.bitCount(fieldsAttackedByBlack(this) & (this.getOwnBishops() | this.getOwnKnights() | this.getOwnRooks()));
-            System.out.println("APA" + attackedPawns + "AQ" + attackedQueens + "API" + attackedPieces);
+            //System.out.println("APA" + attackedPawns + "AQ" + attackedQueens + "API" + attackedPieces);
             this.assessmentValue -= (1.5*attackedPieces+0.2*attackedPawns+4*attackedQueens);
         } else {
             long attackedPawns = Long.bitCount((fieldsAttackedByWhite(this) & this.getOwnPawns()));
             long attackedQueens = Long.bitCount(fieldsAttackedByWhite(this) & this.getOwnQueen());
             long attackedPieces = Long.bitCount(fieldsAttackedByWhite(this) & (this.getOwnBishops() | this.getOwnKnights() | this.getOwnRooks()));
-            System.out.println("APA" + attackedPawns + "AQ" + attackedQueens + "API" + attackedPieces);
+            //System.out.println("APA" + attackedPawns + "AQ" + attackedQueens + "API" + attackedPieces);
             this.assessmentValue -= (1.5*attackedPieces+0.2*attackedPawns+4*attackedQueens);
         }
         //Hanging Pieces
@@ -304,7 +309,7 @@ public class Board implements Comparable <Board> {
         for (int i = 0; i<8; i++){
             if (Long.bitCount(FileMasks8[i]& this.getOwnPawns())>1){
                 this.assessmentValue -= 0.5;
-                System.out.println("Doppelbauer in" + i);
+                //System.out.println("Doppelbauer in" + i);
             }
         }
         //TODO: isolierte Bauern if wished
@@ -838,6 +843,11 @@ public class Board implements Comparable <Board> {
     public int compareTo(Board o) {
         return Integer.compare(this.assessmentValue, o.getAssessmentValue());
     }
+
+    public void setKIPlaysWhite(boolean KIPlaysWhite) {
+        this.KIPlaysWhite = KIPlaysWhite;
+    }
+
 
 }
 
