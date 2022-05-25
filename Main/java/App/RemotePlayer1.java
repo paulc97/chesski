@@ -78,6 +78,7 @@ public class RemotePlayer1 {
                     System.out.println("Selected move: " + moveBitboardPosition);
                     System.out.println("Going to Submit translated move: " + move);
                     System.out.println("-----------------------------------------------------");
+                    Thread.sleep(500);
                     MessageObj response = new MessageObj(4, userName1, move, playerId1, gameId1);
                     session.getBasicRemote().sendText(me.encode(response));
                     usedTime += (System.currentTimeMillis() - startTime);
@@ -155,6 +156,8 @@ public class RemotePlayer1 {
 
 
         } catch (EncodeException | IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
 

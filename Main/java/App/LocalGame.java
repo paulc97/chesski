@@ -22,7 +22,7 @@ public class LocalGame {
             long currentTime = System.currentTimeMillis();
             String validMoves = mg.validMoves(b1);
             //
-            MoveGenerator.makeMove(b1, mg.moveSelector(b1, validMoves, usedTime));
+            mg.makeMove(b1, mg.moveSelector(b1, validMoves, usedTime));
             System.out.println("FEN Representation: " + b1.bitboardsToFenParser());
 
             b1.drawBoard();

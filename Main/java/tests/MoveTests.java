@@ -295,7 +295,7 @@ public class MoveTests {
         Board b = new Board("6k1/r4ppp/r7/1b6/8/8/4QPPP/4R1K1 w - - 0 1");
 
 
-        for (int i = 1; i <= 5; i++) {
+        for (int i = 1; i <= 4; i++) {
             //StartPosition
             long time = 0;
             long startEpoch = 0;
@@ -322,7 +322,7 @@ public class MoveTests {
         Board b = new Board("Q4R2/3kr3/1q3n1p/2p1p1p1/1p1bP1P1/1B1P3P/2PBK3/8 w - - 1 0");
 
 
-        for (int i = 1; i <= 5; i++) {
+        for (int i = 1; i <= 4; i++) {
             //StartPosition
             long time = 0;
             long startEpoch = 0;
@@ -349,7 +349,7 @@ public class MoveTests {
         Board b = new Board("7k/5ppp/8/R7/5n2/3B4/2K5/8 b - - 0 1");
 
 
-        for (int i = 1; i <= 5; i++) {
+        for (int i = 1; i <= 4; i++) {
             //StartPosition
             long time = 0;
             long startEpoch = 0;
@@ -378,7 +378,7 @@ public class MoveTests {
         Board b = new Board("6k1/r4ppp/r7/1b6/8/8/4QPPP/4R1K1 w - - 0 1");
 
 
-        for (int i = 1; i <= 5; i++) {
+        for (int i = 1; i <= 4; i++) {
             //StartPosition
             long time = 0;
             long startEpoch = 0;
@@ -407,7 +407,7 @@ public class MoveTests {
         Board b = new Board("Q4R2/3kr3/1q3n1p/2p1p1p1/1p1bP1P1/1B1P3P/2PBK3/8 w - - 1 0");
 
 
-        for (int i = 1; i <= 5; i++) {
+        for (int i = 1; i <= 4; i++) {
             //StartPosition
             long time = 0;
             long startEpoch = 0;

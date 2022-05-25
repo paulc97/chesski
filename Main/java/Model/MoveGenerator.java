@@ -23,7 +23,7 @@ public class MoveGenerator {
 
         int assessedLeaves = 0;
 
-        int averageNumberOfMoves = 40;
+        int averageNumberOfMoves = 30;
         private long[] timeDistribution = new long[averageNumberOfMoves];
         double gameTimeLimit = 120000;
         double panicModeTimeBuffer = 10000;
@@ -31,7 +31,7 @@ public class MoveGenerator {
 
         public MoveGenerator(){
             double expectationValue = averageNumberOfMoves/2;
-            double variance = 25;
+            double variance = 20;
             for (int i = 0; i < this.timeDistribution.length; i++){
                 double k = (double)i+1;
                 //if(k<expectationValue){k=k*(-1);}
@@ -597,8 +597,9 @@ public class MoveGenerator {
 
             System.out.println("Using iterative deepening search for move generation");
             //Iterative Deepening Search (ohne Zugsortierung)
-            long timeLimit = timeDistribution[Math.abs(b.getNextMoveCount()/2)];
-            if (timeLimit <100) timeLimit = 100;
+            long timeLimit = 100;
+            if (Math.floor(b.getNextMoveCount()/2)<timeDistribution.length) {
+            timeLimit += timeDistribution[b.getNextMoveCount()];}
             return iterativeDeepeningSearch(b, timeLimit).substring(0, 4);
 
 
@@ -795,9 +796,10 @@ public class MoveGenerator {
     }
 
     //IDS
-    public String iterativeDeepeningSearch(Board b, long timeLimt){
+    public String iterativeDeepeningSearch(Board b, long timeLimit){
+        System.out.println("Starting iterative deepening search with time limit: "+timeLimit);
         long startTime = System.currentTimeMillis();
-        long endTime = startTime + timeLimt;
+        long endTime = startTime + timeLimit;
         int depth = 1;
         String bestMoveSoFar ="";
         outOfTime = false;
@@ -807,8 +809,8 @@ public class MoveGenerator {
             if (currentTime >= endTime){
                 break;
             }
-
-            String result = alphaBetaTimeLimit(b, depth, Integer.MIN_VALUE, Integer.MAX_VALUE, true, currentTime, endTime-currentTime); //TODO
+            long newTimeLimit = endTime-currentTime;
+            String result = alphaBetaTimeLimit(b, depth, Integer.MIN_VALUE, Integer.MAX_VALUE, true, currentTime, newTimeLimit); //TODO
 
             if(!outOfTime){ //ohne den check könnte bestMoveSoFar mit move aus unkomplettierter Suche überschrieben werden, der könnte (momentan noch) schlechter sein
                 bestMoveSoFar = result;
