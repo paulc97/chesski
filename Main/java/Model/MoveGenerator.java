@@ -597,8 +597,10 @@ public class MoveGenerator {
 
             System.out.println("Using iterative deepening search for move generation");
             //Iterative Deepening Search (ohne Zugsortierung)
-            long timeLimit = timeDistribution[Math.abs(b.getNextMoveCount()/2)]+100;
+            long timeLimit = timeDistribution[Math.abs(b.getNextMoveCount()/2)];
+            if (timeLimit <100) timeLimit = 100;
             return iterativeDeepeningSearch(b, timeLimit).substring(0, 4);
+
 
 
         //int suchtiefe = depthCalculator(b);
