@@ -23,6 +23,22 @@ public class MoveGenerator {
 
         int assessedLeaves = 0;
 
+        int averageNumberOfMoves = 40;
+        private long[] timeDistribution = new long[averageNumberOfMoves];
+        double gameTimeLimit = 120000;
+        double panicModeTimeBuffer = 10000;
+        long totalTime;
+
+        public MoveGenerator(){
+            double expectationValue = averageNumberOfMoves/2;
+            double variance = 25;
+            for (int i = 0; i < this.timeDistribution.length; i++){
+                double k = (double)i+1;
+                //if(k<expectationValue){k=k*(-1);}
+                double standardDistribution = (1/Math.sqrt(2*Math.PI*(variance)))*Math.exp(-1*((((k)-expectationValue)*((k)-expectationValue))/(2*(variance))));
+                this.timeDistribution[i] = (long)Math.abs((standardDistribution)*(gameTimeLimit-panicModeTimeBuffer));
+            }
+        }
 
         public String ownPossibleMoves(Board board) {
             String list = "";
@@ -369,7 +385,7 @@ public class MoveGenerator {
 
         for (int i=0;i<moves.length();i+=4) {
 
-            Board tempB = new Board(b.bitboardsToFenParser());
+            Board tempB = new Board(b);
 
             tempB.setWhitePawns(executeMoveforOneBitboard(b.getWhitePawns(), moves.substring(i,i+4), 'P'));
             tempB.setWhiteKnights(executeMoveforOneBitboard(b.getWhiteKnights(), moves.substring(i,i+4), 'N'));
@@ -564,7 +580,6 @@ public class MoveGenerator {
 
     public String moveSelector(Board b, String validMoves, long usedTimeInMs) {
 
-        int panicModeThresholdInMs = 2000;
 
         //defines the number of moves to use deepening search
         int firstMoveThresholdMoves = 10;
@@ -573,40 +588,29 @@ public class MoveGenerator {
             return validMoves;
         }
 
-        if ((b.getGameTimeLimitInMs() - usedTimeInMs) < panicModeThresholdInMs) {
+        if ((gameTimeLimit - usedTimeInMs) < panicModeTimeBuffer) {
             System.out.println("Entered panic mode");
-            //zufällige Zugauswahl
-            //Min + (int)(Math.random() * ((Max - Min) + 1))
-            int randomEndIndex = Math.abs(1 + (int) (Math.random() * ((validMoves.length() / 4 - 1) + 1))) * 4;
-            return validMoves.substring(randomEndIndex - 4, randomEndIndex);
+            int depth = 1;
+            return alphaBeta(b, depth, Integer.MIN_VALUE, Integer.MAX_VALUE, true).substring(0, 4);
         }
 
-        if (b.getNextMoveCount() < firstMoveThresholdMoves * 2) {
+
             System.out.println("Using iterative deepening search for move generation");
             //Iterative Deepening Search (ohne Zugsortierung)
-            long timeLimit = timeCalculator(b);
+            long timeLimit = timeDistribution[Math.abs(b.getNextMoveCount()/2)]+100;
             return iterativeDeepeningSearch(b, timeLimit).substring(0, 4);
-        }
 
-        int suchtiefe = depthCalculator(b);
-        System.out.println("Using alpha beta search for move generation");
-        return alphaBeta(b, suchtiefe, Integer.MIN_VALUE, Integer.MAX_VALUE, true).substring(0, 4);
+
+        //int suchtiefe = depthCalculator(b);
+        //System.out.println("Using alpha beta search for move generation");
+        //return alphaBeta(b, suchtiefe, Integer.MIN_VALUE, Integer.MAX_VALUE, true).substring(0, 4);
 
         //String bestMoveFromMinMax = minMax(b, suchtiefe, true).substring(0,4);
 
     }
 
-    public long timeCalculator(Board b){
-            if (b.getNextMoveCount()<10){
-            long averageNumberOfMoves = 500;
-            return b.getGameTimeLimitInMs()/(averageNumberOfMoves);}
-            else {
-                long averageNumberOfMoves = 40;
-                return b.getGameTimeLimitInMs()/(averageNumberOfMoves);
-            }
-    }
 
-    public int depthCalculator(Board b){
+/*    public int depthCalculator(Board b){
         if (b.getNextMoveCount()/2 < 10){
             return 1;
         }
@@ -615,7 +619,7 @@ public class MoveGenerator {
         }
         return 5;
 
-    }
+    }*/
 
 
 
@@ -969,7 +973,7 @@ public class MoveGenerator {
 
             for (int i=0;i<moves.length();i+=4) {
 
-                Board tempB = new Board(b.bitboardsToFenParser());
+                Board tempB = new Board(b);
 
                 tempB.setWhitePawns(executeMoveforOneBitboard(b.getWhitePawns(), moves.substring(i,i+4), 'P'));
                 tempB.setWhiteKnights(executeMoveforOneBitboard(b.getWhiteKnights(), moves.substring(i,i+4), 'N'));

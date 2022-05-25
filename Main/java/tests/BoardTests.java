@@ -1,4 +1,4 @@
-package tests;
+
 
 import Model.Board;
 import Model.MoveGenerator;

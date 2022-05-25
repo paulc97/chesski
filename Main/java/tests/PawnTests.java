@@ -1,5 +1,3 @@
-package tests;
-
 import Model.Board;
 import Model.MoveGenerator;
 import org.junit.jupiter.api.BeforeEach;

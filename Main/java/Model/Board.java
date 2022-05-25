@@ -22,7 +22,6 @@ public class Board implements Comparable <Board> {
     private boolean blackToCastleKingside = false;
     private boolean blackToCastleQueenside = false;
     private String enPassants = "";
-    long gameTimeLimit = 120000;
     private long
             whiteKing=0L,
             whiteQueen=0L,
@@ -160,6 +159,31 @@ public class Board implements Comparable <Board> {
             k++;
 
         }
+
+    }
+
+    public Board (Board b){
+        this.whitePawns = b.whitePawns;
+        this.blackPawns = b.blackPawns;
+        this.whiteBishops = b.whiteBishops;
+        this.blackBishops = b.blackBishops;
+        this.whiteKnights = b.whiteKnights;
+        this.blackKnights = b.blackKnights;
+        this.whiteRooks = b.whiteRooks;
+        this.blackRooks = b.blackRooks;
+        this.whiteKing = b.whiteKing;
+        this.blackKing = b.blackKing;
+        this.whiteQueen = b.whiteQueen;
+        this.blackQueen = b.blackQueen;
+        this.KIPlaysWhite = b.KIPlaysWhite;
+        this.currentPlayerIsWhite = b.currentPlayerIsWhite;
+        this.nextMoveCount = b.nextMoveCount;
+        this.halfMoveCount = b.halfMoveCount;
+        this.whiteToCastleKingside = b.whiteToCastleKingside;
+        this.blackToCastleKingside = b.blackToCastleKingside;
+        this.whiteToCastleQueenside = b.whiteToCastleQueenside;
+        this.blackToCastleQueenside = b.blackToCastleQueenside;
+        this.enPassants = b.enPassants;
 
     }
 
@@ -635,9 +659,6 @@ public class Board implements Comparable <Board> {
         this.enPassants = enPassants;
     }
 
-    public long getGameTimeLimitInMs() {
-        return gameTimeLimit;
-    }
 
     /**
      * returns a long indicating the position of all white pieces
