@@ -5,8 +5,8 @@ package Controller;
 public class Game {
 
     String name;
-    public int id;
-    public String[] players;
+    public int ID;
+    public Player[] activePlayerList;
     public State state;
     Player currentPlayer;
 

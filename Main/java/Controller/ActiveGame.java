@@ -4,7 +4,7 @@ public class ActiveGame {
 
     Player[] activePlayerList;
     public int ID;
-    public int mayPlayerNumber;
+    public int maxPlayerNumber;
     public Player currentPlayer;
     public String fen;
     public boolean over;

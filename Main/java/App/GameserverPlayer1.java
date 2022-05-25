@@ -51,7 +51,7 @@ public class GameserverPlayer1 {
             logger.info("Received: " + message);
 
             //receiving an update for a game and returning a move
-            if (message.contains("activePlayerList")) {
+            if (message.contains("activePlayerList") && gameId1 != 0) {
                 ActiveGame ag = g.fromJson(message, ActiveGame.class);
                 if (ag.over || ag.draw) {
                     System.out.println("Game " + ag.ID + ": Game over or draw!");
@@ -107,21 +107,20 @@ public class GameserverPlayer1 {
                 System.out.println("Found " + games.length + " games");
 
                 for (Game game : games) {
-                    //change to <=1 to find games with one player
-                    if (game.players.length <= 1) {
+
+                    if (game.activePlayerList.length <= 1) {
 
                         boolean player1registered = false;
-                        boolean player2registered = false;
 
                         //check if player is already registered
-                        for (int i = 0; i < game.players.length; i++) {
-                            if (game.players[i].contains(userName1)) player1registered = true;
+                        for (int i = 0; i < game.activePlayerList.length; i++) {
+                            if (game.activePlayerList[i].playerName.equals(userName1)) player1registered = true;
                         }
 
                         if (gameId1 == 0 && !player1registered) {
-                            MessageObj response2 = new MessageObj(3, userName1, playerId1, game.id, 1);
+                            MessageObj response2 = new MessageObj(3, userName1, playerId1, game.ID, 1);
                             session.getBasicRemote().sendText(g.toJson(response2, MessageObj.class));
-                            gameId1 = game.id;
+                            gameId1 = game.ID;
                             System.out.println("Joined game... set game ID1 to: " + gameId1);
 
                         }
