@@ -1,5 +1,6 @@
 import Model.Board;
 import Model.MoveGenerator;
+import Model.PieceSquareTables;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -20,6 +21,16 @@ public class MoveTests {
     @Test
     void substringTest(){
         System.out.println("12345000".substring(4));
+    }
+
+    @Test
+    void sthTest(){
+
+        board = new Board("7r/Pn6/8/8/8/1P3P2/2K4p/k1n5 w - - 4 265");
+        System.out.println(Long.numberOfTrailingZeros(65280));
+        //1111111100000000
+        //result: 8
+        System.out.println(board.addPSTValues(board.getWhitePawns(), PieceSquareTables.PST_WHITE_PAWNS));
     }
 
     @Test
