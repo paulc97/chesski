@@ -1,11 +1,7 @@
 package Model;
 
-import Model.Pieces.Zobris;
-
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 
 import static Model.Mask.*;
 import static Model.MoveGenerator.*;
@@ -217,16 +213,16 @@ public class Board implements Comparable <Board> {
     /**
      * Creates all possible successor boards for this board (1 level), including assessment and sorting by assessment
      */
-   // public void generateSuccessorBoards(Board b, String validMoves){
-    //    for (int i=0;i<validMoves.length();i+=4) {
-    //        String move = validMoves.substring(i,i+4);
-    //        Board newBoard = createBoardFromMove(move);
-    //        newBoard.setCreatedByMove(move);
-    //        newBoard.assessBoard();
-    //        successorBoards.add(newBoard);
-    //    }
-   //     successorBoards.sort(Board::compareTo);
-  //  }
+    public void generateSuccessorBoards(Board b, String validMoves){
+        for (int i=0;i<validMoves.length();i+=4) {
+            String move = validMoves.substring(i,i+4);
+            Board newBoard = createBoardFromMove(move);
+            newBoard.setCreatedByMove(move);
+            newBoard.assessBoard();
+            successorBoards.add(newBoard);
+        }
+        successorBoards.sort(Board::compareTo);
+    }
 
 
     /**
@@ -234,19 +230,9 @@ public class Board implements Comparable <Board> {
      * The board is assessed from the perspective of the current player
      */
     //TODO check if double works
-    public int assessBoard(HashMap<Long,Integer> assesedMoves){
+    public int assessBoard(){
 
         this.assessmentValue = 0;
-
-        long boardHash = Zobris.getZobristHash(this.whitePawns,this.whiteKnights,this.whiteBishops,this.whiteRooks,this.whiteQueen,this.whiteKing,this.blackBishops,this.blackKnights,this.blackBishops,this.blackRooks,this.blackQueen,this.blackKing,this.whiteToCastleKingside,this.whiteToCastleQueenside,this.blackToCastleKingside,this.blackToCastleQueenside,this.currentPlayerIsWhite);
-
-        //System.out.println("Reaching");
-        if (assesedMoves.containsKey(boardHash)){
-
-            //System.out.println("Board Already Assesed with Value:" + assesedMoves.get(boardHash));
-            return assesedMoves.get(boardHash);
-        }
-
 
         //TODO: vllt assessBoard in MoveGenerator auslagern, damit Instanzvariable nicht benötigt? oder entsprechene Methoden im MoveGenerator static machen
         String ownValidMoves = moveGenerator.validMoves(this);
@@ -407,25 +393,25 @@ public class Board implements Comparable <Board> {
         }
 
 
-        assesedMoves.put(boardHash,(int)this.assessmentValue);
+
         return (int)this.assessmentValue;
     }
 
     //Für MiniMax brauchen wir aber tatsächlich immer nur die Bewertungsfunktion von einer perspektive
     //bei den MinKnoten sollen ja die kleinsten Werte (schlechtesten aus MaxPlayers perspektive ausgewählt werden)
-    public int assessBoardFromOwnPerspective(HashMap<Long,Integer> assesedMoves){ //TODO: kann weg, wenn wir uns drauf geeignigt haben, was assessBoard zurückgibt
+    public int assessBoardFromOwnPerspective(){ //TODO: kann weg, wenn wir uns drauf geeignigt haben, was assessBoard zurückgibt
         //TODO: wenn KI gegen sich selbst spielt, immer KIPlaysWhite switchen nach jedem Zug
         if (KIPlaysWhite){//momentan immer true
             if(currentPlayerIsWhite){
-                return this.assessBoard(assesedMoves);
+                return this.assessBoard();
             } else {
-                return this.assessBoard(assesedMoves) *(-1);
+                return this.assessBoard() *(-1);
             }
         } else {
             if(currentPlayerIsWhite){
-                return this.assessBoard(assesedMoves)  *(-1);
+                return this.assessBoard()  *(-1);
             } else {
-                return this.assessBoard(assesedMoves);
+                return this.assessBoard();
             }
         }
     }
