@@ -36,7 +36,8 @@ public class MoveTests {
     @Test
     void assessmentTest1(){
         board = new Board("3N4/6K1/1p6/1r1p1k2/1rP1P1N1/2Q1Rn2/2p5/1PPP4 w - - 0 1");
-        System.out.println(board.assessBoard());
+        MoveGenerator mg = new MoveGenerator();
+        System.out.println(board.assessBoard(mg.assesedMoves));
     }
 
     @Test
@@ -243,14 +244,15 @@ public class MoveTests {
         long endepoch = 0;
 
         Board b = new Board("6k1/r4ppp/r7/1b6/8/8/4QPPP/4R1K1 w - - 0 1");
+        MoveGenerator mg = new MoveGenerator();
 
         for (int i = 0;i<1000;i++){
             startEpoch = System.currentTimeMillis();
-            b.assessBoard();
+            b.assessBoard(mg.assesedMoves);
             endepoch = System.currentTimeMillis();
             timesStart += endepoch - startEpoch;
         }
-        System.out.println("Assessment value: " + b.assessBoard());
+        //System.out.println("Assessment value: " + b.assessBoard());
         System.out.println("Rating board took "+(timesStart*0.001)+" Milliseconds");
 
 
@@ -265,14 +267,15 @@ public class MoveTests {
         long endepoch = 0;
 
         Board b = new Board("Q4R2/3kr3/1q3n1p/2p1p1p1/1p1bP1P1/1B1P3P/2PBK3/8 w - - 1 0");
+        MoveGenerator mg = new MoveGenerator();
 
         for (int i = 0;i<1000;i++){
             startEpoch = System.currentTimeMillis();
-            b.assessBoard();
+            b.assessBoard(mg.assesedMoves);
             endepoch = System.currentTimeMillis();
             timesStart += endepoch - startEpoch;
         }
-        System.out.println("Assessment value: " + b.assessBoard());
+        //System.out.println("Assessment value: " + b.assessBoard());
         System.out.println("Rating board took "+(timesStart*0.001)+" Milliseconds");
 
 
@@ -287,14 +290,15 @@ public class MoveTests {
         long endepoch = 0;
 
         Board b = new Board("7k/5ppp/8/R7/5n2/3B4/2K5/8 b - - 0 1");
+        MoveGenerator mg = new MoveGenerator();
 
         for (int i = 0;i<1000;i++){
             startEpoch = System.currentTimeMillis();
-            b.assessBoard();
+            b.assessBoard(mg.assesedMoves);
             endepoch = System.currentTimeMillis();
             timesStart += endepoch - startEpoch;
         }
-        System.out.println("Assessment value: " + b.assessBoard());
+        //System.out.println("Assessment value: " + b.assessBoard());
         System.out.println("Rating board took "+(timesStart*0.001)+" Milliseconds");
 
 

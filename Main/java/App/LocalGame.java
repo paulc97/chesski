@@ -2,6 +2,7 @@ package App;
 
 import Model.Board;
 import Model.MoveGenerator;
+import Model.Pieces.Zobris;
 
 public class LocalGame {
     public static void main(String[] args) {
@@ -10,6 +11,7 @@ public class LocalGame {
         MoveGenerator mg = new MoveGenerator();
         Board b1 = new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
         long usedTime = 0;
+
 
         while(true){
 
