@@ -62,7 +62,7 @@ public class GameserverPlayer1 {
                     long startTime = System.currentTimeMillis();
                     System.out.println("Starting move generation!");
                     MoveGenerator mg = new MoveGenerator();
-                    Board b = new Board(ag.fen);
+                    Board b = new Board(ag.fen, mg);
                     if (b.isCurrentPlayerIsWhite()){
                         b.setKIPlaysWhite(true);
                     } else {

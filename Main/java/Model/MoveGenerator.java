@@ -25,7 +25,7 @@ public class MoveGenerator {
         int assessedLeaves = 0;
 
         int averageNumberOfMoves = 30;
-        private long[] timeDistribution = new long[averageNumberOfMoves];
+        private final long[] timeDistribution = new long[averageNumberOfMoves];
         double gameTimeLimit = 120000;
         double panicModeTimeBuffer = 10000;
         long totalTime;
@@ -388,7 +388,7 @@ public class MoveGenerator {
 
         for (int i=0;i<moves.length();i+=4) {
 
-            Board tempB = new Board(b);
+            Board tempB = new Board(b, this);
 
             tempB.setWhitePawns(executeMoveforOneBitboard(b.getWhitePawns(), moves.substring(i,i+4), 'P'));
             tempB.setWhiteKnights(executeMoveforOneBitboard(b.getWhiteKnights(), moves.substring(i,i+4), 'N'));
@@ -980,7 +980,7 @@ public class MoveGenerator {
 
             for (int i=0;i<moves.length();i+=4) {
 
-                Board tempB = new Board(b);
+                Board tempB = new Board(b, this);
 
                 tempB.setWhitePawns(executeMoveforOneBitboard(b.getWhitePawns(), moves.substring(i,i+4), 'P'));
                 tempB.setWhiteKnights(executeMoveforOneBitboard(b.getWhiteKnights(), moves.substring(i,i+4), 'N'));

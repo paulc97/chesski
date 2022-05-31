@@ -8,7 +8,7 @@ public class LocalGame {
 
 
         MoveGenerator mg = new MoveGenerator();
-        Board b1 = new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+        Board b1 = new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", mg);
         long usedTime = 0;
 
         while(true){
