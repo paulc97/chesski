@@ -22,13 +22,13 @@ public class MoveGenerator {
         //public static HashMap<Long,Integer> assesedBoards = new HashMap<Long,Integer>();
         //public static final Zobrist zobrist = new Zobrist();
 
-        int assessedLeaves = 0;
+        static int assessedLeaves = 0;
 
-        int averageNumberOfMoves = 30;
-        private long[] timeDistribution = new long[averageNumberOfMoves];
-        double gameTimeLimit = 120000;
-        double panicModeTimeBuffer = 10000;
-        long totalTime;
+        static int averageNumberOfMoves = 30;
+        static private long[] timeDistribution = new long[averageNumberOfMoves];
+        static double gameTimeLimit = 120000;
+        static double panicModeTimeBuffer = 10000;
+        static long totalTime;
 
         public MoveGenerator(){
             double expectationValue = averageNumberOfMoves/2;
@@ -43,7 +43,7 @@ public class MoveGenerator {
             }
         }
 
-        public String ownPossibleMoves(Board board) {
+        public static String ownPossibleMoves(Board board) {
             String list = "";
             long startTime = System.currentTimeMillis();
             long maxtime = 10000L; //TODO: Zeitmanagement in validMoves Methode?
@@ -380,7 +380,7 @@ public class MoveGenerator {
     //TODO: static machen? oder assess-Funktion in moveGenerator auslagern?
     //"valid" i.e. eigener King ist danach nicht (mehr) im Schach
     //public static void perft(long WP,long WN,long WB,long WR,long WQ,long WK,long BP,long BN,long BB,long BR,long BQ,long BK,long EP,boolean CWK,boolean CWQ,boolean CBK,boolean CBQ,boolean WhiteToMove,int depth)
-    public String validMoves(Board b)
+    public static String validMoves(Board b)
     {
         String validMoves = "";
 
@@ -581,7 +581,7 @@ public class MoveGenerator {
 
     }
 
-    public String moveSelector(Board b, String validMoves, long usedTimeInMs) {
+    public static String moveSelector(Board b, String validMoves, long usedTimeInMs) {
 
 
         //defines the number of moves to use deepening search
@@ -644,12 +644,12 @@ public class MoveGenerator {
      * @param isMaxPlayer
      * @return String in this format: XXXXY.. where XXXX is representation of move and Y.. value of Bewertungsfunktion
      */
-    public String alphaBeta (Board b, int depth, int alpha, int beta, boolean isMaxPlayer){
+    public static String alphaBeta (Board b, int depth, int alpha, int beta, boolean isMaxPlayer){
         //System.out.println("Is KI playing white: "+ b.isKIPlayingWhite());
         //System.out.println("Current player is white: "+ b.isCurrentPlayerIsWhite());
         //System.out.println("Is max player: "+isMaxPlayer);
 
-        String moveList = this.validMoves(b);
+        String moveList = validMoves(b);
         //System.out.println("move list:" + moveList);
         //System.out.println("in depth:" + depth);
 
@@ -722,10 +722,10 @@ public class MoveGenerator {
 
 
     //das gleiche wie alphaBeta nur ohne cutoffs
-    public String minMax (Board b, int depth, boolean isMaxPlayer){
+    public static String minMax (Board b, int depth, boolean isMaxPlayer){
 
 
-        String moveList = this.validMoves(b);
+        String moveList = validMoves(b);
         //System.out.println("Valid Move List: " + moveList);
 
         if(depth == 0 || b.isGameOver()||moveList.equals("")){
@@ -799,7 +799,7 @@ public class MoveGenerator {
     }
 
     //IDS
-    public String iterativeDeepeningSearch(Board b, long timeLimit){
+    public static String iterativeDeepeningSearch(Board b, long timeLimit){
         System.out.println("Starting iterative deepening search with time limit: "+timeLimit);
         long startTime = System.currentTimeMillis();
         long endTime = startTime + timeLimit;
@@ -826,7 +826,7 @@ public class MoveGenerator {
 
     //Alpha-Beta with Time-Limit for IDS
     //TODO: aktualisieren, falls alphaBeta Methode verändert wird
-    public String alphaBetaTimeLimit (Board b, int depth, int alpha, int beta, boolean isMaxPlayer, long startTime, long timeLimit){
+    public static String alphaBetaTimeLimit (Board b, int depth, int alpha, int beta, boolean isMaxPlayer, long startTime, long timeLimit){
         //System.out.println("Is KI playing white: "+ b.isKIPlayingWhite());
         //System.out.println("Current player is white: "+ b.isCurrentPlayerIsWhite());
         //System.out.println("Is max player: "+isMaxPlayer);
@@ -837,7 +837,7 @@ public class MoveGenerator {
             outOfTime = true;
         }
 
-        String moveList = this.validMoves(b);
+        String moveList = validMoves(b);
 
         if(outOfTime || depth == 0 || b.isGameOver()||moveList.equals("")){
             assessedLeaves++;
@@ -929,15 +929,15 @@ public class MoveGenerator {
     }
 
 
-    public int getAssessedLeaves() {
+    public static int getAssessedLeaves() {
         return assessedLeaves;
     }
 
-    public void setAssessedLeaves(int assessedLeaves) {
-        this.assessedLeaves = assessedLeaves;
+    public static void setAssessedLeaves(int assessedLeavesNew) {
+        assessedLeaves = assessedLeavesNew;
     }
 
-    public int getMoveCount(String list){
+    public static int getMoveCount(String list){
 
             return (list.replace("-","").length()/4);
 

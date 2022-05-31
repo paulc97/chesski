@@ -11,7 +11,7 @@ import static Model.MoveGenerator.*;
 
 public class Board implements Comparable <Board> {
 
-    private MoveGenerator moveGenerator = new MoveGenerator();
+    //private MoveGenerator moveGenerator = new MoveGenerator();
 
     private boolean gameOver = false;
     private boolean whiteWon = false;
@@ -238,12 +238,12 @@ public class Board implements Comparable <Board> {
         this.assessmentValue = 0;
 
         //TODO: vllt assessBoard in MoveGenerator auslagern, damit Instanzvariable nicht benötigt? oder entsprechene Methoden im MoveGenerator static machen
-        String ownValidMoves = moveGenerator.validMoves(this);
+        String ownValidMoves = MoveGenerator.validMoves(this);
 
         //create board with same positions but opponents's turn to count their moves
         Board copyButOpponentsTurn = new Board(this.bitboardsToFenParser());
         copyButOpponentsTurn.setCurrentPlayerIsWhite(!copyButOpponentsTurn.isCurrentPlayerIsWhite());
-        String opponentsValidMoves = moveGenerator.validMoves(copyButOpponentsTurn);
+        String opponentsValidMoves = MoveGenerator.validMoves(copyButOpponentsTurn);
 
 
         // define assessment values for certain positions
@@ -308,8 +308,8 @@ public class Board implements Comparable <Board> {
 */
         //TODO: double vs int bzw. alles (auch oberen Teil, in dems um Schach(matt) geht) *10
         //Mobilität
-        this.assessmentValue += (int) moveGenerator.getMoveCount(ownValidMoves)*10;
-        this.assessmentValue -= (int) moveGenerator.getMoveCount(opponentsValidMoves)*10;
+        this.assessmentValue += (int) MoveGenerator.getMoveCount(ownValidMoves)*10;
+        this.assessmentValue -= (int) MoveGenerator.getMoveCount(opponentsValidMoves)*10;
 
         //Attacked Pieces
         if (currentPlayerIsWhite){
@@ -417,12 +417,12 @@ public class Board implements Comparable <Board> {
         }
 
         //TODO: vllt assessBoard in MoveGenerator auslagern, damit Instanzvariable nicht benötigt? oder entsprechene Methoden im MoveGenerator static machen
-        String ownValidMoves = moveGenerator.validMoves(this);
+        String ownValidMoves = MoveGenerator.validMoves(this);
 
         //create board with same positions but opponents's turn to count their moves
         Board copyButOpponentsTurn = new Board(this.bitboardsToFenParser());
         copyButOpponentsTurn.setCurrentPlayerIsWhite(!copyButOpponentsTurn.isCurrentPlayerIsWhite());
-        String opponentsValidMoves = moveGenerator.validMoves(copyButOpponentsTurn);
+        String opponentsValidMoves = MoveGenerator.validMoves(copyButOpponentsTurn);
 
 
         // define assessment values for certain positions
@@ -487,8 +487,8 @@ public class Board implements Comparable <Board> {
 */
         //TODO: double vs int bzw. alles (auch oberen Teil, in dems um Schach(matt) geht) *10
         //Mobilität
-        this.assessmentValue += (int) moveGenerator.getMoveCount(ownValidMoves)*10;
-        this.assessmentValue -= (int) moveGenerator.getMoveCount(opponentsValidMoves)*10;
+        this.assessmentValue += (int) MoveGenerator.getMoveCount(ownValidMoves)*10;
+        this.assessmentValue -= (int) MoveGenerator.getMoveCount(opponentsValidMoves)*10;
 
         //Attacked Pieces
         if (currentPlayerIsWhite){

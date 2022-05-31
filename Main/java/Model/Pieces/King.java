@@ -11,7 +11,6 @@ public class King implements Piece {
 
 
     public String moves(Board b) {
-        MoveGenerator mg = new MoveGenerator(); //for castling unsafe check
         String list = "";
         if (b.isCurrentPlayerIsWhite()) {
             long possibility;
@@ -41,7 +40,7 @@ public class King implements Piece {
 
             //CASTLING //TODO: Castling updaten? (er meint (Vid18) "castling isnt fully debugged yet) //unsafe for white?
 
-           long UNSAFE = mg.fieldsAttackedByBlack(b);
+           long UNSAFE = MoveGenerator.fieldsAttackedByBlack(b);
             if((UNSAFE&b.getWhiteKing())==0){
 
 
@@ -84,7 +83,7 @@ public class King implements Piece {
             }
 
             //CASTLING
-            long UNSAFE = mg.fieldsAttackedByWhite(b);
+            long UNSAFE = MoveGenerator.fieldsAttackedByWhite(b);
             if ((UNSAFE & b.getBlackKing()) == 0) {
                 if (b.isBlackToCastleKingside() && (((1L << 7L) & b.getBlackRooks()) != 0)) {
                     if (((b.getAllPieces()|UNSAFE )& ((1L << 5) | (1L << 6))) == 0) {
