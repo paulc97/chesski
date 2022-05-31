@@ -1,9 +1,8 @@
 package Model;
 
-import Model.Pieces.King;
-import Model.Pieces.Knights;
-import Model.Pieces.Pawns;
-import Model.Pieces.SlidingPieces;
+import Model.Pieces.*;
+
+import java.util.HashMap;
 
 import static Model.Mask.*;
 
@@ -20,6 +19,8 @@ public class MoveGenerator {
         static SlidingPieces slidingPieces = new SlidingPieces();
         static Knights knights = new Knights();
         static King king = new King();
+        //public static HashMap<Long,Integer> assesedBoards = new HashMap<Long,Integer>();
+        //public static final Zobrist zobrist = new Zobrist();
 
         int assessedLeaves = 0;
 
@@ -32,6 +33,8 @@ public class MoveGenerator {
         public MoveGenerator(){
             double expectationValue = averageNumberOfMoves/2;
             double variance = 20;
+            //zobrist.zobristFillArray();
+            System.out.println("MG Created");
             for (int i = 0; i < this.timeDistribution.length; i++){
                 double k = (double)i+1;
                 //if(k<expectationValue){k=k*(-1);}

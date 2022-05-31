@@ -468,6 +468,59 @@ public class MoveTests {
 
     }
 
+    @Test
+    void testZobristValid(){
+
+        Board b = new Board("7k/5ppp/8/R7/5n2/3B4/2K5/8 b - - 0 1");
+        MoveGenerator mg = new MoveGenerator();
+
+        for (int i = 0;i<1000;i++){
+          //  System.out.println("Key for Board:"+ mg.zobrist.getZobristHash(b.getWhitePawns(),b.getWhiteKnights(),b.getWhiteBishops(),b.getWhiteRooks(),b.getWhiteQueen(),b.getWhiteKing(),b.getBlackPawns(),b.getBlackKnights(),b.getBlackBishops(),b.getBlackRooks(),b.getBlackQueen(),b.getBlackKing(),b.isWhiteToCastleKingside(),b.isWhiteToCastleQueenside(),b.isBlackToCastleKingside(),b.isBlackToCastleQueenside(),b.isCurrentPlayerIsWhite()));
+
+        }
+
+    }
+
+    @Test
+    void testZobristTime(){
+
+        Board b = new Board("7k/5ppp/8/R7/5n2/3B4/2K5/8 b - - 0 1");
+        MoveGenerator mg = new MoveGenerator();
+
+        long startEpoch = System.currentTimeMillis();
+        for (int i = 0;i<100;i++){
+
+            //b.assessBoardTPT(mg.assesedBoards,mg.zobrist);
+
+        }
+        long endEpoch = System.currentTimeMillis();
+        long time = endEpoch - startEpoch;
+        System.out.println("Took: "+ time);
+
+
+    }
+
+    @Test
+    void testNoZobristTime(){
+
+        Board b = new Board("7k/5ppp/8/R7/5n2/3B4/2K5/8 b - - 0 1");
+        MoveGenerator mg = new MoveGenerator();
+
+        long startEpoch = System.currentTimeMillis();
+        for (int i = 0;i<100;i++){
+
+            b.assessBoard();
+
+        }
+        long endEpoch = System.currentTimeMillis();
+        long time = endEpoch - startEpoch;
+        System.out.println("Took: "+ time);
+
+
+    }
+
+
+
 
     @Test
     void debugForumMoves(){
