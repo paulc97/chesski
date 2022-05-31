@@ -11,7 +11,7 @@ import static Model.MoveGenerator.*;
 
 public class Board implements Comparable <Board> {
 
-    private MoveGenerator moveGenerator;
+    private MoveGenerator moveGenerator = new MoveGenerator();
 
     private boolean gameOver = false;
     private boolean whiteWon = false;
@@ -64,10 +64,8 @@ public class Board implements Comparable <Board> {
      * Overloaded constructors - allows to create a board from a fen string
       * or to create a new board based on an existing board and a move
      */
-    public Board(String fenString, MoveGenerator mg) {
-
+    public Board(String fenString) {
         this.fenToBitboardParser(fenString);
-        this.moveGenerator = mg;
     }
 
     /**
@@ -167,7 +165,7 @@ public class Board implements Comparable <Board> {
 
     }
 
-    public Board (Board b, MoveGenerator mg){
+    public Board (Board b){
         this.whitePawns = b.whitePawns;
         this.blackPawns = b.blackPawns;
         this.whiteBishops = b.whiteBishops;
@@ -189,7 +187,6 @@ public class Board implements Comparable <Board> {
         this.whiteToCastleQueenside = b.whiteToCastleQueenside;
         this.blackToCastleQueenside = b.blackToCastleQueenside;
         this.enPassants = b.enPassants;
-        this.moveGenerator = mg;
 
     }
 
@@ -206,7 +203,7 @@ public class Board implements Comparable <Board> {
     }
 
     public Board createBoardFromMove (String move){
-        Board newBoard = new Board(this.bitboardsToFenParser(), this.moveGenerator);
+        Board newBoard = new Board(this.bitboardsToFenParser());
         if (!this.isKIPlayingWhite()){
             newBoard.setKIPlaysWhite(false);
         }
@@ -244,7 +241,7 @@ public class Board implements Comparable <Board> {
         String ownValidMoves = moveGenerator.validMoves(this);
 
         //create board with same positions but opponents's turn to count their moves
-        Board copyButOpponentsTurn = new Board(this.bitboardsToFenParser(), this.moveGenerator);
+        Board copyButOpponentsTurn = new Board(this.bitboardsToFenParser());
         copyButOpponentsTurn.setCurrentPlayerIsWhite(!copyButOpponentsTurn.isCurrentPlayerIsWhite());
         String opponentsValidMoves = moveGenerator.validMoves(copyButOpponentsTurn);
 
@@ -423,7 +420,7 @@ public class Board implements Comparable <Board> {
         String ownValidMoves = moveGenerator.validMoves(this);
 
         //create board with same positions but opponents's turn to count their moves
-        Board copyButOpponentsTurn = new Board(this.bitboardsToFenParser(), this.moveGenerator);
+        Board copyButOpponentsTurn = new Board(this.bitboardsToFenParser());
         copyButOpponentsTurn.setCurrentPlayerIsWhite(!copyButOpponentsTurn.isCurrentPlayerIsWhite());
         String opponentsValidMoves = moveGenerator.validMoves(copyButOpponentsTurn);
 
