@@ -420,7 +420,7 @@ public class Board implements Comparable <Board> {
         String ownValidMoves = MoveGenerator.validMoves(this);
 
         //create board with same positions but opponents's turn to count their moves
-        Board copyButOpponentsTurn = new Board(this.bitboardsToFenParser());
+        Board copyButOpponentsTurn = new Board(this);
         copyButOpponentsTurn.setCurrentPlayerIsWhite(!copyButOpponentsTurn.isCurrentPlayerIsWhite());
         String opponentsValidMoves = MoveGenerator.validMoves(copyButOpponentsTurn);
 
@@ -554,7 +554,7 @@ public class Board implements Comparable <Board> {
         //TODO: isolierte Bauern if wished
 
         //PST
-        int pstScoreWhite = 0;
+     int pstScoreWhite = 0;
         pstScoreWhite += addPSTValues(this.getWhitePawns(), PieceSquareTables.PST_WHITE_PAWNS);
         pstScoreWhite += addPSTValues(this.getWhiteKnights(), PieceSquareTables.PST_WHITE_KNIGHTS);
         pstScoreWhite += addPSTValues(this.getWhiteBishops(), PieceSquareTables.PST_WHITE_BISHOPS);
