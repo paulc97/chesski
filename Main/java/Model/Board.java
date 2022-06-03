@@ -203,7 +203,7 @@ public class Board implements Comparable <Board> {
     }
 
     public Board createBoardFromMove (String move){
-        Board newBoard = new Board(this.bitboardsToFenParser());
+        Board newBoard = new Board(this);
         if (!this.isKIPlayingWhite()){
             newBoard.setKIPlaysWhite(false);
         }
