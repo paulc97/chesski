@@ -216,16 +216,16 @@ public class Board implements Comparable <Board> {
     /**
      * Creates all possible successor boards for this board (1 level), including assessment and sorting by assessment
      */
-    public void generateSuccessorBoards(Board b, String validMoves){
-        for (int i=0;i<validMoves.length();i+=4) {
-            String move = validMoves.substring(i,i+4);
-            Board newBoard = createBoardFromMove(move);
-            newBoard.setCreatedByMove(move);
-            newBoard.assessBoard();
-            successorBoards.add(newBoard);
-        }
-        successorBoards.sort(Board::compareTo);
-    }
+   // public void generateSuccessorBoards(Board b, String validMoves){
+   //     for (int i=0;i<validMoves.length();i+=4) {
+    //        String move = validMoves.substring(i,i+4);
+   //         Board newBoard = createBoardFromMove(move);
+   //         newBoard.setCreatedByMove(move);
+   //         newBoard.assessBoard();
+    //        successorBoards.add(newBoard);
+   //     }
+   //     successorBoards.sort(Board::compareTo);
+   // }
 
 
     /**
@@ -233,7 +233,16 @@ public class Board implements Comparable <Board> {
      * The board is assessed from the perspective of the current player
      */
     //TODO check if double works
-    public int assessBoard(){
+    public int assessBoard(HashMap assesedBoards,Zobrist zobrist){
+
+        long boardhash = zobrist.getZobristHash(this.whitePawns,this.whiteKnights,this.whiteBishops,this.whiteRooks,this.whiteQueen,this.whiteKing,this.blackPawns,this.blackKnights,this.blackBishops,this.blackRooks,this.blackQueen,this.blackKing,this.whiteToCastleKingside,this.whiteToCastleQueenside,this.blackToCastleKingside,this.blackToCastleQueenside,this.currentPlayerIsWhite);
+
+        //System.out.println("BoardHas:" +boardhash);
+
+        if (assesedBoards.containsKey(boardhash)){
+            //System.out.println("Bereits bewertet mit: "+ assesedBoards.get(boardhash));
+            return (int) assesedBoards.get(boardhash);
+        }
 
         this.assessmentValue = 0;
 
@@ -396,7 +405,7 @@ public class Board implements Comparable <Board> {
         }
 
 
-
+        assesedBoards.put(boardhash,(int)this.assessmentValue);
         return (int)this.assessmentValue;
     }
 
@@ -584,19 +593,19 @@ public class Board implements Comparable <Board> {
 
     //Für MiniMax brauchen wir aber tatsächlich immer nur die Bewertungsfunktion von einer perspektive
     //bei den MinKnoten sollen ja die kleinsten Werte (schlechtesten aus MaxPlayers perspektive ausgewählt werden)
-    public int assessBoardFromOwnPerspective(){ //TODO: kann weg, wenn wir uns drauf geeignigt haben, was assessBoard zurückgibt
+    public int assessBoardFromOwnPerspective(HashMap assesedBoards,Zobrist zobrist){ //TODO: kann weg, wenn wir uns drauf geeignigt haben, was assessBoard zurückgibt
         //TODO: wenn KI gegen sich selbst spielt, immer KIPlaysWhite switchen nach jedem Zug
         if (KIPlaysWhite){//momentan immer true
             if(currentPlayerIsWhite){
-                return this.assessBoard();
+                return this.assessBoard(assesedBoards,zobrist);
             } else {
-                return this.assessBoard() *(-1);
+                return this.assessBoard(assesedBoards,zobrist) *(-1);
             }
         } else {
             if(currentPlayerIsWhite){
-                return this.assessBoard()  *(-1);
+                return this.assessBoard(assesedBoards,zobrist)  *(-1);
             } else {
-                return this.assessBoard();
+                return this.assessBoard(assesedBoards,zobrist);
             }
         }
     }

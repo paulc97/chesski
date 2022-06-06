@@ -19,8 +19,8 @@ public class MoveGenerator {
         static SlidingPieces slidingPieces = new SlidingPieces();
         static Knights knights = new Knights();
         static King king = new King();
-        //public static HashMap<Long,Integer> assesedBoards = new HashMap<Long,Integer>();
-        //public static final Zobrist zobrist = new Zobrist();
+        public static HashMap<Long,Integer> assesedBoards = new HashMap<Long,Integer>();
+        public static final Zobrist zobrist = new Zobrist();
 
         static int assessedLeaves = 0;
 
@@ -33,7 +33,7 @@ public class MoveGenerator {
         public MoveGenerator(){
             double expectationValue = averageNumberOfMoves/2;
             double variance = 20;
-            //zobrist.zobristFillArray();
+            zobrist.zobristFillArray();
             System.out.println("MG Created");
             for (int i = 0; i < this.timeDistribution.length; i++){
                 double k = (double)i+1;
@@ -660,7 +660,7 @@ public class MoveGenerator {
             //dann könnte man hier die moveList auch erst nach dem check dass nicht gameOver ist generieren und so evtl. Zeit sparen
             //momentan könnte moveList jedoch noch "" sein ohne dass gameOver schon gesetzt wurde
             //TODO: muss dan bei der Bewertungsfunktion überprüft werden, ob gerade verloren ist/König im Schachmatt steht?
-            String score = String.valueOf(b.assessBoardFromOwnPerspective());
+            String score = String.valueOf(b.assessBoardFromOwnPerspective(assesedBoards,zobrist));
 
             //System.out.println(b.getCreatedByMove() + score);
             return b.getCreatedByMove() + score; //TODO: wann wird created by move gesetzt?
@@ -736,7 +736,7 @@ public class MoveGenerator {
             //momentan könnte moveList jedoch noch "" sein ohne dass gameOver schon gesetzt wurde
             //TODO: muss dan bei der Bewertungsfunktion überprüft werden, ob gerade verloren ist/König im Schachmatt steht?
 
-            String score = String.valueOf(b.assessBoardFromOwnPerspective());
+            String score = String.valueOf(b.assessBoardFromOwnPerspective(assesedBoards,zobrist));
 
             //System.out.println(b.getCreatedByMove() + score);
             return b.getCreatedByMove() + score; //TODO: wann wird created by move gesetzt?
@@ -841,7 +841,7 @@ public class MoveGenerator {
 
         if(outOfTime || depth == 0 || b.isGameOver()||moveList.equals("")){
             assessedLeaves++;
-            String score = String.valueOf(b.assessBoardFromOwnPerspective());
+            String score = String.valueOf(b.assessBoardFromOwnPerspective(assesedBoards,zobrist));
             if(outOfTime){
                 System.out.println("Out of Time!");
             }

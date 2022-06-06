@@ -36,7 +36,7 @@ public class PrincipalVariationSearch {
 
         if (depth == 0 || b.isGameOver() || moveList.equals("")) {
             assessedLeaves++;
-            String score = String.valueOf(b.assessBoardFromOwnPerspective());
+            String score = "1";//String.valueOf(b.assessBoardFromOwnPerspective());
             return b.getCreatedByMove() + score; //TODO:IMPORTANT! fehlt hie rnicht -???
         }
 
@@ -121,7 +121,7 @@ public class PrincipalVariationSearch {
 
         if (depth == 0 || b.isGameOver() || moveList.equals("")) {
             assessedLeaves++;
-            int score = b.assessBoardFromOwnPerspective();
+            int score = 1;//b.assessBoardFromOwnPerspective();
             return new Pv(-score);
         }
 
