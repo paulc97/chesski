@@ -337,6 +337,14 @@ public class MoveGenerator {
         return ""+f+r;
     }  //TODO: fix for Queenpromotion/Ep Notation
 
+    public static String convert4digitMoveToField (String move){
+        return convertMoveDigitsToField(move.charAt(0),move.charAt(1)) + "->" + convertMoveDigitsToField(move.charAt(2),move.charAt(3));
+    }
+
+    public static void print4digitMoveToField (String move){
+        System.out.println(convertMoveDigitsToField(move.charAt(0),move.charAt(1)) + "->" + convertMoveDigitsToField(move.charAt(2),move.charAt(3)));
+    }
+
 
     public static String convertInternalMoveToGameserverMove(String moveBitboardPosition, Board b){
 
