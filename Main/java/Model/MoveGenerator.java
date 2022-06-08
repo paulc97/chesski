@@ -12,8 +12,6 @@ public class MoveGenerator {
     private static boolean outOfTime = false; //used for Iterative Deepening
     //https://github.com/nealyoung/CS171/blob/master/AI.java
 
-    //TODO: why eigtl. non static?
-
 
         static Pawns pawns = new Pawns();
         static SlidingPieces slidingPieces = new SlidingPieces();
@@ -45,33 +43,14 @@ public class MoveGenerator {
 
         public static String ownPossibleMoves(Board board) {
             String list = "";
-            long startTime = System.currentTimeMillis();
-            long maxtime = 10000L; //TODO: Zeitmanagement in validMoves Methode?
-            while (true) {
-
                 list += pawns.moves(board) + "-";
-                if (System.currentTimeMillis() - startTime > maxtime) break;
-
                 list += knights.moves(board) + "-";
-                if (System.currentTimeMillis() - startTime > maxtime) break;
-
                 list += king.moves(board) + "-"; //includes castling
-                if (System.currentTimeMillis() - startTime > maxtime) break;
-
                 list += slidingPieces.rookMoves(board) + "-";
-                if (System.currentTimeMillis() - startTime > maxtime) break;
-
-
                 list += slidingPieces.bishopMoves(board) + "-";
-                if (System.currentTimeMillis() - startTime > maxtime) break;
-
                 list += slidingPieces.queenMoves(board);
-                break;
-            }
 
             //TODO: Remove king in check/check mate situations from possible move list
-
-
             //format: rank-old file-old rank-new file-new
             //rank wird nach oben größer, file nach links
             //6050 wäre move von (Bitboard Layout 1) 48 auf 40
@@ -229,7 +208,6 @@ public class MoveGenerator {
     }
 
 
-    //TODO: static or non-static?
     //ändert für 1 Bitboard ("long board") die Positionen, nachdem "String move" ausgeführt wurde
     public static long executeMoveforOneBitboard(long board, String move, char type) {
         if (Character.isDigit(move.charAt(3))) {//'regular' move
@@ -385,7 +363,6 @@ public class MoveGenerator {
 
 
 
-    //TODO: static machen? oder assess-Funktion in moveGenerator auslagern?
     //"valid" i.e. eigener King ist danach nicht (mehr) im Schach
     //public static void perft(long WP,long WN,long WB,long WR,long WQ,long WK,long BP,long BN,long BB,long BR,long BQ,long BK,long EP,boolean CWK,boolean CWQ,boolean CBK,boolean CBQ,boolean WhiteToMove,int depth)
     public static String validMoves(Board b)
@@ -668,7 +645,7 @@ public class MoveGenerator {
             //dann könnte man hier die moveList auch erst nach dem check dass nicht gameOver ist generieren und so evtl. Zeit sparen
             //momentan könnte moveList jedoch noch "" sein ohne dass gameOver schon gesetzt wurde
             //TODO: muss dan bei der Bewertungsfunktion überprüft werden, ob gerade verloren ist/König im Schachmatt steht?
-            String score = String.valueOf(b.assessBoardFromOwnPerspective(assesedBoards,zobrist));
+            String score = String.valueOf(b.assessBoardFromOwnPerspective());
 
             //System.out.println(b.getCreatedByMove() + score);
             return b.getCreatedByMove() + score; //TODO: wann wird created by move gesetzt?
@@ -744,7 +721,7 @@ public class MoveGenerator {
             //momentan könnte moveList jedoch noch "" sein ohne dass gameOver schon gesetzt wurde
             //TODO: muss dan bei der Bewertungsfunktion überprüft werden, ob gerade verloren ist/König im Schachmatt steht?
 
-            String score = String.valueOf(b.assessBoardFromOwnPerspective(assesedBoards,zobrist));
+            String score = String.valueOf(b.assessBoardFromOwnPerspective());
 
             //System.out.println(b.getCreatedByMove() + score);
             return b.getCreatedByMove() + score; //TODO: wann wird created by move gesetzt?
@@ -847,9 +824,13 @@ public class MoveGenerator {
 
         String moveList = validMoves(b);
 
+/*       if (depth == 0) {
+            return quiescenceSearchv1(b, alpha, beta, isMaxPlayer);
+        }*/
+
         if(outOfTime || depth == 0 || b.isGameOver()||moveList.equals("")){
             assessedLeaves++;
-            String score = String.valueOf(b.assessBoardFromOwnPerspective(assesedBoards,zobrist));
+            String score = String.valueOf(b.assessBoardFromOwnPerspective());
             if(outOfTime){
                 System.out.println("Out of Time!");
             }
@@ -863,7 +844,7 @@ public class MoveGenerator {
         if(isMaxPlayer){
             String bestMove = "";
             for(int i = 0; i<moveList.length(); i+=4){
-                if(outOfTime) break; //TODO: richtig?
+                if(outOfTime) break; //TODO: richtig? -> out of time wird vor der for Schleife berechnet und evaluiert und kann hier meiner Meinung nach nie true sein... Die nächste Überprüfung dürfte beim nächsten Selbsaufruf erfolgen...
                 String move = moveList.substring(i,i+4);
                 Board newBoard = b.createBoardFromMove(move);
                 newBoard.setCreatedByMove(move);
@@ -932,6 +913,117 @@ public class MoveGenerator {
 
             }
             //System.out.println("min out of for:" + bestMove + beta);
+            return bestMove + beta;
+        }
+    }
+
+    public static String quiescenceSearchv2(Board b, int alpha, int beta, boolean isMaxPlayer){
+        String moveList = validMoves(b);
+
+            String bestMove = "";
+
+            //recursion anchor
+            if (b.getAssessmentValue() >= beta || moveList.equals("")){
+                return b.getCreatedByMove() + beta;
+            }
+
+            //System.out.println("Using quiescence search (evalValue:"+b.getAssessmentValue()+"(>=) beta: "+beta+")");
+            alpha = Math.max(alpha, b.getAssessmentValue());
+
+            for(int i = 0; i<moveList.length(); i+=4){
+
+                String move = moveList.substring(i,i+4);
+                Board newBoard = b.createBoardFromMove(move);
+                newBoard.setCreatedByMove(move);
+
+                String intermediateResult = quiescenceSearchv2(newBoard, (-1*beta), (-1*alpha), false);
+                int currentEval = -1*Integer.parseInt(intermediateResult.substring(4));
+
+                if(currentEval >= beta){
+                    bestMove = move;
+                    alpha = currentEval;
+                }
+
+                if(bestMove.equals("")){
+                    bestMove = "9999";
+                }
+
+                alpha = Math.max(alpha,currentEval);
+            }
+
+            return bestMove + alpha;
+
+    }
+
+    public static String quiescenceSearchv1(Board b, int alpha, int beta, boolean isMaxPlayer){
+        String moveList = validMoves(b);
+
+        if(isMaxPlayer){
+            String bestMove = "";
+
+            //recursion anchor
+            if (b.assessBoardFromOwnPerspective() >= beta || moveList.equals("")){
+                return b.getCreatedByMove() + beta;
+            }
+
+            System.out.println("Using quiescence search (evalValue:"+b.assessBoardFromOwnPerspective()+"(>=) beta: "+beta+")");
+            alpha = Math.max(alpha, b.assessBoardFromOwnPerspective());
+
+            for(int i = 0; i<moveList.length(); i+=4){
+
+                String move = moveList.substring(i,i+4);
+                Board newBoard = b.createBoardFromMove(move);
+                newBoard.setCreatedByMove(move);
+
+                String intermediateResult = quiescenceSearchv1(newBoard, alpha, beta, false);
+                int currentEval = Integer.parseInt(intermediateResult.substring(4));
+
+                if(currentEval >= beta){
+                    bestMove = move;
+                    alpha = currentEval;
+                }
+
+                if(bestMove.equals("")){
+                    bestMove = "9999";
+                }
+
+                alpha = Math.max(alpha,currentEval);
+            }
+
+            return bestMove + alpha;
+
+        } else {
+
+            //recursion anchor
+            if (b.assessBoardFromOwnPerspective() <= alpha || moveList.equals("")){
+                return b.getCreatedByMove() + alpha;
+            }
+
+            System.out.println("Using quiescence search (evalValue:"+b.assessBoardFromOwnPerspective()+"(<=) alpha: "+alpha+")");
+            beta = Math.min(beta, b.assessBoardFromOwnPerspective());
+
+            String bestMove= "";
+            for(int i = 0; i<moveList.length(); i+=4){
+                String move = moveList.substring(i,i+4);
+                Board newBoard = b.createBoardFromMove(move);
+                newBoard.setCreatedByMove(move);
+
+                String intermediateResult = quiescenceSearchv1(newBoard, alpha, beta, true);
+
+                int currentEval = Integer.parseInt(intermediateResult.substring(4));
+
+                if (currentEval <= alpha){
+                    bestMove = move;
+                    beta = currentEval;
+                }
+
+                if(bestMove.equals("")){
+                    bestMove = "9999";
+                }
+
+                beta = Math.min(beta, currentEval);
+
+            }
             return bestMove + beta;
         }
     }

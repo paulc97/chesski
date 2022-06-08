@@ -122,7 +122,7 @@ public class PrincipalVariationSearch {
 
         if (depth == 0 || b.isGameOver() || moveList.equals("")) {
             assessedLeaves++;
-            int score = b.assessBoardFromOwnPerspective(MoveGenerator.assesedBoards, MoveGenerator.zobrist);
+            int score = b.assessBoardFromOwnPerspective();
             return new Pv(score); //TODO: negative or positive?
         }
 
@@ -238,7 +238,7 @@ public class PrincipalVariationSearch {
         if (depth == 0 || b.isGameOver() || moveList.equals("")) {
             assessedLeaves++;
             assessedLeavesCurrent++;
-            int score = b.assessBoardFromOwnPerspective(MoveGenerator.assesedBoards, MoveGenerator.zobrist);
+            int score = b.assessBoardFromOwnPerspective();
             return new Pv(score);
         }
 

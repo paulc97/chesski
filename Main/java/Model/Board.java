@@ -40,7 +40,7 @@ public class Board implements Comparable <Board> {
             blackPawns=0L;
 
     private ArrayList<Board> successorBoards = new ArrayList<>();
-    private int assessmentValue = 0;
+    private int assessmentValue = Integer.MAX_VALUE;
     private String createdByMove = "";
 
 
@@ -66,6 +66,7 @@ public class Board implements Comparable <Board> {
      */
     public Board(String fenString) {
         this.fenToBitboardParser(fenString);
+        this.getAssessmentValue();
     }
 
     /**
@@ -162,6 +163,7 @@ public class Board implements Comparable <Board> {
             k++;
 
         }
+        this.getAssessmentValue();
 
     }
 
@@ -187,6 +189,7 @@ public class Board implements Comparable <Board> {
         this.whiteToCastleQueenside = b.whiteToCastleQueenside;
         this.blackToCastleQueenside = b.blackToCastleQueenside;
         this.enPassants = b.enPassants;
+        this.assessmentValue = b.getAssessmentValue();
 
     }
 
@@ -208,7 +211,7 @@ public class Board implements Comparable <Board> {
             newBoard.setKIPlaysWhite(false);
         }
         makeMove(newBoard, move);
-
+        newBoard.assessBoardTPT(assesedBoards, zobrist);
         return newBoard;}
         //TODO: vllt hier schon createdByMove(move) unterbringen?
 
@@ -417,11 +420,11 @@ public class Board implements Comparable <Board> {
 
         long hashedBord = z.getZobristHash(this.getWhitePawns(),this.getWhiteKnights(),this.getWhiteBishops(),this.getWhiteRooks(),this.getWhiteQueen(),this.getWhiteKing(),this.getBlackPawns(),this.getBlackKnights(),this.getBlackBishops(),this.getBlackRooks(),this.getBlackQueen(),this.getBlackKing(),this.isWhiteToCastleKingside(),this.isWhiteToCastleQueenside(),this.isBlackToCastleKingside(),this.isBlackToCastleQueenside(),this.isCurrentPlayerIsWhite());
 
-        System.out.println("Hash: "+ hashedBord);
+        //System.out.println("Hash: "+ hashedBord);
 
 
         if (assesedBoards.containsKey(hashedBord)){
-            System.out.println("FoundValue");
+            //System.out.println("FoundValue");
             return assesedBoards.get(hashedBord);
         }
 
@@ -593,22 +596,17 @@ public class Board implements Comparable <Board> {
 
     //Für MiniMax brauchen wir aber tatsächlich immer nur die Bewertungsfunktion von einer perspektive
     //bei den MinKnoten sollen ja die kleinsten Werte (schlechtesten aus MaxPlayers perspektive ausgewählt werden)
-    public int assessBoardFromOwnPerspective(HashMap assesedBoards,Zobrist zobrist){ //TODO: kann weg, wenn wir uns drauf geeignigt haben, was assessBoard zurückgibt
+    public int assessBoardFromOwnPerspective(){ //TODO: kann weg, wenn wir uns drauf geeignigt haben, was assessBoard zurückgibt
         //TODO: wenn KI gegen sich selbst spielt, immer KIPlaysWhite switchen nach jedem Zug
-        if (KIPlaysWhite){//momentan immer true
+
             if(currentPlayerIsWhite){
-                return this.assessBoard(assesedBoards,zobrist);
+                return this.getAssessmentValue();
             } else {
-                return this.assessBoard(assesedBoards,zobrist) *(-1);
+                return this.getAssessmentValue() * (-1);
             }
-        } else {
-            if(currentPlayerIsWhite){
-                return this.assessBoard(assesedBoards,zobrist)  *(-1);
-            } else {
-                return this.assessBoard(assesedBoards,zobrist);
-            }
+
         }
-    }
+
 
 
     public int addPSTValues(long bitboard, int[] pst){
@@ -764,7 +762,11 @@ public class Board implements Comparable <Board> {
     }
 
     public int getAssessmentValue() {
-        return assessmentValue;
+        if (this.assessmentValue == Integer.MAX_VALUE){
+            this.assessmentValue = assessBoardTPT(assesedBoards, zobrist);
+            return this.assessmentValue;
+        }
+        return this.assessmentValue;
     }
 
     public void setWhiteKing(long whiteKing) {
@@ -1122,7 +1124,7 @@ public class Board implements Comparable <Board> {
 
     @Override
     public int compareTo(Board o) {
-        return Integer.compare(this.assessmentValue, o.getAssessmentValue());
+        return Integer.compare(this.getAssessmentValue(), o.getAssessmentValue());
     }
 
     public void setKIPlaysWhite(boolean KIPlaysWhite) {
