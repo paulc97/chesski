@@ -6,6 +6,7 @@ import com.sun.jdi.event.MonitorContendedEnteredEvent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static Model.MoveGenerator.getQuiescenceSearchIterations;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class MoveTests {
@@ -335,6 +336,7 @@ public class MoveTests {
             System.out.println("Elapsed time: "+time+" ms");
             System.out.println("Assessed leaves: "+moveGenerator.getAssessedLeaves());
             System.out.println("Assessed leaves per second: "+(moveGenerator.getAssessedLeaves()/(time*0.001)));
+            System.out.println("Quiescence Search Iterations: "+getQuiescenceSearchIterations());
 
         }
 
@@ -362,6 +364,7 @@ public class MoveTests {
             System.out.println("Elapsed time: "+time+" ms");
             System.out.println("Assessed leaves: "+moveGenerator.getAssessedLeaves());
             System.out.println("Assessed leaves per second: "+(moveGenerator.getAssessedLeaves()/(time*0.001)));
+            System.out.println("Quiescence Search Iterations: "+getQuiescenceSearchIterations());
 
         }
 
@@ -389,6 +392,7 @@ public class MoveTests {
             System.out.println("Elapsed time: "+time+" ms");
             System.out.println("Assessed leaves: "+moveGenerator.getAssessedLeaves());
             System.out.println("Assessed leaves per second: "+(moveGenerator.getAssessedLeaves()/(time*0.001)));
+            System.out.println("Quiescence Search Iterations: "+getQuiescenceSearchIterations());
 
         }
 
@@ -418,6 +422,7 @@ public class MoveTests {
             System.out.println("Elapsed time: "+time+" ms");
             System.out.println("Assessed leaves: "+moveGenerator.getAssessedLeaves());
             System.out.println("Assessed leaves per second: "+(moveGenerator.getAssessedLeaves()/(time*0.001)));
+            System.out.println("Quiescence Search Iterations: "+getQuiescenceSearchIterations());
 
         }
 
@@ -447,6 +452,7 @@ public class MoveTests {
             System.out.println("Elapsed time: "+time+" ms");
             System.out.println("Assessed leaves: "+moveGenerator.getAssessedLeaves());
             System.out.println("Assessed leaves per second: "+(moveGenerator.getAssessedLeaves()/(time*0.001)));
+            System.out.println("Quiescence Search Iterations: "+getQuiescenceSearchIterations());
 
         }
 
@@ -476,6 +482,97 @@ public class MoveTests {
             System.out.println("Elapsed time: "+time+" ms");
             System.out.println("Assessed leaves: "+moveGenerator.getAssessedLeaves());
             System.out.println("Assessed leaves per second: "+(moveGenerator.getAssessedLeaves()/(time*0.001)));
+            System.out.println("Quiescence Search Iterations: "+getQuiescenceSearchIterations());
+
+        }
+
+    }
+
+
+    @Test
+    void alphaBetaTimeBenchmark1(){
+
+
+
+        Board b = new Board("6k1/r4ppp/r7/1b6/8/8/4QPPP/4R1K1 w - - 0 1");
+
+
+        for (int i = 1; i <= 15; i++) {
+            //StartPosition
+            long time = 0;
+            long startEpoch = 0;
+            long endepoch = 0;
+            moveGenerator.setAssessedLeaves(0);
+            startEpoch = System.currentTimeMillis();
+            String result = moveGenerator.alphaBetaTimeLimit(b, i, Integer.MIN_VALUE, Integer.MAX_VALUE,false, System.currentTimeMillis(), 25000);
+            endepoch = System.currentTimeMillis();
+            time += endepoch - startEpoch;
+            System.out.println(result);
+            System.out.println("Depth "+i);
+            System.out.println("Elapsed time: "+time+" ms");
+            System.out.println("Assessed leaves: "+ MoveGenerator.getAssessedLeaves());
+            System.out.println("Assessed leaves per second: "+(MoveGenerator.getAssessedLeaves()/(time*0.001)));
+            System.out.println("Quiescence Search Iterations: "+getQuiescenceSearchIterations());
+
+        }
+
+    }
+
+
+    @Test
+    void alphaBetaTimeBenchmark2(){
+
+
+
+        Board b = new Board("Q4R2/3kr3/1q3n1p/2p1p1p1/1p1bP1P1/1B1P3P/2PBK3/8 w - - 1 0");
+
+
+        for (int i = 1; i <= 15; i++) {
+            //StartPosition
+            long time = 0;
+            long startEpoch = 0;
+            long endepoch = 0;
+            moveGenerator.setAssessedLeaves(0);
+            startEpoch = System.currentTimeMillis();
+            String result = moveGenerator.alphaBetaTimeLimit(b, i, Integer.MIN_VALUE, Integer.MAX_VALUE,false, System.currentTimeMillis(), 25000);
+            endepoch = System.currentTimeMillis();
+            time += endepoch - startEpoch;
+            System.out.println(result);
+            System.out.println("Depth "+i);
+            System.out.println("Elapsed time: "+time+" ms");
+            System.out.println("Assessed leaves: "+ MoveGenerator.getAssessedLeaves());
+            System.out.println("Assessed leaves per second: "+(MoveGenerator.getAssessedLeaves()/(time*0.001)));
+            System.out.println("Quiescence Search Iterations: "+getQuiescenceSearchIterations());
+
+        }
+
+    }
+
+
+    @Test
+    void alphaBetaTimeBenchmark3(){
+
+
+
+        Board b = new Board("7k/5ppp/8/R7/5n2/3B4/2K5/8 b - - 0 1");
+
+
+        for (int i = 1; i <= 15; i++) {
+            //StartPosition
+            long time = 0;
+            long startEpoch = 0;
+            long endepoch = 0;
+            moveGenerator.setAssessedLeaves(0);
+            startEpoch = System.currentTimeMillis();
+            String result = moveGenerator.alphaBetaTimeLimit(b, i, Integer.MIN_VALUE, Integer.MAX_VALUE,false, System.currentTimeMillis(), 25000);
+            endepoch = System.currentTimeMillis();
+            time += endepoch - startEpoch;
+            System.out.println(result);
+            System.out.println("Depth "+i);
+            System.out.println("Elapsed time: "+time+" ms");
+            System.out.println("Assessed leaves: "+ MoveGenerator.getAssessedLeaves());
+            System.out.println("Assessed leaves per second: "+(MoveGenerator.getAssessedLeaves()/(time*0.001)));
+            System.out.println("Quiescence Search Iterations: "+getQuiescenceSearchIterations());
 
         }
 

@@ -21,6 +21,7 @@ public class MoveGenerator {
         public static final Zobrist zobrist = new Zobrist();
 
         static int assessedLeaves = 0;
+        static int quiescenceSearchIterations = 0;
 
         static int averageNumberOfMoves = 30;
         static private long[] timeDistribution = new long[averageNumberOfMoves];
@@ -824,9 +825,9 @@ public class MoveGenerator {
 
         String moveList = validMoves(b);
 
-/*       if (depth == 0) {
+       if (depth == 0) {
             return quiescenceSearchv1(b, alpha, beta, isMaxPlayer);
-        }*/
+        }
 
         if(outOfTime || depth == 0 || b.isGameOver()||moveList.equals("")){
             assessedLeaves++;
@@ -917,13 +918,14 @@ public class MoveGenerator {
         }
     }
 
-    public static String quiescenceSearchv2(Board b, int alpha, int beta, boolean isMaxPlayer){
+/*    public static String quiescenceSearchv2(Board b, int alpha, int beta, boolean isMaxPlayer){
         String moveList = validMoves(b);
 
             String bestMove = "";
 
             //recursion anchor
             if (b.getAssessmentValue() >= beta || moveList.equals("")){
+                System.out.println("Finished quiescence search");
                 return b.getCreatedByMove() + beta;
             }
 
@@ -953,7 +955,7 @@ public class MoveGenerator {
 
             return bestMove + alpha;
 
-    }
+    }*/
 
     public static String quiescenceSearchv1(Board b, int alpha, int beta, boolean isMaxPlayer){
         String moveList = validMoves(b);
@@ -962,11 +964,13 @@ public class MoveGenerator {
             String bestMove = "";
 
             //recursion anchor
-            if (b.assessBoardFromOwnPerspective() >= beta || moveList.equals("")){
-                return b.getCreatedByMove() + beta;
+            if (b.assessBoardFromOwnPerspective() >= alpha || moveList.equals("")){
+                //System.out.println("Finished quiescence search with evalValue: "+ b.assessBoardFromOwnPerspective() +" >= alpha: "+alpha);
+                assessedLeaves++;
+                return b.getCreatedByMove() + alpha;
             }
-
-            System.out.println("Using quiescence search (evalValue:"+b.assessBoardFromOwnPerspective()+"(>=) beta: "+beta+")");
+            quiescenceSearchIterations++;
+            //System.out.println("Using quiescence search (evalValue:"+b.assessBoardFromOwnPerspective()+"(>=) alpha: "+alpha+")");
             alpha = Math.max(alpha, b.assessBoardFromOwnPerspective());
 
             for(int i = 0; i<moveList.length(); i+=4){
@@ -978,7 +982,7 @@ public class MoveGenerator {
                 String intermediateResult = quiescenceSearchv1(newBoard, alpha, beta, false);
                 int currentEval = Integer.parseInt(intermediateResult.substring(4));
 
-                if(currentEval >= beta){
+                if(currentEval >= alpha){
                     bestMove = move;
                     alpha = currentEval;
                 }
@@ -988,6 +992,8 @@ public class MoveGenerator {
                 }
 
                 alpha = Math.max(alpha,currentEval);
+                //System.out.println("new alpha: "+alpha);
+
             }
 
             return bestMove + alpha;
@@ -995,11 +1001,13 @@ public class MoveGenerator {
         } else {
 
             //recursion anchor
-            if (b.assessBoardFromOwnPerspective() <= alpha || moveList.equals("")){
-                return b.getCreatedByMove() + alpha;
+            if (b.assessBoardFromOwnPerspective() <= beta || moveList.equals("")){
+                //System.out.println("Finished quiescence search with evalValue: "+ b.assessBoardFromOwnPerspective() +" <= beta: "+beta);
+                assessedLeaves++;
+                return b.getCreatedByMove() + beta;
             }
-
-            System.out.println("Using quiescence search (evalValue:"+b.assessBoardFromOwnPerspective()+"(<=) alpha: "+alpha+")");
+            quiescenceSearchIterations++;
+            //System.out.println("Using quiescence search (evalValue:"+b.assessBoardFromOwnPerspective()+"(<=) beta: "+beta+")");
             beta = Math.min(beta, b.assessBoardFromOwnPerspective());
 
             String bestMove= "";
@@ -1008,11 +1016,11 @@ public class MoveGenerator {
                 Board newBoard = b.createBoardFromMove(move);
                 newBoard.setCreatedByMove(move);
 
-                String intermediateResult = quiescenceSearchv1(newBoard, alpha, beta, true);
+                String intermediateResult = quiescenceSearchv1(newBoard, beta, alpha, true);
 
                 int currentEval = Integer.parseInt(intermediateResult.substring(4));
 
-                if (currentEval <= alpha){
+                if (currentEval <= beta){
                     bestMove = move;
                     beta = currentEval;
                 }
@@ -1022,6 +1030,7 @@ public class MoveGenerator {
                 }
 
                 beta = Math.min(beta, currentEval);
+                //System.out.println("new beta: "+beta);
 
             }
             return bestMove + beta;
@@ -1043,9 +1052,11 @@ public class MoveGenerator {
 
         }
 
+    public static int getQuiescenceSearchIterations() {
+        return quiescenceSearchIterations;
+    }
 
-
-        public String checkBishopMoves(Board board){
+    public String checkBishopMoves(Board board){
 
             return slidingPieces.bishopMoves(board);
 
