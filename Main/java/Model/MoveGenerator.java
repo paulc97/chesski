@@ -1056,6 +1056,10 @@ public class MoveGenerator {
         return quiescenceSearchIterations;
     }
 
+    public static void setQuiescenceSearchIterations(int quiescenceSearchIterations) {
+        MoveGenerator.quiescenceSearchIterations = quiescenceSearchIterations;
+    }
+
     public String checkBishopMoves(Board board){
 
             return slidingPieces.bishopMoves(board);

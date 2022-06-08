@@ -325,17 +325,18 @@ public class MoveTests {
             long time = 0;
             long startEpoch = 0;
             long endepoch = 0;
-            moveGenerator.setAssessedLeaves(0);
+            MoveGenerator.setAssessedLeaves(0);
+            MoveGenerator.setQuiescenceSearchIterations(0);
             startEpoch = System.currentTimeMillis();
-            String result = moveGenerator.minMax(b, i, true);
+            String result = MoveGenerator.minMax(b, i, true);
             endepoch = System.currentTimeMillis();
             time += endepoch - startEpoch;
             System.out.println(result);
             String move = MoveGenerator.convertInternalMoveToGameserverMove(result,b);
             System.out.println("Best move: " + move +" in depth "+i);
             System.out.println("Elapsed time: "+time+" ms");
-            System.out.println("Assessed leaves: "+moveGenerator.getAssessedLeaves());
-            System.out.println("Assessed leaves per second: "+(moveGenerator.getAssessedLeaves()/(time*0.001)));
+            System.out.println("Assessed leaves: "+ MoveGenerator.getAssessedLeaves());
+            System.out.println("Assessed leaves per second: "+(MoveGenerator.getAssessedLeaves()/(time*0.001)));
             System.out.println("Quiescence Search Iterations: "+getQuiescenceSearchIterations());
 
         }
@@ -353,17 +354,18 @@ public class MoveTests {
             long time = 0;
             long startEpoch = 0;
             long endepoch = 0;
-            moveGenerator.setAssessedLeaves(0);
+            MoveGenerator.setAssessedLeaves(0);
+            MoveGenerator.setQuiescenceSearchIterations(0);
             startEpoch = System.currentTimeMillis();
-            String result = moveGenerator.minMax(b, i, true);
+            String result = MoveGenerator.minMax(b, i, true);
             endepoch = System.currentTimeMillis();
             time += endepoch - startEpoch;
             System.out.println(result);
             String move = MoveGenerator.convertInternalMoveToGameserverMove(result,b);
             System.out.println("Best move: " + move +" in depth "+i);
             System.out.println("Elapsed time: "+time+" ms");
-            System.out.println("Assessed leaves: "+moveGenerator.getAssessedLeaves());
-            System.out.println("Assessed leaves per second: "+(moveGenerator.getAssessedLeaves()/(time*0.001)));
+            System.out.println("Assessed leaves: "+ MoveGenerator.getAssessedLeaves());
+            System.out.println("Assessed leaves per second: "+(MoveGenerator.getAssessedLeaves()/(time*0.001)));
             System.out.println("Quiescence Search Iterations: "+getQuiescenceSearchIterations());
 
         }
@@ -381,17 +383,18 @@ public class MoveTests {
             long time = 0;
             long startEpoch = 0;
             long endepoch = 0;
-            moveGenerator.setAssessedLeaves(0);
+            MoveGenerator.setAssessedLeaves(0);
+            MoveGenerator.setQuiescenceSearchIterations(0);
             startEpoch = System.currentTimeMillis();
-            String result = moveGenerator.minMax(b, i, false);
+            String result = MoveGenerator.minMax(b, i, false);
             endepoch = System.currentTimeMillis();
             time += endepoch - startEpoch;
             System.out.println(result);
             String move = MoveGenerator.convertInternalMoveToGameserverMove(result,b);
             System.out.println("Best move: " + move +" in depth "+i);
             System.out.println("Elapsed time: "+time+" ms");
-            System.out.println("Assessed leaves: "+moveGenerator.getAssessedLeaves());
-            System.out.println("Assessed leaves per second: "+(moveGenerator.getAssessedLeaves()/(time*0.001)));
+            System.out.println("Assessed leaves: "+ MoveGenerator.getAssessedLeaves());
+            System.out.println("Assessed leaves per second: "+(MoveGenerator.getAssessedLeaves()/(time*0.001)));
             System.out.println("Quiescence Search Iterations: "+getQuiescenceSearchIterations());
 
         }
@@ -411,17 +414,18 @@ public class MoveTests {
             long time = 0;
             long startEpoch = 0;
             long endepoch = 0;
-            moveGenerator.setAssessedLeaves(0);
+            MoveGenerator.setAssessedLeaves(0);
+            MoveGenerator.setQuiescenceSearchIterations(0);
             startEpoch = System.currentTimeMillis();
-            String result = moveGenerator.alphaBeta(b, i, Integer.MIN_VALUE, Integer.MAX_VALUE,true);
+            String result = MoveGenerator.alphaBeta(b, i, Integer.MIN_VALUE, Integer.MAX_VALUE,true);
             endepoch = System.currentTimeMillis();
             time += endepoch - startEpoch;
             System.out.println(result);
             String move = MoveGenerator.convertInternalMoveToGameserverMove(result, b);
             System.out.println("Best move: " + move +" in depth "+i);
             System.out.println("Elapsed time: "+time+" ms");
-            System.out.println("Assessed leaves: "+moveGenerator.getAssessedLeaves());
-            System.out.println("Assessed leaves per second: "+(moveGenerator.getAssessedLeaves()/(time*0.001)));
+            System.out.println("Assessed leaves: "+ MoveGenerator.getAssessedLeaves());
+            System.out.println("Assessed leaves per second: "+(MoveGenerator.getAssessedLeaves()/(time*0.001)));
             System.out.println("Quiescence Search Iterations: "+getQuiescenceSearchIterations());
 
         }
@@ -441,17 +445,18 @@ public class MoveTests {
             long time = 0;
             long startEpoch = 0;
             long endepoch = 0;
-            moveGenerator.setAssessedLeaves(0);
+            MoveGenerator.setAssessedLeaves(0);
+            MoveGenerator.setQuiescenceSearchIterations(0);
             startEpoch = System.currentTimeMillis();
-            String result = moveGenerator.alphaBeta(b, i, Integer.MIN_VALUE, Integer.MAX_VALUE,true);
+            String result = MoveGenerator.alphaBeta(b, i, Integer.MIN_VALUE, Integer.MAX_VALUE,true);
             endepoch = System.currentTimeMillis();
             time += endepoch - startEpoch;
             System.out.println(result);
             String move = MoveGenerator.convertInternalMoveToGameserverMove(result, b);
             System.out.println("Best move: " + move +" in depth "+i);
             System.out.println("Elapsed time: "+time+" ms");
-            System.out.println("Assessed leaves: "+moveGenerator.getAssessedLeaves());
-            System.out.println("Assessed leaves per second: "+(moveGenerator.getAssessedLeaves()/(time*0.001)));
+            System.out.println("Assessed leaves: "+ MoveGenerator.getAssessedLeaves());
+            System.out.println("Assessed leaves per second: "+(MoveGenerator.getAssessedLeaves()/(time*0.001)));
             System.out.println("Quiescence Search Iterations: "+getQuiescenceSearchIterations());
 
         }
@@ -471,17 +476,18 @@ public class MoveTests {
             long time = 0;
             long startEpoch = 0;
             long endepoch = 0;
-            moveGenerator.setAssessedLeaves(0);
+            MoveGenerator.setAssessedLeaves(0);
+            MoveGenerator.setQuiescenceSearchIterations(0);
             startEpoch = System.currentTimeMillis();
-            String result = moveGenerator.alphaBeta(b, i, Integer.MIN_VALUE, Integer.MAX_VALUE,false);
+            String result = MoveGenerator.alphaBeta(b, i, Integer.MIN_VALUE, Integer.MAX_VALUE,false);
             endepoch = System.currentTimeMillis();
             time += endepoch - startEpoch;
             System.out.println(result);
             String move = MoveGenerator.convertInternalMoveToGameserverMove(result, b);
             System.out.println("Best move: " + move +" in depth "+i);
             System.out.println("Elapsed time: "+time+" ms");
-            System.out.println("Assessed leaves: "+moveGenerator.getAssessedLeaves());
-            System.out.println("Assessed leaves per second: "+(moveGenerator.getAssessedLeaves()/(time*0.001)));
+            System.out.println("Assessed leaves: "+ MoveGenerator.getAssessedLeaves());
+            System.out.println("Assessed leaves per second: "+(MoveGenerator.getAssessedLeaves()/(time*0.001)));
             System.out.println("Quiescence Search Iterations: "+getQuiescenceSearchIterations());
 
         }
@@ -502,9 +508,10 @@ public class MoveTests {
             long time = 0;
             long startEpoch = 0;
             long endepoch = 0;
-            moveGenerator.setAssessedLeaves(0);
+            MoveGenerator.setAssessedLeaves(0);
+            MoveGenerator.setQuiescenceSearchIterations(0);
             startEpoch = System.currentTimeMillis();
-            String result = moveGenerator.alphaBetaTimeLimit(b, i, Integer.MIN_VALUE, Integer.MAX_VALUE,false, System.currentTimeMillis(), 25000);
+            String result = MoveGenerator.alphaBetaTimeLimit(b, i, Integer.MIN_VALUE, Integer.MAX_VALUE,false, System.currentTimeMillis(), 25000);
             endepoch = System.currentTimeMillis();
             time += endepoch - startEpoch;
             System.out.println(result);
@@ -532,7 +539,8 @@ public class MoveTests {
             long time = 0;
             long startEpoch = 0;
             long endepoch = 0;
-            moveGenerator.setAssessedLeaves(0);
+            MoveGenerator.setAssessedLeaves(0);
+            MoveGenerator.setQuiescenceSearchIterations(0);
             startEpoch = System.currentTimeMillis();
             String result = moveGenerator.alphaBetaTimeLimit(b, i, Integer.MIN_VALUE, Integer.MAX_VALUE,false, System.currentTimeMillis(), 25000);
             endepoch = System.currentTimeMillis();
@@ -562,9 +570,10 @@ public class MoveTests {
             long time = 0;
             long startEpoch = 0;
             long endepoch = 0;
-            moveGenerator.setAssessedLeaves(0);
+            MoveGenerator.setAssessedLeaves(0);
+            MoveGenerator.setQuiescenceSearchIterations(0);
             startEpoch = System.currentTimeMillis();
-            String result = moveGenerator.alphaBetaTimeLimit(b, i, Integer.MIN_VALUE, Integer.MAX_VALUE,false, System.currentTimeMillis(), 25000);
+            String result = MoveGenerator.alphaBetaTimeLimit(b, i, Integer.MIN_VALUE, Integer.MAX_VALUE,false, System.currentTimeMillis(), 25000);
             endepoch = System.currentTimeMillis();
             time += endepoch - startEpoch;
             System.out.println(result);
