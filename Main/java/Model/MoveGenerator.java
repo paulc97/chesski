@@ -22,6 +22,7 @@ public class MoveGenerator {
 
         static int assessedLeaves = 0;
         static int quiescenceSearchIterations = 0;
+        static int cutoffs = 0;
 
         static int averageNumberOfMoves = 30;
         static private long[] timeDistribution = new long[averageNumberOfMoves];
@@ -873,6 +874,7 @@ public class MoveGenerator {
 
                 if (beta<=alpha){
                     //System.out.println("Beta cutoff!");
+                    cutoffs++;
                     break; //beta-cutoff
                 }
             }
@@ -909,6 +911,7 @@ public class MoveGenerator {
 
                 if (beta <= alpha){
                     //System.out.println("Alpha cutoff!");
+                    cutoffs++;
                     break; //alpha-cutoff
                 }
 
@@ -1058,6 +1061,14 @@ public class MoveGenerator {
 
     public static void setQuiescenceSearchIterations(int quiescenceSearchIterations) {
         MoveGenerator.quiescenceSearchIterations = quiescenceSearchIterations;
+    }
+
+    public static void setCutoffs(int cutoffs) {
+        MoveGenerator.cutoffs = cutoffs;
+    }
+
+    public static int getCutoffs() {
+        return cutoffs;
     }
 
     public String checkBishopMoves(Board board){
