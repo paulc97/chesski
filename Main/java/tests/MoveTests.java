@@ -606,7 +606,7 @@ public class MoveTests {
            PrincipalVariationSearch.assessedLeaves = 0;
             startEpoch = System.currentTimeMillis();
             //String result = PrincipalVariationSearch.PVSearch(b, i, Integer.MIN_VALUE, Integer.MAX_VALUE,false); //Achtung: negativer Wert für bewertung!
-            String result = PrincipalVariationSearch.moiterativeDeepeningPVSNoTimeLimitNoWindow(b, i, true);
+            String result = PrincipalVariationSearch.moiterativeDeepeningPVSNoTimeLimitWithWindow(b, i, true);
             endepoch = System.currentTimeMillis();
             time += endepoch - startEpoch;
             System.out.println(result);
