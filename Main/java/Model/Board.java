@@ -236,16 +236,7 @@ public class Board implements Comparable <Board> {
      * The board is assessed from the perspective of the current player
      */
     //TODO check if double works
-    public int assessBoard(HashMap assesedBoards,Zobrist zobrist){
-
-        long boardhash = zobrist.getZobristHash(this.whitePawns,this.whiteKnights,this.whiteBishops,this.whiteRooks,this.whiteQueen,this.whiteKing,this.blackPawns,this.blackKnights,this.blackBishops,this.blackRooks,this.blackQueen,this.blackKing,this.whiteToCastleKingside,this.whiteToCastleQueenside,this.blackToCastleKingside,this.blackToCastleQueenside,this.currentPlayerIsWhite);
-
-        //System.out.println("BoardHas:" +boardhash);
-
-        if (assesedBoards.containsKey(boardhash)){
-            //System.out.println("Bereits bewertet mit: "+ assesedBoards.get(boardhash));
-            return (int) assesedBoards.get(boardhash);
-        }
+    public int assessBoard(){
 
         this.assessmentValue = 0;
 
@@ -407,8 +398,6 @@ public class Board implements Comparable <Board> {
             this.assessmentValue += (pstScoreBlack-pstScoreWhite);
         }
 
-
-        assesedBoards.put(boardhash,(int)this.assessmentValue);
         return (int)this.assessmentValue;
     }
 

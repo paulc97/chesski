@@ -40,7 +40,7 @@ public class MoveTests {
     void assessmentTest1(){
         board = new Board("3N4/6K1/1p6/1r1p1k2/1rP1P1N1/2Q1Rn2/2p5/1PPP4 w - - 0 1");
         MoveGenerator mg = new MoveGenerator();
-        System.out.println(board.assessBoard(mg.assesedBoards,mg.zobrist));
+        System.out.println(board.assessBoard());
     }
 
     @Test
@@ -258,11 +258,11 @@ public class MoveTests {
 
         for (int i = 0;i<1000;i++){
             startEpoch = System.currentTimeMillis();
-            b.assessBoard(MoveGenerator.assesedBoards,MoveGenerator.zobrist);
+            b.assessBoardTPT(MoveGenerator.assesedBoards,MoveGenerator.zobrist);
             endepoch = System.currentTimeMillis();
             timesStart += endepoch - startEpoch;
         }
-        System.out.println("Assessment value: " + b.assessBoard(MoveGenerator.assesedBoards,MoveGenerator.zobrist));
+        System.out.println("Assessment value: " + b.assessBoardTPT(MoveGenerator.assesedBoards,MoveGenerator.zobrist));
         System.out.println("Rating board took "+(timesStart*0.001)+" Milliseconds");
 
 
@@ -281,11 +281,11 @@ public class MoveTests {
 
         for (int i = 0;i<1000;i++){
             startEpoch = System.currentTimeMillis();
-            b.assessBoard(MoveGenerator.assesedBoards,MoveGenerator.zobrist);
+            b.assessBoardTPT(MoveGenerator.assesedBoards,MoveGenerator.zobrist);
             endepoch = System.currentTimeMillis();
             timesStart += endepoch - startEpoch;
         }
-        System.out.println("Assessment value: " + b.assessBoard(MoveGenerator.assesedBoards,MoveGenerator.zobrist));
+        System.out.println("Assessment value: " + b.assessBoardTPT(MoveGenerator.assesedBoards,MoveGenerator.zobrist));
         System.out.println("Rating board took "+(timesStart*0.001)+" Milliseconds");
 
 
@@ -304,11 +304,11 @@ public class MoveTests {
 
         for (int i = 0;i<1000;i++){
             startEpoch = System.currentTimeMillis();
-            b.assessBoard(mg.assesedBoards,mg.zobrist);
+            b.assessBoardTPT(mg.assesedBoards,mg.zobrist);
             endepoch = System.currentTimeMillis();
             timesStart += endepoch - startEpoch;
         }
-        System.out.println("Assessment value: " + b.assessBoard(mg.assesedBoards,mg.zobrist));
+        System.out.println("Assessment value: " + b.assessBoardTPT(mg.assesedBoards,mg.zobrist));
         System.out.println("Rating board took "+(timesStart*0.001)+" Milliseconds");
 
 
@@ -378,7 +378,7 @@ public class MoveTests {
         Board b = new Board("7k/5ppp/8/R7/5n2/3B4/2K5/8 b - - 0 1");
 
 
-        for (int i = 1; i <= 4; i++) {
+        for (int i = 1; i <= 7; i++) {
             //StartPosition
             long time = 0;
             long startEpoch = 0;
@@ -409,7 +409,7 @@ public class MoveTests {
         Board b = new Board("6k1/r4ppp/r7/1b6/8/8/4QPPP/4R1K1 w - - 0 1");
 
 
-        for (int i = 1; i <= 4; i++) {
+        for (int i = 1; i <= 5; i++) {
             //StartPosition
             long time = 0;
             long startEpoch = 0;
