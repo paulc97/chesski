@@ -585,17 +585,26 @@ public class Board implements Comparable <Board> {
 
     //Für MiniMax brauchen wir aber tatsächlich immer nur die Bewertungsfunktion von einer perspektive
     //bei den MinKnoten sollen ja die kleinsten Werte (schlechtesten aus MaxPlayers perspektive ausgewählt werden)
-    public int assessBoardFromOwnPerspective(){ //TODO: kann weg, wenn wir uns drauf geeignigt haben, was assessBoard zurückgibt
+    public int assessBoardFromOwnPerspective() { //TODO: kann weg, wenn wir uns drauf geeignigt haben, was assessBoard zurückgibt
         //TODO: wenn KI gegen sich selbst spielt, immer KIPlaysWhite switchen nach jedem Zug
 
-            if(currentPlayerIsWhite){
+        if (KIPlaysWhite) {//momentan immer true
+            if (currentPlayerIsWhite) {
                 return this.getAssessmentValue();
             } else {
                 return this.getAssessmentValue() * (-1);
             }
+        } else {
+
+
+            if (currentPlayerIsWhite) {
+                return this.getAssessmentValue() * (-1);
+            } else {
+                return this.getAssessmentValue();
+            }
 
         }
-
+    }
 
 
     public int addPSTValues(long bitboard, int[] pst){
