@@ -414,6 +414,7 @@ public class Board implements Comparable <Board> {
 
         if (assesedBoards.containsKey(hashedBord)){
             //System.out.println("FoundValue");
+            this.assessmentValue = (int) assesedBoards.get(hashedBord);
             return assesedBoards.get(hashedBord);
         }
 
