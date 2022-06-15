@@ -683,7 +683,7 @@ public class MoveTests {
 
 
 
-        Board b = new Board("6k1/r4ppp/r7/1b6/8/8/4QPPP/4R1K1 w - - 0 1");
+        Board b = new Board("7k/5ppp/8/R7/5n2/3B4/2K5/8 b - - 0 1");
 
 
         for (int i = 1; i <= 7; i++) {
@@ -750,7 +750,7 @@ public class MoveTests {
 
 
 
-        Board b = new Board("7k/5ppp/8/R7/5n2/3B4/2K5/8 b - - 0 1");
+        Board b = new Board("Q4R2/3kr3/1q3n1p/2p1p1p1/1p1bP1P1/1B1P3P/2PBK3/8 w - - 1 0");
 
 
         for (int i = 1; i <= 5; i++) {
@@ -806,6 +806,45 @@ public class MoveTests {
         }
 
     }
+
+    ///////HIER BENCHMARKS FÜR PVS mit Nullfenstersuche//////
+    @Test
+    void IDSwithPVSMinimalWindowBenchmark1(){
+
+
+
+        Board b = new Board("6k1/r4ppp/r7/1b6/8/8/4QPPP/4R1K1 w - - 0 1");
+
+
+        for (int i = 1; i <= 5; i++) {
+            //StartPosition
+            long time = 0;
+            long startEpoch = 0;
+            long endepoch = 0;
+            PrincipalVariationSearch.assessedLeaves = 0;
+            startEpoch = System.currentTimeMillis();
+            //String result = PrincipalVariationSearch.PVSearch(b, i, Integer.MIN_VALUE, Integer.MAX_VALUE,false); //Achtung: negativer Wert für bewertung!
+            String result = PrincipalVariationSearch.moiterativeDeepeningPVSNoTimeLimitWW(b, i, true);
+            PrincipalVariationSearch.currentPv= null; //Zurücksetzen für next "Großiteration"
+            endepoch = System.currentTimeMillis();
+            time += endepoch - startEpoch;
+            System.out.println(result);
+            String move = MoveGenerator.convertInternalMoveToGameserverMove(result, b);
+            System.out.println("Best move: " + move +" in depth "+i);
+            System.out.println("Elapsed time: "+time+" ms");
+            System.out.println("Assessed leaves: "+PrincipalVariationSearch.assessedLeaves);
+            System.out.println("Assessed leaves per second: "+(PrincipalVariationSearch.assessedLeaves/(time*0.001)));
+            System.out.println("LeavesFoundAsHash: " + MoveGenerator.zobrist.found);
+            System.out.println("Needed research: " + PrincipalVariationSearch.researchNeeded + " times");
+            PrincipalVariationSearch.researchNeeded = 0;
+            MoveGenerator.zobrist.found = 0;
+            MoveGenerator.assesedBoards = new HashMap<Long,Integer>();
+
+
+        }
+
+    }
+
 
     //DIE SIND NUR ZUM PERSÖNLICHEN TESTEN!
     @Test
