@@ -209,13 +209,24 @@ public class PrincipalVariationSearch {
         for (int i = 1; i <= depth; i++) { //TODO: 0 oder 1 , < oder <= ?
             System.out.println("current depth: " + i + " - assessed leaves so far (total): " + assessedLeaves);
 
-            pv = moPVSearchNoWindow(b, i, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
-            pv.setEvalScore(pv.getEvalScore());//TODO: needed here? (no negamax)
+            System.out.println("current PV (before iteration): ");
+            if(currentPv == null){
+                System.out.println("is still null!");
+            } else {
+                currentPv.forEach(System.out::println);
+                currentPv.forEach(MoveGenerator::print4digitMoveToField);
+                System.out.println("yyyyyyyyyyyyyy");
+            }
+
+
+            pv = moPVSearchNoWindow(b, i, Integer.MIN_VALUE, Integer.MAX_VALUE, isMaxPlayer);
+           // pv.setEvalScore(pv.getEvalScore());//TODO: needed here? (no negamax)
 
             bestMoveSoFar = pv.getPrinVar().get(0) + pv.getEvalScore();
 
             if (true) {
                 currentPv = pv.getPrinVar();
+                System.out.println("current PV (after iteration): ");
                 currentPv.forEach(System.out::println);
                 currentPv.forEach(MoveGenerator::print4digitMoveToField);
                 System.out.println("yyyyyyyyyyyyyy");
@@ -233,9 +244,15 @@ public class PrincipalVariationSearch {
 
     public static Pv moPVSearchNoWindow(Board b, int depth, int alpha, int beta, boolean isMaxPlayer) {
 
+        if (depth==0){
+            assessedLeaves++;
+            assessedLeavesCurrent++;
+            int score = b.assessBoardFromOwnPerspective();
+            return new Pv(score);
+        }
         String moveList = MoveGenerator.validMoves(b);
 
-        if (depth == 0 || b.isGameOver() || moveList.equals("")) {
+        if (b.isGameOver() || moveList.equals("")) {
             assessedLeaves++;
             assessedLeavesCurrent++;
             int score = b.assessBoardFromOwnPerspective();

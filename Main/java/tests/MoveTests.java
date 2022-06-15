@@ -512,10 +512,12 @@ public class MoveTests {
             MoveGenerator.setQuiescenceSearchIterations(0);
             MoveGenerator.setCutoffs(0);
             startEpoch = System.currentTimeMillis();
-            String result = MoveGenerator.alphaBetaTimeLimit(b, i, Integer.MIN_VALUE, Integer.MAX_VALUE,false, startEpoch, 25000);
+            String result = MoveGenerator.alphaBetaTimeLimit(b, i, Integer.MIN_VALUE, Integer.MAX_VALUE,true, startEpoch, 25000);
             endepoch = System.currentTimeMillis();
             time += endepoch - startEpoch;
             System.out.println(result);
+            String move = MoveGenerator.convertInternalMoveToGameserverMove(result, b);
+            System.out.println("Best move: " + move +" in depth "+i);
             System.out.println("Depth "+i);
             System.out.println("Elapsed time: "+time+" ms");
             System.out.println("Assessed leaves: "+ MoveGenerator.getAssessedLeaves());
@@ -544,10 +546,12 @@ public class MoveTests {
             MoveGenerator.setQuiescenceSearchIterations(0);
             MoveGenerator.setCutoffs(0);
             startEpoch = System.currentTimeMillis();
-            String result = moveGenerator.alphaBetaTimeLimit(b, i, Integer.MIN_VALUE, Integer.MAX_VALUE,false, startEpoch, 25000);
+            String result = moveGenerator.alphaBetaTimeLimit(b, i, Integer.MIN_VALUE, Integer.MAX_VALUE,true, startEpoch, 25000);
             endepoch = System.currentTimeMillis();
             time += endepoch - startEpoch;
             System.out.println(result);
+            String move = MoveGenerator.convertInternalMoveToGameserverMove(result, b);
+            System.out.println("Best move: " + move +" in depth "+i);
             System.out.println("Depth "+i);
             System.out.println("Elapsed time: "+time+" ms");
             System.out.println("Assessed leaves: "+ MoveGenerator.getAssessedLeaves());
@@ -579,6 +583,8 @@ public class MoveTests {
             endepoch = System.currentTimeMillis();
             time += endepoch - startEpoch;
             System.out.println(result);
+            String move = MoveGenerator.convertInternalMoveToGameserverMove(result, b);
+            System.out.println("Best move: " + move +" in depth "+i);
             System.out.println("Depth "+i);
             System.out.println("Elapsed time: "+time+" ms");
             System.out.println("Assessed leaves: "+ MoveGenerator.getAssessedLeaves());
@@ -649,6 +655,188 @@ public class MoveTests {
         }
 
     }
+
+    ///////HIER BENCHMARKS FÜR PVS//////
+    @Test
+    void IDSwithPVSBenchmark1(){
+
+
+
+        Board b = new Board("6k1/r4ppp/r7/1b6/8/8/4QPPP/4R1K1 w - - 0 1");
+
+
+        for (int i = 1; i <= 4; i++) {
+            //StartPosition
+            long time = 0;
+            long startEpoch = 0;
+            long endepoch = 0;
+            PrincipalVariationSearch.assessedLeaves = 0;
+            startEpoch = System.currentTimeMillis();
+            //String result = PrincipalVariationSearch.PVSearch(b, i, Integer.MIN_VALUE, Integer.MAX_VALUE,false); //Achtung: negativer Wert für bewertung!
+            String result = PrincipalVariationSearch.moiterativeDeepeningPVSNoTimeLimitNoWindow(b, i, true);
+            PrincipalVariationSearch.currentPv= null; //Zurücksetzen für next "Großiteration"
+            endepoch = System.currentTimeMillis();
+            time += endepoch - startEpoch;
+            System.out.println(result);
+            String move = MoveGenerator.convertInternalMoveToGameserverMove(result, b);
+            System.out.println("Best move: " + move +" in depth "+i);
+            System.out.println("Elapsed time: "+time+" ms");
+            System.out.println("Assessed leaves: "+PrincipalVariationSearch.assessedLeaves);
+            System.out.println("Assessed leaves per second: "+(PrincipalVariationSearch.assessedLeaves/(time*0.001)));
+
+        }
+
+    }
+
+    @Test
+    void IDSwithPVSBenchmark2(){
+
+
+
+        Board b = new Board("Q4R2/3kr3/1q3n1p/2p1p1p1/1p1bP1P1/1B1P3P/2PBK3/8 w - - 1 0");
+
+
+        for (int i = 1; i <= 4; i++) {
+            //StartPosition
+            long time = 0;
+            long startEpoch = 0;
+            long endepoch = 0;
+            PrincipalVariationSearch.assessedLeaves = 0;
+            startEpoch = System.currentTimeMillis();
+            //String result = PrincipalVariationSearch.PVSearch(b, i, Integer.MIN_VALUE, Integer.MAX_VALUE,false); //Achtung: negativer Wert für bewertung!
+            String result = PrincipalVariationSearch.moiterativeDeepeningPVSNoTimeLimitNoWindow(b, i, true);
+            PrincipalVariationSearch.currentPv= null; //Zurücksetzen für next "Großiteration"
+            endepoch = System.currentTimeMillis();
+            time += endepoch - startEpoch;
+            System.out.println(result);
+            String move = MoveGenerator.convertInternalMoveToGameserverMove(result, b);
+            System.out.println("Best move: " + move +" in depth "+i);
+            System.out.println("Elapsed time: "+time+" ms");
+            System.out.println("Assessed leaves: "+PrincipalVariationSearch.assessedLeaves);
+            System.out.println("Assessed leaves per second: "+(PrincipalVariationSearch.assessedLeaves/(time*0.001)));
+
+        }
+
+    }
+
+    @Test
+    void IDSwithPVSBenchmark3(){
+
+
+
+        Board b = new Board("6k1/r4ppp/r7/1b6/8/8/4QPPP/4R1K1 w - - 0 1");
+
+
+        for (int i = 1; i <= 4; i++) {
+            //StartPosition
+            long time = 0;
+            long startEpoch = 0;
+            long endepoch = 0;
+            PrincipalVariationSearch.assessedLeaves = 0;
+            startEpoch = System.currentTimeMillis();
+            //String result = PrincipalVariationSearch.PVSearch(b, i, Integer.MIN_VALUE, Integer.MAX_VALUE,false); //Achtung: negativer Wert für bewertung!
+            String result = PrincipalVariationSearch.moiterativeDeepeningPVSNoTimeLimitNoWindow(b, i, false);
+            PrincipalVariationSearch.currentPv= null; //Zurücksetzen für next "Großiteration"
+            endepoch = System.currentTimeMillis();
+            time += endepoch - startEpoch;
+            System.out.println(result);
+            String move = MoveGenerator.convertInternalMoveToGameserverMove(result, b);
+            System.out.println("Best move: " + move +" in depth "+i);
+            System.out.println("Elapsed time: "+time+" ms");
+            System.out.println("Assessed leaves: "+PrincipalVariationSearch.assessedLeaves);
+            System.out.println("Assessed leaves per second: "+(PrincipalVariationSearch.assessedLeaves/(time*0.001)));
+
+        }
+
+    }
+
+    //////HIER BENCHMARKS FÜR ISOLIERTE IDS (OHNE ZEITLIMIT) ZUM VERGLEICH MIT PVS/////////////
+    //iterativeDeepeningSearchNoTimeLimit
+    @Test
+    void IDSwithOUTPVSBenchmark1(){
+
+
+
+        Board b = new Board("6k1/r4ppp/r7/1b6/8/8/4QPPP/4R1K1 w - - 0 1");
+
+
+        for (int i = 1; i <= 4; i++) {
+            //StartPosition
+            long time = 0;
+            long startEpoch = 0;
+            long endepoch = 0;
+            startEpoch = System.currentTimeMillis();
+            String result = MoveGenerator.iterativeDeepeningSearchNoTimeLimit(b, i, true);
+            endepoch = System.currentTimeMillis();
+            time += endepoch - startEpoch;
+            System.out.println(result);
+            String move = MoveGenerator.convertInternalMoveToGameserverMove(result, b);
+            System.out.println("Best move: " + move +" in depth "+i);
+            System.out.println("Elapsed time: "+time+" ms");
+            System.out.println("Assessed leaves: "+ MoveGenerator.getAssessedLeaves());
+            System.out.println("Assessed leaves per second: "+(MoveGenerator.getAssessedLeaves()/(time*0.001)));
+            System.out.println("Quiescence Search Iterations: "+getQuiescenceSearchIterations());
+        }
+
+    }
+
+    @Test
+    void IDSwithOUTPVSBenchmark2(){
+
+
+
+        Board b = new Board("7k/5ppp/8/R7/5n2/3B4/2K5/8 b - - 0 1");
+
+
+        for (int i = 1; i <= 4; i++) {
+            //StartPosition
+            long time = 0;
+            long startEpoch = 0;
+            long endepoch = 0;
+            startEpoch = System.currentTimeMillis();
+            String result = MoveGenerator.iterativeDeepeningSearchNoTimeLimit(b, i, true);
+            endepoch = System.currentTimeMillis();
+            time += endepoch - startEpoch;
+            System.out.println(result);
+            String move = MoveGenerator.convertInternalMoveToGameserverMove(result, b);
+            System.out.println("Best move: " + move +" in depth "+i);
+            System.out.println("Elapsed time: "+time+" ms");
+            System.out.println("Assessed leaves: "+ MoveGenerator.getAssessedLeaves());
+            System.out.println("Assessed leaves per second: "+(MoveGenerator.getAssessedLeaves()/(time*0.001)));
+            System.out.println("Quiescence Search Iterations: "+getQuiescenceSearchIterations());
+        }
+
+    }
+
+    @Test
+    void IDSwithOUTPVSBenchmark3(){
+
+
+
+        Board b = new Board("7k/5ppp/8/R7/5n2/3B4/2K5/8 b - - 0 1");
+
+
+        for (int i = 1; i <= 4; i++) {
+            //StartPosition
+            long time = 0;
+            long startEpoch = 0;
+            long endepoch = 0;
+            startEpoch = System.currentTimeMillis();
+            String result = MoveGenerator.iterativeDeepeningSearchNoTimeLimit(b, i, false);
+            endepoch = System.currentTimeMillis();
+            time += endepoch - startEpoch;
+            System.out.println(result);
+            String move = MoveGenerator.convertInternalMoveToGameserverMove(result, b);
+            System.out.println("Best move: " + move +" in depth "+i);
+            System.out.println("Elapsed time: "+time+" ms");
+            System.out.println("Assessed leaves: "+ MoveGenerator.getAssessedLeaves());
+            System.out.println("Assessed leaves per second: "+(MoveGenerator.getAssessedLeaves()/(time*0.001)));
+            System.out.println("Quiescence Search Iterations: "+getQuiescenceSearchIterations());
+        }
+
+    }
+
+    ////////////////7
 
     @Test
     void testZobristValid(){
