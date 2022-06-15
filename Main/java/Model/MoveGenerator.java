@@ -584,6 +584,8 @@ public class MoveGenerator {
             return alphaBeta(b, depth, Integer.MIN_VALUE, Integer.MAX_VALUE, true).substring(0, 4);
         }
 
+        //TODO: Das hier nicht löschen!! Ist Variante ohne PVS nur mit IDS!
+        /*
 
             System.out.println("Using iterative deepening search for move generation");
             //Iterative Deepening Search (ohne Zugsortierung)
@@ -591,6 +593,14 @@ public class MoveGenerator {
             if (Math.floor(b.getNextMoveCount()/2)<timeDistribution.length) {
             timeLimit += timeDistribution[b.getNextMoveCount()];}
             return iterativeDeepeningSearch(b, timeLimit).substring(0, 4);
+        */
+
+        System.out.println("Using principal variation search for move generation");
+        //Iterative Deepening Search + PVS (mit PV Zugsortierung)
+        long timeLimit = 100;
+        if (Math.floor(b.getNextMoveCount()/2)<timeDistribution.length) {
+            timeLimit += timeDistribution[b.getNextMoveCount()];}
+        return PrincipalVariationSearch.moiterativeDeepeningPVSWithTimeLimitNoWindow(b, timeLimit).substring(0, 4);
 
 
 
@@ -851,7 +861,7 @@ public class MoveGenerator {
             outOfTime = true;
         }
 
-        if(depth == 0){
+        if(depth == 0||outOfTime){
             assessedLeaves++;
             String score = String.valueOf(b.assessBoardFromOwnPerspective());
             if(outOfTime){
@@ -874,7 +884,7 @@ public class MoveGenerator {
             assessedLeaves++;
             String score = String.valueOf(b.assessBoardFromOwnPerspective());
             if(outOfTime){
-                System.out.println("Out of Time!");
+                System.out.println("Out of Time! (after Move Generation)");
             }
             //System.out.println("b currently assessed, was created by move" + b.getCreatedByMove());
             //System.out.println(b.getCreatedByMove() + score);

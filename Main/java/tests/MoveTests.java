@@ -494,7 +494,6 @@ public class MoveTests {
 
     }
 
-
     @Test
     void alphaBetaTimeBenchmark1(){
 

@@ -6,6 +6,8 @@ import java.util.List;
 
 public class PrincipalVariationSearch {
 
+    private static boolean outOfTime = false; //used for Iterative DeepeningWithTimeLimit
+
     public static int assessedLeaves = 0;
     public static int assessedLeavesCurrent = 0;
 
@@ -199,7 +201,7 @@ public class PrincipalVariationSearch {
     //without Window, nur Zugsortierung
 
     public static String moiterativeDeepeningPVSNoTimeLimitNoWindow(Board b, int depth, boolean isMaxPlayer) {
-        //TODO: moveordering rausnehmen!
+        //TODO: moveordering rausnehmen! <---???
         System.out.println("Starting iterative deepening PVS with depth: " + depth);
 
         String bestMoveSoFar = "";
@@ -346,6 +348,178 @@ public class PrincipalVariationSearch {
         }
     }
 
+    ///////////IDS+PVS mit Zeitlimit
+
+    public static String moiterativeDeepeningPVSWithTimeLimitNoWindow(Board b, long timeLimit) {
+        currentPv = null;
+        System.out.println("Starting iterative deepening PVS with time limit: "+timeLimit);
+
+        long startTime = System.currentTimeMillis();
+        long endTime = startTime + timeLimit;
+        int depth = 1;
+        String bestMoveSoFar ="";
+        outOfTime = false;
+
+        Pv pv = null;
+
+        while(true){
+            long currentTime = System.currentTimeMillis();
+            if (currentTime >= endTime){
+                break;
+            }
+            long newTimeLimit = endTime-currentTime;
+
+            pv = moPVSearchNoWindowWithTimeLimit(b, depth, Integer.MIN_VALUE, Integer.MAX_VALUE, true, currentTime, newTimeLimit);
+            // pv.setEvalScore(pv.getEvalScore());//TODO: needed here? (no negamax)
+
+
+            if(!outOfTime){ //ohne den check könnte bestMoveSoFar mit move aus unkomplettierter Suche überschrieben werden, der könnte (momentan noch) schlechter sein
+                bestMoveSoFar = pv.getPrinVar().get(0) + pv.getEvalScore();
+                System.out.println("depth was: " + depth);
+            }
+            depth++;
+
+            System.out.println("Is out of time? " + outOfTime);
+            if (true) {
+                currentPv = pv.getPrinVar();
+                System.out.println("current PV (after iteration): ");
+                currentPv.forEach(System.out::println);
+                currentPv.forEach(MoveGenerator::print4digitMoveToField);
+                System.out.println("yyyyyyyyyyyyyy");
+            }
+            System.out.println("current depth: " + depth + " - assessed leaves after(total): " + assessedLeaves);
+            System.out.println("current depth: " + depth + " - assessed leaves in this depth: " + assessedLeavesCurrent);
+            assessedLeavesCurrent = 0;
+
+        }
+        System.out.println("Iteration Over; best Move: ");
+        return bestMoveSoFar;
+
+
+    }
+
+
+    public static Pv moPVSearchNoWindowWithTimeLimit(Board b, int depth, int alpha, int beta, boolean isMaxPlayer, long startTime, long timeLimit) {
+
+
+        long currentTime = System.currentTimeMillis();
+        long elapsedTime = (currentTime - startTime);
+        if(elapsedTime >= timeLimit){
+            outOfTime = true;
+        }
+
+        if (depth==0||outOfTime){
+            assessedLeaves++;
+            assessedLeavesCurrent++;
+            int score = b.assessBoardFromOwnPerspective();
+            if(outOfTime){
+                System.out.println("Out of Time!");
+            }
+            return new Pv(score);
+        }
+        String moveList = MoveGenerator.validMoves(b);
+
+        if (outOfTime||b.isGameOver() || moveList.equals("")) {
+            assessedLeaves++;
+            assessedLeavesCurrent++;
+            int score = b.assessBoardFromOwnPerspective();
+            if(outOfTime){
+                System.out.println("Out of Time! (after MoveGeneration)");
+            }
+            return new Pv(score);
+        }
+
+        if (true) {
+            if (currentPv != null && !(currentPv.isEmpty())) {
+                //TODO: MoveSortierung effizienter ...oder doch ein Move doppelt suchen? (aber in tiefen tiefen wahrscheinlich nicht doppelt suchen ausschlaggebender!)
+                // /*
+                System.out.println("xxxxxxxxxxx");
+                currentPv.forEach(System.out::println);
+
+                String bestMove = currentPv.remove(0);
+                System.out.println("best Move is: " + bestMove);
+                System.out.println(moveList);
+                System.out.println("length of moveList "+ moveList.length());
+                String[] strArr = moveList.split("(?<=\\G.{4})");
+                String[] newMoveList = new String[strArr.length];
+                System.out.println("length of moveListNow "+ newMoveList.length);
+                int index = 1;
+                boolean alreadyAppeared = false;
+                for (int i = 0; i < strArr.length; i++){
+                    if (strArr[i].equals(bestMove) && !(alreadyAppeared)){
+                        newMoveList[0] = strArr[i];
+                        alreadyAppeared = true;
+                    } else {
+                        newMoveList[index++] = strArr[i];
+                    }
+                }
+                moveList = String.join("",newMoveList);
+                System.out.println(moveList);
+                System.out.println("length of moveList end"+ moveList.length());// */
+                //moveList = currentPv.remove(0) + moveList; //currentPvMove wird zwar doppelt untersucht, d+rfte aber kein Problem sein wegen TT?
+            }
+        }
+
+        if (isMaxPlayer) {
+            String bestMove = "9999";
+            Pv bestEval = new Pv(Integer.MIN_VALUE);
+            for (int i = 0; i < moveList.length(); i += 4) {
+                if(outOfTime) break; //TODO: hier richtig/sinnvoll?
+                String move = moveList.substring(i, i + 4);
+                Board newBoard = b.createBoardFromMove(move);
+                newBoard.setCreatedByMove(move);
+
+                Pv currentEval = moPVSearchNoWindowWithTimeLimit(newBoard, depth - 1, alpha, beta, false, startTime, timeLimit);
+                //System.out.println("alpha was:" + alpha);
+                //System.out.println("beta was:" + beta);
+                if (currentEval.getEvalScore() > alpha) {
+                    bestMove = move; //equiv. zu b.getCreatedByMove();
+                    bestEval = currentEval;
+                    alpha = currentEval.getEvalScore();
+                }
+                //System.out.println("alpha is:" + alpha);
+                //alpha = Math.max(alpha,currentEval); wird redundant, siehe 2 Zeilen vorher
+
+                if (beta <= alpha) {
+                    //System.out.println("Beta cutoff!");
+                    break; //beta-cutoff
+                }
+            }
+            return new Pv(bestEval.getEvalScore(), bestEval.getPrinVar(), bestMove);
+        } else {
+            String bestMove = "9999";
+            Pv bestEval = new Pv(Integer.MAX_VALUE);
+            for (int i = 0; i < moveList.length(); i += 4) {
+                if(outOfTime) break; //TODO: hier richtig/sinnvoll?
+                String move = moveList.substring(i, i + 4);
+                Board newBoard = b.createBoardFromMove(move);
+                newBoard.setCreatedByMove(move);
+
+                Pv currentEval = moPVSearchNoWindowWithTimeLimit(newBoard, depth - 1, alpha, beta, true, startTime, timeLimit);
+                //System.out.println("beta was:" + beta);
+                //System.out.println("alpha was:" + alpha);
+                if (currentEval.getEvalScore() < beta) {
+                    bestMove = move;
+                    bestEval = currentEval;
+                    beta = currentEval.getEvalScore();
+                }
+                //System.out.println("beta is:" + beta);
+                //beta = Math.min(beta, currentEval);
+
+                if (beta <= alpha) {
+                    //System.out.println("Alpha cutoff!");
+                    break; //alpha-cutoff
+                }
+
+            }
+            return new Pv(bestEval.getEvalScore(), bestEval.getPrinVar(), bestMove);
+        }
+    }
+
+
+
+
+    ///////////
 
 //  return new Pv(-firstcurrentEval.getEvalScore(), firstcurrentEval.getPrinVar(), firstmove);
 
