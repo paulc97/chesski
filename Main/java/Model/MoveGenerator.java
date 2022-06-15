@@ -636,11 +636,24 @@ public class MoveGenerator {
         //System.out.println("Current player is white: "+ b.isCurrentPlayerIsWhite());
         //System.out.println("Is max player: "+isMaxPlayer);
 
+
+        if(depth == 0){
+            assessedLeaves++;
+            //TODO: "gameOver" wird momentan am Anfang von makeMove gesetzt, wenn eigener Player Schachmatt ist
+            //wenn am Ende von Make move noch "gameOver" gesetzt würde, wenn anderer Player Schachmatt ist (oder gleich am Ende von validMoves, wenn das leer ist
+            //dann könnte man hier die moveList auch erst nach dem check dass nicht gameOver ist generieren und so evtl. Zeit sparen
+            //momentan könnte moveList jedoch noch "" sein ohne dass gameOver schon gesetzt wurde
+            //TODO: muss dan bei der Bewertungsfunktion überprüft werden, ob gerade verloren ist/König im Schachmatt steht?
+            String score = String.valueOf(b.assessBoardFromOwnPerspective());
+
+            //System.out.println(b.getCreatedByMove() + score);
+            return b.getCreatedByMove() + score; //TODO: wann wird created by move gesetzt?
+        }
         String moveList = validMoves(b);
         //System.out.println("move list:" + moveList);
         //System.out.println("in depth:" + depth);
 
-        if(depth == 0 || b.isGameOver()||moveList.equals("")){
+        if(b.isGameOver()||moveList.equals("")){
             assessedLeaves++;
             //TODO: "gameOver" wird momentan am Anfang von makeMove gesetzt, wenn eigener Player Schachmatt ist
             //wenn am Ende von Make move noch "gameOver" gesetzt würde, wenn anderer Player Schachmatt ist (oder gleich am Ende von validMoves, wenn das leer ist
@@ -711,11 +724,24 @@ public class MoveGenerator {
     //das gleiche wie alphaBeta nur ohne cutoffs
     public static String minMax (Board b, int depth, boolean isMaxPlayer){
 
+        if (depth == 0){
+            assessedLeaves++;
+            //TODO: "gameOver" wird momentan am Anfang von makeMove gesetzt, wenn eigener Player Schachmatt ist
+            //wenn am Ende von Make move noch "gameOver" gesetzt würde, wenn anderer Player Schachmatt ist (oder gleich am Ende von validMoves, wenn das leer ist
+            //dann könnte man hier die moveList auch erst nach dem check dass nicht gameOver ist generieren und so evtl. Zeit sparen
+            //momentan könnte moveList jedoch noch "" sein ohne dass gameOver schon gesetzt wurde
+            //TODO: muss dan bei der Bewertungsfunktion überprüft werden, ob gerade verloren ist/König im Schachmatt steht?
+
+            String score = String.valueOf(b.assessBoardFromOwnPerspective());
+
+            //System.out.println(b.getCreatedByMove() + score);
+            return b.getCreatedByMove() + score; //TODO: wann wird created by move gesetzt?
+        }
 
         String moveList = validMoves(b);
         //System.out.println("Valid Move List: " + moveList);
 
-        if(depth == 0 || b.isGameOver()||moveList.equals("")){
+        if(b.isGameOver()||moveList.equals("")){
             assessedLeaves++;
             //TODO: "gameOver" wird momentan am Anfang von makeMove gesetzt, wenn eigener Player Schachmatt ist
             //wenn am Ende von Make move noch "gameOver" gesetzt würde, wenn anderer Player Schachmatt ist (oder gleich am Ende von validMoves, wenn das leer ist
@@ -804,6 +830,7 @@ public class MoveGenerator {
 
             if(!outOfTime){ //ohne den check könnte bestMoveSoFar mit move aus unkomplettierter Suche überschrieben werden, der könnte (momentan noch) schlechter sein
                 bestMoveSoFar = result;
+                System.out.println("depth was: " + depth);
             }
             depth++;
             //System.out.println("Increased depth, current:" + depth);
@@ -824,13 +851,26 @@ public class MoveGenerator {
             outOfTime = true;
         }
 
-        String moveList = validMoves(b);
-
-       if (depth == 0) {
-            return quiescenceSearchv1(b, alpha, beta, isMaxPlayer);
+        if(depth == 0){
+            assessedLeaves++;
+            String score = String.valueOf(b.assessBoardFromOwnPerspective());
+            if(outOfTime){
+                System.out.println("Out of Time!");
+            }
+            //System.out.println("b currently assessed, was created by move" + b.getCreatedByMove());
+            //System.out.println(b.getCreatedByMove() + score);
+            return b.getCreatedByMove() + score;
         }
 
-        if(outOfTime || depth == 0 || b.isGameOver()||moveList.equals("")){
+
+    /*
+       if (depth == 0) {
+            return quiescenceSearchv1(b, alpha, beta, isMaxPlayer);
+        }*/
+
+        String moveList = validMoves(b);
+
+        if(outOfTime || b.isGameOver()||moveList.equals("")){
             assessedLeaves++;
             String score = String.valueOf(b.assessBoardFromOwnPerspective());
             if(outOfTime){
