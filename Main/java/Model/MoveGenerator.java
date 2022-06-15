@@ -973,12 +973,12 @@ public class MoveGenerator {
 
     //IDS ohne Zeitlimit (für Benchmarkvergleich mit IDS+PVS)
     public static String iterativeDeepeningSearchNoTimeLimit(Board b, int depth, boolean isMaxPlayer){
-        System.out.println("Starting iterative deepening search with depth: "+depth);
+        //System.out.println("Starting iterative deepening search with depth: "+depth);
 
         String result ="";
 
         for(int i = 1; i <= depth; i++){
-            System.out.println("current depth: " + i);
+            //System.out.println("current depth: " + i);
 
             result = alphaBeta(b, i, Integer.MIN_VALUE, Integer.MAX_VALUE, isMaxPlayer);
 

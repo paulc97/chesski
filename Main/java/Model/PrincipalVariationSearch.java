@@ -202,23 +202,23 @@ public class PrincipalVariationSearch {
 
     public static String moiterativeDeepeningPVSNoTimeLimitNoWindow(Board b, int depth, boolean isMaxPlayer) {
         //TODO: moveordering rausnehmen! <---???
-        System.out.println("Starting iterative deepening PVS with depth: " + depth);
+       // System.out.println("Starting iterative deepening PVS with depth: " + depth);
 
         String bestMoveSoFar = "";
 
         Pv pv = null;
 
         for (int i = 1; i <= depth; i++) { //TODO: 0 oder 1 , < oder <= ?
-            System.out.println("current depth: " + i + " - assessed leaves so far (total): " + assessedLeaves);
+            //System.out.println("current depth: " + i + " - assessed leaves so far (total): " + assessedLeaves);
 
-            System.out.println("current PV (before iteration): ");
-            if(currentPv == null){
+            //System.out.println("current PV (before iteration): ");
+            /*if(currentPv == null){
                 System.out.println("is still null!");
             } else {
                 currentPv.forEach(System.out::println);
                 currentPv.forEach(MoveGenerator::print4digitMoveToField);
                 System.out.println("yyyyyyyyyyyyyy");
-            }
+            }*/
 
 
             pv = moPVSearchNoWindow(b, i, Integer.MIN_VALUE, Integer.MAX_VALUE, isMaxPlayer);
@@ -226,19 +226,19 @@ public class PrincipalVariationSearch {
 
             bestMoveSoFar = pv.getPrinVar().get(0) + pv.getEvalScore();
 
-            if (true) {
+
                 currentPv = pv.getPrinVar();
-                System.out.println("current PV (after iteration): ");
-                currentPv.forEach(System.out::println);
-                currentPv.forEach(MoveGenerator::print4digitMoveToField);
-                System.out.println("yyyyyyyyyyyyyy");
-            }
-            System.out.println("current depth: " + i + " - assessed leaves after(total): " + assessedLeaves);
-            System.out.println("current depth: " + i + " - assessed leaves in this depth: " + assessedLeavesCurrent);
-            assessedLeavesCurrent = 0;
+                //System.out.println("current PV (after iteration): ");
+                //currentPv.forEach(System.out::println);
+                //currentPv.forEach(MoveGenerator::print4digitMoveToField);
+                //System.out.println("yyyyyyyyyyyyyy");
+
+            //System.out.println("current depth: " + i + " - assessed leaves after(total): " + assessedLeaves);
+            //System.out.println("current depth: " + i + " - assessed leaves in this depth: " + assessedLeavesCurrent);
+            //assessedLeavesCurrent = 0;
 
         }
-        System.out.println("Iteration Over; best Move: ");
+        //System.out.println("Iteration Over; best Move: ");
         return bestMoveSoFar;
 
     }
@@ -265,16 +265,16 @@ public class PrincipalVariationSearch {
             if (currentPv != null && !(currentPv.isEmpty())) {
                 //TODO: MoveSortierung effizienter ...oder doch ein Move doppelt suchen? (aber in tiefen tiefen wahrscheinlich nicht doppelt suchen ausschlaggebender!)
                 // /*
-                System.out.println("xxxxxxxxxxx");
-                currentPv.forEach(System.out::println);
+                //System.out.println("xxxxxxxxxxx");
+                //currentPv.forEach(System.out::println);
 
                String bestMove = currentPv.remove(0);
-                System.out.println("best Move is: " + bestMove);
-                System.out.println(moveList);
-                System.out.println("length of moveList "+ moveList.length());
+                //System.out.println("best Move is: " + bestMove);
+                //System.out.println(moveList);
+                //System.out.println("length of moveList "+ moveList.length());
                 String[] strArr = moveList.split("(?<=\\G.{4})");
                 String[] newMoveList = new String[strArr.length];
-                System.out.println("length of moveListNow "+ newMoveList.length);
+                //System.out.println("length of moveListNow "+ newMoveList.length);
                 int index = 1;
                 boolean alreadyAppeared = false;
                 for (int i = 0; i < strArr.length; i++){
@@ -286,8 +286,8 @@ public class PrincipalVariationSearch {
                     }
                 }
                 moveList = String.join("",newMoveList);
-                System.out.println(moveList);
-                System.out.println("length of moveList end"+ moveList.length());// */
+                //System.out.println(moveList);
+                //System.out.println("length of moveList end"+ moveList.length());// */
                 //moveList = currentPv.remove(0) + moveList; //currentPvMove wird zwar doppelt untersucht, d+rfte aber kein Problem sein wegen TT?
             }
         }
@@ -375,24 +375,24 @@ public class PrincipalVariationSearch {
 
             if(!outOfTime){ //ohne den check könnte bestMoveSoFar mit move aus unkomplettierter Suche überschrieben werden, der könnte (momentan noch) schlechter sein
                 bestMoveSoFar = pv.getPrinVar().get(0) + pv.getEvalScore();
-                System.out.println("depth was: " + depth);
+                System.out.println("reached depth was: " + depth);
             }
             depth++;
 
-            System.out.println("Is out of time? " + outOfTime);
-            if (true) {
+            //System.out.println("Is out of time? " + outOfTime);
+
                 currentPv = pv.getPrinVar();
-                System.out.println("current PV (after iteration): ");
-                currentPv.forEach(System.out::println);
-                currentPv.forEach(MoveGenerator::print4digitMoveToField);
-                System.out.println("yyyyyyyyyyyyyy");
-            }
-            System.out.println("current depth: " + depth + " - assessed leaves after(total): " + assessedLeaves);
-            System.out.println("current depth: " + depth + " - assessed leaves in this depth: " + assessedLeavesCurrent);
-            assessedLeavesCurrent = 0;
+                //System.out.println("current PV (after iteration): ");
+                //currentPv.forEach(System.out::println);
+                //currentPv.forEach(MoveGenerator::print4digitMoveToField);
+                //System.out.println("yyyyyyyyyyyyyy");
+
+            //System.out.println("current depth: " + depth + " - assessed leaves after(total): " + assessedLeaves);
+            //System.out.println("current depth: " + depth + " - assessed leaves in this depth: " + assessedLeavesCurrent);
+            //assessedLeavesCurrent = 0;
 
         }
-        System.out.println("Iteration Over; best Move: ");
+        //System.out.println("Iteration Over; best Move: ");
         return bestMoveSoFar;
 
 
@@ -433,16 +433,16 @@ public class PrincipalVariationSearch {
             if (currentPv != null && !(currentPv.isEmpty())) {
                 //TODO: MoveSortierung effizienter ...oder doch ein Move doppelt suchen? (aber in tiefen tiefen wahrscheinlich nicht doppelt suchen ausschlaggebender!)
                 // /*
-                System.out.println("xxxxxxxxxxx");
-                currentPv.forEach(System.out::println);
+                //System.out.println("xxxxxxxxxxx");
+                //currentPv.forEach(System.out::println);
 
                 String bestMove = currentPv.remove(0);
-                System.out.println("best Move is: " + bestMove);
-                System.out.println(moveList);
-                System.out.println("length of moveList "+ moveList.length());
+                //System.out.println("best Move is: " + bestMove);
+                //System.out.println(moveList);
+                //System.out.println("length of moveList "+ moveList.length());
                 String[] strArr = moveList.split("(?<=\\G.{4})");
                 String[] newMoveList = new String[strArr.length];
-                System.out.println("length of moveListNow "+ newMoveList.length);
+                //System.out.println("length of moveListNow "+ newMoveList.length);
                 int index = 1;
                 boolean alreadyAppeared = false;
                 for (int i = 0; i < strArr.length; i++){
@@ -454,8 +454,8 @@ public class PrincipalVariationSearch {
                     }
                 }
                 moveList = String.join("",newMoveList);
-                System.out.println(moveList);
-                System.out.println("length of moveList end"+ moveList.length());// */
+                //System.out.println(moveList);
+                //System.out.println("length of moveList end"+ moveList.length());// */
                 //moveList = currentPv.remove(0) + moveList; //currentPvMove wird zwar doppelt untersucht, d+rfte aber kein Problem sein wegen TT?
             }
         }
