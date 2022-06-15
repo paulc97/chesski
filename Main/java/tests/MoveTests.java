@@ -6,6 +6,8 @@ import com.sun.jdi.event.MonitorContendedEnteredEvent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
+
 import static Model.MoveGenerator.getQuiescenceSearchIterations;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -320,7 +322,7 @@ public class MoveTests {
         Board b = new Board("6k1/r4ppp/r7/1b6/8/8/4QPPP/4R1K1 w - - 0 1");
 
 
-        for (int i = 1; i <= 4; i++) {
+        for (int i = 1; i <= 6; i++) {
             //StartPosition
             long time = 0;
             long startEpoch = 0;
@@ -427,6 +429,9 @@ public class MoveTests {
             System.out.println("Assessed leaves: "+ MoveGenerator.getAssessedLeaves());
             System.out.println("Assessed leaves per second: "+(MoveGenerator.getAssessedLeaves()/(time*0.001)));
             System.out.println("Quiescence Search Iterations: "+getQuiescenceSearchIterations());
+            System.out.println("LeavesFoundAsHash: " + MoveGenerator.zobrist.found);
+            MoveGenerator.zobrist.found = 0;
+            MoveGenerator.assesedBoards = new HashMap<Long,Integer>();
 
         }
 
@@ -440,7 +445,7 @@ public class MoveTests {
         Board b = new Board("Q4R2/3kr3/1q3n1p/2p1p1p1/1p1bP1P1/1B1P3P/2PBK3/8 w - - 1 0");
 
 
-        for (int i = 1; i <= 4; i++) {
+        for (int i = 1; i <= 5; i++) {
             //StartPosition
             long time = 0;
             long startEpoch = 0;
@@ -458,6 +463,9 @@ public class MoveTests {
             System.out.println("Assessed leaves: "+ MoveGenerator.getAssessedLeaves());
             System.out.println("Assessed leaves per second: "+(MoveGenerator.getAssessedLeaves()/(time*0.001)));
             System.out.println("Quiescence Search Iterations: "+getQuiescenceSearchIterations());
+            System.out.println("LeavesFoundAsHash: " + MoveGenerator.zobrist.found);
+            MoveGenerator.zobrist.found = 0;
+            MoveGenerator.assesedBoards = new HashMap<Long,Integer>();
 
         }
 
@@ -471,8 +479,9 @@ public class MoveTests {
         Board b = new Board("7k/5ppp/8/R7/5n2/3B4/2K5/8 b - - 0 1");
 
 
-        for (int i = 1; i <= 5; i++) {
+        for (int i = 1; i <= 7; i++) {
             //StartPosition
+
             long time = 0;
             long startEpoch = 0;
             long endepoch = 0;
@@ -489,6 +498,9 @@ public class MoveTests {
             System.out.println("Assessed leaves: "+ MoveGenerator.getAssessedLeaves());
             System.out.println("Assessed leaves per second: "+(MoveGenerator.getAssessedLeaves()/(time*0.001)));
             System.out.println("Quiescence Search Iterations: "+getQuiescenceSearchIterations());
+            System.out.println("LeavesFoundAsHash: " + MoveGenerator.zobrist.found);
+            MoveGenerator.zobrist.found = 0;
+            MoveGenerator.assesedBoards = new HashMap<Long,Integer>();
 
         }
 
@@ -605,7 +617,7 @@ public class MoveTests {
         Board b = new Board("6k1/r4ppp/r7/1b6/8/8/4QPPP/4R1K1 w - - 0 1");
 
 
-        for (int i = 1; i <= 4; i++) {
+        for (int i = 1; i <= 5; i++) {
             //StartPosition
             long time = 0;
             long startEpoch = 0;
@@ -623,6 +635,10 @@ public class MoveTests {
             System.out.println("Elapsed time: "+time+" ms");
             System.out.println("Assessed leaves: "+PrincipalVariationSearch.assessedLeaves);
             System.out.println("Assessed leaves per second: "+(PrincipalVariationSearch.assessedLeaves/(time*0.001)));
+            System.out.println("LeavesFoundAsHash: " + MoveGenerator.zobrist.found);
+            MoveGenerator.zobrist.found = 0;
+            MoveGenerator.assesedBoards = new HashMap<Long,Integer>();
+
 
         }
 
@@ -636,7 +652,7 @@ public class MoveTests {
         Board b = new Board("Q4R2/3kr3/1q3n1p/2p1p1p1/1p1bP1P1/1B1P3P/2PBK3/8 w - - 1 0");
 
 
-        for (int i = 1; i <= 4; i++) {
+        for (int i = 1; i <= 5; i++) {
             //StartPosition
             long time = 0;
             long startEpoch = 0;
@@ -654,6 +670,9 @@ public class MoveTests {
             System.out.println("Elapsed time: "+time+" ms");
             System.out.println("Assessed leaves: "+PrincipalVariationSearch.assessedLeaves);
             System.out.println("Assessed leaves per second: "+(PrincipalVariationSearch.assessedLeaves/(time*0.001)));
+            System.out.println("LeavesFoundAsHash: " + MoveGenerator.zobrist.found);
+            MoveGenerator.zobrist.found = 0;
+            MoveGenerator.assesedBoards = new HashMap<Long,Integer>();
 
         }
 
@@ -667,7 +686,7 @@ public class MoveTests {
         Board b = new Board("6k1/r4ppp/r7/1b6/8/8/4QPPP/4R1K1 w - - 0 1");
 
 
-        for (int i = 1; i <= 4; i++) {
+        for (int i = 1; i <= 7; i++) {
             //StartPosition
             long time = 0;
             long startEpoch = 0;
@@ -685,6 +704,9 @@ public class MoveTests {
             System.out.println("Elapsed time: "+time+" ms");
             System.out.println("Assessed leaves: "+PrincipalVariationSearch.assessedLeaves);
             System.out.println("Assessed leaves per second: "+(PrincipalVariationSearch.assessedLeaves/(time*0.001)));
+            System.out.println("LeavesFoundAsHash: " + MoveGenerator.zobrist.found);
+            MoveGenerator.zobrist.found = 0;
+            MoveGenerator.assesedBoards = new HashMap<Long,Integer>();
 
         }
 
@@ -700,7 +722,7 @@ public class MoveTests {
         Board b = new Board("6k1/r4ppp/r7/1b6/8/8/4QPPP/4R1K1 w - - 0 1");
 
 
-        for (int i = 1; i <= 4; i++) {
+        for (int i = 1; i <= 5; i++) {
             //StartPosition
             long time = 0;
             long startEpoch = 0;
@@ -716,6 +738,9 @@ public class MoveTests {
             System.out.println("Assessed leaves: "+ MoveGenerator.getAssessedLeaves());
             System.out.println("Assessed leaves per second: "+(MoveGenerator.getAssessedLeaves()/(time*0.001)));
             System.out.println("Quiescence Search Iterations: "+getQuiescenceSearchIterations());
+            System.out.println("LeavesFoundAsHash: " + MoveGenerator.zobrist.found);
+            MoveGenerator.zobrist.found = 0;
+            MoveGenerator.assesedBoards = new HashMap<Long,Integer>();
         }
 
     }
@@ -728,7 +753,7 @@ public class MoveTests {
         Board b = new Board("7k/5ppp/8/R7/5n2/3B4/2K5/8 b - - 0 1");
 
 
-        for (int i = 1; i <= 4; i++) {
+        for (int i = 1; i <= 5; i++) {
             //StartPosition
             long time = 0;
             long startEpoch = 0;
@@ -744,6 +769,9 @@ public class MoveTests {
             System.out.println("Assessed leaves: "+ MoveGenerator.getAssessedLeaves());
             System.out.println("Assessed leaves per second: "+(MoveGenerator.getAssessedLeaves()/(time*0.001)));
             System.out.println("Quiescence Search Iterations: "+getQuiescenceSearchIterations());
+            System.out.println("LeavesFoundAsHash: " + MoveGenerator.zobrist.found);
+            MoveGenerator.zobrist.found = 0;
+            MoveGenerator.assesedBoards = new HashMap<Long,Integer>();
         }
 
     }
@@ -756,7 +784,7 @@ public class MoveTests {
         Board b = new Board("7k/5ppp/8/R7/5n2/3B4/2K5/8 b - - 0 1");
 
 
-        for (int i = 1; i <= 4; i++) {
+        for (int i = 1; i <= 7; i++) {
             //StartPosition
             long time = 0;
             long startEpoch = 0;
@@ -772,6 +800,9 @@ public class MoveTests {
             System.out.println("Assessed leaves: "+ MoveGenerator.getAssessedLeaves());
             System.out.println("Assessed leaves per second: "+(MoveGenerator.getAssessedLeaves()/(time*0.001)));
             System.out.println("Quiescence Search Iterations: "+getQuiescenceSearchIterations());
+            System.out.println("LeavesFoundAsHash: " + MoveGenerator.zobrist.found);
+            MoveGenerator.zobrist.found = 0;
+            MoveGenerator.assesedBoards = new HashMap<Long,Integer>();
         }
 
     }

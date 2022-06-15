@@ -9,6 +9,7 @@ public class Zobrist {
     static long zEnPassant[] = new long[8];
     static long zCastle[] = new long[4];
     static long zBlackMove;
+    public static int found = 0;
     public static long random64() {
         SecureRandom random = new SecureRandom();
         return random.nextLong();
