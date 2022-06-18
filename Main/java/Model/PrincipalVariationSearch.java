@@ -11,7 +11,9 @@ public class PrincipalVariationSearch {
     public static int assessedLeaves = 0;
     public static int assessedLeavesCurrent = 0;
 
-    public static String iterativeDeepeningPVSNoTimeLimit(Board b, int depth, boolean moveOrdering) {
+    public static List<String> currentPv;
+
+    /*public static String iterativeDeepeningPVSNoTimeLimit(Board b, int depth, boolean moveOrdering) {
         System.out.println("Starting iterative deepening PVS with depth: " + depth);
 
         String bestMoveSoFar = "";
@@ -89,7 +91,7 @@ public class PrincipalVariationSearch {
 
     ////////
 
-    public static List<String> currentPv;
+
 
     public static String moiterativeDeepeningPVSNoTimeLimit(Board b, int depth, boolean moveOrdering) {
         System.out.println("Starting iterative deepening PVS with depth: " + depth);
@@ -154,7 +156,7 @@ public class PrincipalVariationSearch {
                 }
                 moveList = String.join("",newMoveList);
                 System.out.println(moveList);
-                System.out.println("length of moveList end"+ moveList.length());*/
+                System.out.println("length of moveList end"+ moveList.length());
                 moveList = currentPv.remove(0) + moveList; //currentPvMove wird zwar doppelt untersucht, d+rfte aber kein Problem sein wegen TT?
             }
         }
@@ -196,7 +198,7 @@ public class PrincipalVariationSearch {
 
         return new Pv(-firstcurrentEval.getEvalScore(), firstcurrentEval.getPrinVar(), firstmove);//TODO: minus oder plus??
 
-    }
+    }*/
 
     //without Window, nur Zugsortierung
 
@@ -318,7 +320,7 @@ public class PrincipalVariationSearch {
                     break; //beta-cutoff
                 }
             }
-            return new Pv(bestEval.getEvalScore(), bestEval.getPrinVar(), bestMove);
+            return new Pv(alpha, bestEval.getPrinVar(), bestMove);
         } else {
             String bestMove = "9999";
             Pv bestEval = new Pv(Integer.MAX_VALUE);
@@ -345,7 +347,7 @@ public class PrincipalVariationSearch {
                 }
 
             }
-            return new Pv(bestEval.getEvalScore(), bestEval.getPrinVar(), bestMove);
+            return new Pv(beta, bestEval.getPrinVar(), bestMove);
         }
     }
 
@@ -486,7 +488,7 @@ public class PrincipalVariationSearch {
                     break; //beta-cutoff
                 }
             }
-            return new Pv(bestEval.getEvalScore(), bestEval.getPrinVar(), bestMove);
+            return new Pv(alpha, bestEval.getPrinVar(), bestMove);
         } else {
             String bestMove = "9999";
             Pv bestEval = new Pv(Integer.MAX_VALUE);
@@ -513,7 +515,7 @@ public class PrincipalVariationSearch {
                 }
 
             }
-            return new Pv(bestEval.getEvalScore(), bestEval.getPrinVar(), bestMove);
+            return new Pv(beta, bestEval.getPrinVar(), bestMove);
         }
     }
 
@@ -528,7 +530,7 @@ public class PrincipalVariationSearch {
 
 //wit Window und  Zugsortierung
 
-    public static String moiterativeDeepeningPVSNoTimeLimitWithWindow(Board b, int depth, boolean isMaxPlayer) {
+    /*public static String moiterativeDeepeningPVSNoTimeLimitWithWindow(Board b, int depth, boolean isMaxPlayer) {
         //TODO: moveordering rausnehmen!
         System.out.println("Starting iterative deepening PVS with depth: " + depth);
 
@@ -618,7 +620,7 @@ public class PrincipalVariationSearch {
                 }
                 moveList = String.join("",newMoveList);
                 System.out.println(moveList);
-                System.out.println("length of moveList end"+ moveList.length());// */
+                System.out.println("length of moveList end"+ moveList.length());//
                 //moveList = currentPv.remove(0) + moveList; //currentPvMove wird zwar doppelt untersucht, d+rfte aber kein Problem sein wegen TT?
             }
         }
@@ -663,7 +665,7 @@ public class PrincipalVariationSearch {
         return new Pv(bestEval.getEvalScore(), bestEval.getPrinVar(), bestMove);
 
     }
-
+*/
 
 ////////////////
 //(neuer Versuch ohne negation)
@@ -766,7 +768,7 @@ public class PrincipalVariationSearch {
 
         if (isMaxPlayer) {
             String bestMove = "9999";
-            Pv bestEval = new Pv(Integer.MIN_VALUE);
+            Pv bestEval = new Pv(Integer.MIN_VALUE); //TODO: MIN oder MAX?
             for (int i = 0; i < moveList.length(); i += 4) {
 
                 String move = moveList.substring(i, i + 4);
@@ -804,10 +806,10 @@ public class PrincipalVariationSearch {
                     break; //beta-cutoff
                 }
             }
-            return new Pv(bestEval.getEvalScore(), bestEval.getPrinVar(), bestMove);
+            return new Pv(alpha, bestEval.getPrinVar(), bestMove);
         } else {
             String bestMove = "9999";
-            Pv bestEval = new Pv(Integer.MAX_VALUE);
+            Pv bestEval = new Pv(Integer.MAX_VALUE);//TODO: MIN oder MAX?
             for (int i = 0; i < moveList.length(); i += 4) {
 
                 String move = moveList.substring(i, i + 4);
@@ -850,7 +852,7 @@ public class PrincipalVariationSearch {
                 }
 
             }
-            return new Pv(bestEval.getEvalScore(), bestEval.getPrinVar(), bestMove);
+            return new Pv(beta, bestEval.getPrinVar(), bestMove);
         }
     }
 }
