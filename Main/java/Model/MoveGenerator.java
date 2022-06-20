@@ -657,6 +657,7 @@ public class MoveGenerator {
             String score = String.valueOf(b.assessBoardFromOwnPerspective());
 
             //System.out.println(b.getCreatedByMove() + score);
+            if(b.getCreatedByMove().equals("")) return "9999" + score; //um mögliche Errors zu vermeiden (kann nur == "" wenn mit Suchtiefe 0 gestartet -> kommt im richtigen Spiel nciht vor)
             return b.getCreatedByMove() + score; //TODO: wann wird created by move gesetzt?
         }
         String moveList = validMoves(b);
@@ -673,6 +674,7 @@ public class MoveGenerator {
             String score = String.valueOf(b.assessBoardFromOwnPerspective());
 
             //System.out.println(b.getCreatedByMove() + score);
+            if(b.getCreatedByMove().equals("")) return "9999" + score; //um mögliche Errors zu vermeiden (kann nur == "" wenn mit Suchtiefe 0 gestartet -> kommt im richtigen Spiel nciht vor)
             return b.getCreatedByMove() + score; //TODO: wann wird created by move gesetzt?
         }
 
@@ -875,6 +877,7 @@ public class MoveGenerator {
             }
             //System.out.println("b currently assessed, was created by move" + b.getCreatedByMove());
             //System.out.println(b.getCreatedByMove() + score);
+            if(b.getCreatedByMove().equals("")) return "9999" + score; //um mögliche Errors zu vermeiden (kann nur == "" wenn mit Suchtiefe 0 gestartet -> kommt im richtigen Spiel nciht vor)
             return b.getCreatedByMove() + score;
         }
 
@@ -891,13 +894,14 @@ public class MoveGenerator {
             }
             //System.out.println("b currently assessed, was created by move" + b.getCreatedByMove());
             //System.out.println(b.getCreatedByMove() + score);
+            if(b.getCreatedByMove().equals("")) return "9999" + score; //um mögliche Errors zu vermeiden (kann nur == "" wenn mit Suchtiefe 0 gestartet -> kommt im richtigen Spiel nciht vor)
             return b.getCreatedByMove() + score;
         }
 
         //https://stackoverflow.com/questions/15447580/java-minimax-alpha-beta-pruning-recursion-return
 
         if(isMaxPlayer){
-            String bestMove = "";
+            String bestMove = "9999";
             for(int i = 0; i<moveList.length(); i+=4){
                 if(outOfTime) break; //TODO: richtig? -> out of time wird vor der for Schleife berechnet und evaluiert und kann hier meiner Meinung nach nie true sein... Die nächste Überprüfung dürfte beim nächsten Selbsaufruf erfolgen...
                 String move = moveList.substring(i,i+4);
@@ -918,10 +922,10 @@ public class MoveGenerator {
                     alpha = currentEval;
                 }
                 //System.out.println("best Move is currently" + bestMove);
-                if(bestMove.equals("")){
+                /*if(bestMove.equals("")){
                     //System.out.println("nothing!");
                     bestMove = "9999";
-                }
+                }*/
                 //System.out.println("alpha is:" + alpha);
                 //alpha = Math.max(alpha,currentEval); wird redundant, siehe 2 Zeilen vorher
 
@@ -934,7 +938,7 @@ public class MoveGenerator {
             //System.out.println("max out of for:" + bestMove + alpha);
             return bestMove + alpha;
         } else {
-            String bestMove= "";
+            String bestMove= "9999";
             for(int i = 0; i<moveList.length(); i+=4){
                 if(outOfTime) break; //TODO: richtig?
                 String move = moveList.substring(i,i+4);
@@ -955,10 +959,10 @@ public class MoveGenerator {
                     beta = currentEval;
                 }
                 //System.out.println("best move is currently:" + bestMove);
-                if(bestMove.equals("")){
+                /*if(bestMove.equals("")){
                     //System.out.println("nothing!");
                     bestMove = "9999";
-                }
+                }*/
                 //System.out.println("beta is:" + beta );
                 //beta = Math.min(beta, currentEval);
 
