@@ -585,15 +585,15 @@ public class MoveGenerator {
         }
 
         //TODO: Das hier nicht löschen!! Ist Variante ohne PVS nur mit IDS!
-        /*
 
-            System.out.println("Using iterative deepening search for move generation");
+
+/*            System.out.println("Using iterative deepening search for move generation");
             //Iterative Deepening Search (ohne Zugsortierung)
             long timeLimit = 100;
             if (Math.floor(b.getNextMoveCount()/2)<timeDistribution.length) {
             timeLimit += timeDistribution[b.getNextMoveCount()];}
-            return iterativeDeepeningSearch(b, timeLimit).substring(0, 4);
-        */
+            return iterativeDeepeningSearch(b, timeLimit).substring(0, 4);*/
+
 
         System.out.println("Using principal variation search for move generation");
         //Iterative Deepening Search + PVS (mit PV Zugsortierung)
@@ -861,6 +861,12 @@ public class MoveGenerator {
             outOfTime = true;
         }
 
+
+/*       if (depth == 0) {
+           //System.out.println("Calling qs with move" +b.getCreatedByMove());
+            return quiescenceSearchv1(b, alpha, beta, !isMaxPlayer);
+        }*/
+
         if(depth == 0||outOfTime){
             assessedLeaves++;
             String score = String.valueOf(b.assessBoardFromOwnPerspective());
@@ -873,10 +879,7 @@ public class MoveGenerator {
         }
 
 
-    /*
-       if (depth == 0) {
-            return quiescenceSearchv1(b, alpha, beta, isMaxPlayer);
-        }*/
+
 
         String moveList = validMoves(b);
 
@@ -1033,10 +1036,11 @@ public class MoveGenerator {
             String bestMove = "";
 
             //recursion anchor
-            if (b.assessBoardFromOwnPerspective() >= alpha || moveList.equals("")){
+            if (b.assessBoardFromOwnPerspective() >= beta || moveList.equals("")){
                 //System.out.println("Finished quiescence search with evalValue: "+ b.assessBoardFromOwnPerspective() +" >= alpha: "+alpha);
                 assessedLeaves++;
-                return b.getCreatedByMove() + alpha;
+                //System.out.println("returning move "+b.getCreatedByMove()+" from qs");
+                return b.getCreatedByMove() + beta;
             }
             quiescenceSearchIterations++;
             //System.out.println("Using quiescence search (evalValue:"+b.assessBoardFromOwnPerspective()+"(>=) alpha: "+alpha+")");
@@ -1070,10 +1074,10 @@ public class MoveGenerator {
         } else {
 
             //recursion anchor
-            if (b.assessBoardFromOwnPerspective() <= beta || moveList.equals("")){
+            if (b.assessBoardFromOwnPerspective() <= alpha || moveList.equals("")){
                 //System.out.println("Finished quiescence search with evalValue: "+ b.assessBoardFromOwnPerspective() +" <= beta: "+beta);
                 assessedLeaves++;
-                return b.getCreatedByMove() + beta;
+                return b.getCreatedByMove() + alpha;
             }
             quiescenceSearchIterations++;
             //System.out.println("Using quiescence search (evalValue:"+b.assessBoardFromOwnPerspective()+"(<=) beta: "+beta+")");
@@ -1085,7 +1089,7 @@ public class MoveGenerator {
                 Board newBoard = b.createBoardFromMove(move);
                 newBoard.setCreatedByMove(move);
 
-                String intermediateResult = quiescenceSearchv1(newBoard, beta, alpha, true);
+                String intermediateResult = quiescenceSearchv1(newBoard, alpha, beta, true);
 
                 int currentEval = Integer.parseInt(intermediateResult.substring(4));
 
