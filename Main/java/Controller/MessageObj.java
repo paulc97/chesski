@@ -1,8 +1,9 @@
 package Controller;
 
 public class MessageObj {
-        int type;
+        public int type;
         String username;
+        public Game[] games;
         long playerID;
         String move;
         String gameName;

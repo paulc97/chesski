@@ -19,9 +19,10 @@ public class RemotePlayer2 {
     private Logger logger = Logger.getLogger(this.getClass().getName());
     private MessageEncoder me = new MessageEncoder();
     private long usedTime = 0;
+    private MoveGenerator mg = new MoveGenerator();
 
     //Config
-    private final String userName1 = "Player2343242";
+    private final String userName1 = "Player788njn8";
     private long playerId1 = 0;
     private int gameId1 = 0;
 
@@ -46,44 +47,57 @@ public class RemotePlayer2 {
     @OnMessage
     public void onMessage(String message, Session session) throws IOException, DecodeException {
         Gson g = new Gson();
+        MessageObj mess = g.fromJson(message, MessageObj.class);
+
+        if (mess.type < 0){
+            System.out.println("An error occured. That's bad! Error code: "+mess.type);
+        }
+
 
         try {
             logger.info("Received: " + message);
+            if (mess.type == 3 || mess.type == 4) {
+                //receiving an update for a game and returning a move
 
-            //receiving an update for a game and returning a move
-            if (message.contains("activePlayerList") && gameId1 != 0) {
-                ActiveGame ag = g.fromJson(message, ActiveGame.class);
-                if (ag.over || ag.draw) {
-                    System.out.println("Game " + ag.ID + ": Game over or draw!");
-                    return;
-                }
-
-                if (ag.currentPlayer.playerName.equals(userName1)) {
-                    long startTime = System.currentTimeMillis();
-                    System.out.println("Starting move generation!");
-                    MoveGenerator mg = new MoveGenerator();
-                    Board b = new Board(ag.fen);
-                    if (b.isCurrentPlayerIsWhite()){
-                        b.setKIPlaysWhite(true);
-                    } else {
-                        b.setKIPlaysWhite(false);
+                    ActiveGame ag = g.fromJson(message, ActiveGame.class);
+                    if (ag.over) {
+                        System.out.println("Game " + ag.ID + ": Game over!");
+                        return;
+                    }
+                    if (ag.draw) {
+                        System.out.println("Game " + ag.ID + ": draw!");
+                        return;
                     }
 
-                    String validMoves = mg.validMoves(b);
-                    String moveBitboardPosition = mg.moveSelector(b, validMoves, usedTime);
-                    String move = MoveGenerator.convertInternalMoveToGameserverMove(moveBitboardPosition, b);
-                    System.out.println("Active Player: " + userName1);
-                    System.out.println("Received FEN: " + ag.fen + " for game with ID: " + ag.ID);
-                    System.out.println("Received moves from engine: " + validMoves);
-                    System.out.println("Selected move: " + moveBitboardPosition);
-                    System.out.println("Going to Submit translated move: " + move);
-                    System.out.println("-----------------------------------------------------");
-                    Thread.sleep(500);
-                    MessageObj response = new MessageObj(4, userName1, move, playerId1, gameId1);
-                    session.getBasicRemote().sendText(me.encode(response));
-                    usedTime += (System.currentTimeMillis() - startTime);
+
+                    if (ag.currentPlayer.playerID == playerId1) {
+                        long startTime = System.currentTimeMillis();
+                        System.out.println("Starting move generation!");
+
+                        Board b = new Board(ag.fen);
+                        if (b.isCurrentPlayerIsWhite()) {
+                            b.setKIPlaysWhite(true);
+                        } else {
+                            b.setKIPlaysWhite(false);
+                        }
+
+                        String validMoves = MoveGenerator.validMoves(b);
+                        String moveBitboardPosition = MoveGenerator.moveSelector(b, validMoves, usedTime);
+                        String move = MoveGenerator.convertInternalMoveToGameserverMove(moveBitboardPosition, b);
+                        System.out.println("Active Player: " + userName1);
+                        System.out.println("Received FEN: " + ag.fen + " for game with ID: " + ag.ID);
+                        System.out.println("Received moves from engine: " + validMoves);
+                        System.out.println("Selected move: " + moveBitboardPosition);
+                        System.out.println("Going to Submit translated move: " + move);
+                        System.out.println("-----------------------------------------------------");
+                        MessageObj response = new MessageObj(4, userName1, move, playerId1, gameId1);
+                        session.getBasicRemote().sendText(me.encode(response));
+                        usedTime += (System.currentTimeMillis() - startTime);
+                    } else {
+                        return;
+                    }
                 }
-            }
+
 
             //Handling to register users on the game server
             if (message.contains("\"playerID\":") && (playerId1 == 0)) {
@@ -102,9 +116,9 @@ public class RemotePlayer2 {
             }
 
             //Receiving a game list to join a game or to create a new one
-            if (message.charAt(0) == '[') {
+            if (mess.type == 1 && gameId1 == 0) {
                 System.out.println("Trying to parse games list...");
-                Game[] games = g.fromJson(message, Game[].class);
+                Game[] games = mess.games;
                 System.out.println("Found " + games.length + " games");
 
                 for (Game game : games) {
@@ -123,11 +137,8 @@ public class RemotePlayer2 {
                             session.getBasicRemote().sendText(g.toJson(response2, MessageObj.class));
                             gameId1 = game.ID;
                             System.out.println("Joined game... set game ID1 to: " + gameId1);
-
-                        }
-
-                        if (!(gameId1 == 0)) {
                             return;
+
                         }
                     }
                 }
@@ -135,6 +146,7 @@ public class RemotePlayer2 {
 
                 //if empty create a new game
                 if (gameId1 == 0) {
+                    System.out.println("Going to create a new game");
                     MessageObj response = new MessageObj(2, userName1, playerId1, "KingOfTheHill");
                     session.getBasicRemote().sendText(me.encode(response));
                 }
@@ -142,22 +154,19 @@ public class RemotePlayer2 {
                 return;
             }
 
-            //handle created game
-            if (message.substring(0, 3).equals("{\"n")) {
+            //handle game creation message
+            if (mess.type == 2) {
+                System.out.println("Joining created game...");
                 Game game = g.fromJson(message, Game.class);
-                System.out.println("New game created!");
 
-                //request game list to trigger join game procedure
-                MessageObj response2 = new MessageObj(1);
-                session.getBasicRemote().sendText(me.encode(response2));
-
+                MessageObj response2 = new MessageObj(3, userName1, playerId1, game.ID, 1);
+                session.getBasicRemote().sendText(g.toJson(response2, MessageObj.class));
+                gameId1 = game.ID;
+                System.out.println("Joined game... set game ID1 to: " + gameId1);
                 return;
             }
 
-
         } catch (EncodeException | IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
@@ -175,7 +184,7 @@ public class RemotePlayer2 {
         latch = new CountDownLatch(100);
         ClientManager client = ClientManager.createClient();
         try {
-            client.connectToServer(RemotePlayer2.class, new URI("ws://chess.df1ash.de:8025/websockets/game"));
+            client.connectToServer(RemotePlayer2.class, new URI("ws://koth.df1ash.de:8026"));
             latch.await();
         } catch (DeploymentException | URISyntaxException | InterruptedException e) {
             throw new RuntimeException(e);
