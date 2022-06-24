@@ -101,10 +101,10 @@ public class Board implements Comparable <Board> {
                 if (!fenStringParts[3].contains(" ")) enPassants = fenStringParts[3];
 
                 //get number of "half" moves
-                halfMoveCount = (short)Character.getNumericValue(fenStringParts[4].charAt(0));
+                halfMoveCount = Short.valueOf(fenStringParts[4]);
 
                 //get number of "next" move
-                nextMoveCount = (short)Character.getNumericValue(fenStringParts[5].charAt(0));
+                nextMoveCount = Short.valueOf(fenStringParts[5]);
             }
 
 

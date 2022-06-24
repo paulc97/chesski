@@ -22,7 +22,7 @@ public class RemotePlayer2 {
     private MoveGenerator mg = new MoveGenerator();
 
     //Config
-    private final String userName1 = "Player788njn8";
+    private final String userName1 = String.valueOf(Math.random());
     private long playerId1 = 0;
     private int gameId1 = 0;
 
@@ -31,11 +31,18 @@ public class RemotePlayer2 {
     @OnOpen
     public void onOpen(Session session) {
         logger.info("Connected. Session id: " + session.getId());
+        Gson g = new Gson();
         try {
             //if no id is set create a new user
             //send the message to the server
+            if (playerId1 == 0){
             MessageObj messageObj = new MessageObj(0, userName1, playerId1);
             session.getBasicRemote().sendText(me.encode(messageObj));
+            } else {
+                MessageObj messageObj = new MessageObj(1);
+                session.getBasicRemote().sendText(g.toJson(messageObj));
+            }
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (EncodeException e) {
@@ -62,10 +69,20 @@ public class RemotePlayer2 {
                     ActiveGame ag = g.fromJson(message, ActiveGame.class);
                     if (ag.over) {
                         System.out.println("Game " + ag.ID + ": Game over!");
+                        gameId1 = 0;
+                        usedTime = 0;
+                        System.out.println("Request game list to play next game...");
+                        MessageObj messageObj = new MessageObj(1);
+                        session.getBasicRemote().sendText(g.toJson(messageObj));
                         return;
                     }
                     if (ag.draw) {
                         System.out.println("Game " + ag.ID + ": draw!");
+                        gameId1 = 0;
+                        usedTime = 0;
+                        System.out.println("Request game list to play next game...");
+                        MessageObj messageObj = new MessageObj(1);
+                        session.getBasicRemote().sendText(g.toJson(messageObj));
                         return;
                     }
 
@@ -100,7 +117,7 @@ public class RemotePlayer2 {
 
 
             //Handling to register users on the game server
-            if (message.contains("\"playerID\":") && (playerId1 == 0)) {
+            if (mess.type == 0 && (playerId1 == 0)) {
                 Player registeredPlayer = g.fromJson(message, Player.class);
                 if (registeredPlayer.playerName.equals(userName1)) {
                     playerId1 = registeredPlayer.playerID;
@@ -173,22 +190,22 @@ public class RemotePlayer2 {
     }
 
     @OnClose
-    public void onClose(Session session, CloseReason closeReason) {
+    public void onClose(Session session, CloseReason closeReason) throws IOException {
         logger.info(String.format("Session %s closed because of %s", session.getId(), closeReason));
         latch.countDown();
     }
 
     public static void main(String[] args) throws InterruptedException {
 
-        //init Server
-        latch = new CountDownLatch(100);
-        ClientManager client = ClientManager.createClient();
-        try {
-            client.connectToServer(RemotePlayer2.class, new URI("ws://koth.df1ash.de:8026"));
-            latch.await();
-        } catch (DeploymentException | URISyntaxException | InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+            //init Server
+            latch = new CountDownLatch(100);
+            ClientManager client = ClientManager.createClient();
+            try {
+                client.connectToServer(RemotePlayer2.class, new URI("ws://koth.df1ash.de:8026"));
+                latch.await();
+            } catch (DeploymentException | URISyntaxException | InterruptedException e) {
+                throw new RuntimeException(e);
+            }
 
 
     }

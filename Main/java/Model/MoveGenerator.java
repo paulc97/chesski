@@ -32,7 +32,7 @@ public class MoveGenerator {
 
         public MoveGenerator(){
             double expectationValue = averageNumberOfMoves/2;
-            double variance = 20;
+            double variance = 30;
             zobrist.zobristFillArray();
             System.out.println("MG Created");
             for (int i = 0; i < this.timeDistribution.length; i++){
@@ -590,7 +590,7 @@ public class MoveGenerator {
 /*            System.out.println("Using iterative deepening search for move generation");
             //Iterative Deepening Search (ohne Zugsortierung)
             long timeLimit = 100;
-            if (Math.floor(b.getNextMoveCount()/2)<timeDistribution.length) {
+            if (b.getNextMoveCount()<timeDistribution.length) {
             timeLimit += timeDistribution[b.getNextMoveCount()];}
             return iterativeDeepeningSearch(b, timeLimit).substring(0, 4);*/
 
@@ -598,7 +598,7 @@ public class MoveGenerator {
         System.out.println("Using principal variation search for move generation");
         //Iterative Deepening Search + PVS (mit PV Zugsortierung)
         long timeLimit = 100;
-        if (Math.floor(b.getNextMoveCount()/2)<timeDistribution.length) {
+        if (b.getNextMoveCount()<timeDistribution.length) {
             timeLimit += timeDistribution[b.getNextMoveCount()];}
         return PrincipalVariationSearch.moiterativeDeepeningPVSWithTimeLimitNoWindow(b, timeLimit).substring(0, 4);
 
