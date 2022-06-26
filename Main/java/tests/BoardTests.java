@@ -2,8 +2,11 @@
 
 import Model.Board;
 import Model.MoveGenerator;
+import Model.Pieces.Zobrist;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.HashMap;
 
 import static Model.Mask.FileMasks8;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -67,6 +70,29 @@ public class BoardTests {
     @Test
     void testDigitConversion(){
         System.out.println(FileMasks8[("c7").charAt(0)-97]);
+    }
+
+    @Test
+    void calculateGamePhaseCheck() {
+        Board b = new Board("rnbqkbnr/ppp1pppp/8/8/8/8/PPPPPPPP/2B1KBNR w KQkq f4 0 1");
+        int gamePhase = b.calcGamePhase();
+        System.out.println(gamePhase);
+
+
+    }
+
+    @Test
+    void assessmentWithStaticVSDynamicPST() {
+        Board b = new Board("rnbqkbnr/pppppppp/8/8/8/8/R1PPPPPP/2BQKBNR w KQkq f4 0 1");
+
+        int gamePhase = b.calcGamePhase();
+        System.out.println(gamePhase);
+
+        //um zu testen: bei einer Methode PST, bei anderer PST Tapered Eval auskommentieren
+        System.out.println(b.assessBoard());
+        System.out.println(b.assessBoardTPT(new HashMap<Long,Integer>(), new Zobrist()));
+
+
     }
 
 

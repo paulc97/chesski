@@ -377,21 +377,43 @@ public class Board implements Comparable <Board> {
         }
         //TODO: isolierte Bauern if wished
 
+        //TODO: Choose either PST or PST Tapered Eval!!
         //PST
-        int pstScoreWhite = 0;
-        pstScoreWhite += addPSTValues(this.getWhitePawns(), PieceSquareTables.PST_WHITE_PAWNS);
-        pstScoreWhite += addPSTValues(this.getWhiteKnights(), PieceSquareTables.PST_WHITE_KNIGHTS);
-        pstScoreWhite += addPSTValues(this.getWhiteBishops(), PieceSquareTables.PST_WHITE_BISHOPS);
-        pstScoreWhite += addPSTValues(this.getWhiteRooks(), PieceSquareTables.PST_WHITE_ROOKS);
-        pstScoreWhite += addPSTValues(this.getWhiteQueen(), PieceSquareTables.PST_WHITE_QUEEN);
-        pstScoreWhite += addPSTValues(this.getWhiteKing(), PieceSquareTables.PST_WHITE_KING);
+        /*int pstScoreWhite = 0;
+        pstScoreWhite += addPSTValues(this.getWhitePawns(), PieceSquareTables.MG_WHITE_PAWNS);
+        pstScoreWhite += addPSTValues(this.getWhiteKnights(), PieceSquareTables.MG_WHITE_KNIGHTS);
+        pstScoreWhite += addPSTValues(this.getWhiteBishops(), PieceSquareTables.MG_WHITE_BISHOPS);
+        pstScoreWhite += addPSTValues(this.getWhiteRooks(), PieceSquareTables.MG_WHITE_ROOKS);
+        pstScoreWhite += addPSTValues(this.getWhiteQueen(), PieceSquareTables.MG_WHITE_QUEEN);
+        pstScoreWhite += addPSTValues(this.getWhiteKing(), PieceSquareTables.MG_WHITE_KING);
         int pstScoreBlack = 0;
-        pstScoreBlack += addPSTValues(this.getBlackPawns(), PieceSquareTables.PST_BLACK_PAWNS);
-        pstScoreBlack += addPSTValues(this.getBlackKnights(), PieceSquareTables.PST_BLACK_KNIGHTS);
-        pstScoreBlack += addPSTValues(this.getBlackBishops(), PieceSquareTables.PST_BLACK_BISHOPS);
-        pstScoreBlack += addPSTValues(this.getBlackRooks(), PieceSquareTables.PST_BLACK_ROOKS);
-        pstScoreBlack += addPSTValues(this.getBlackQueen(), PieceSquareTables.PST_BLACK_QUEEN);
-        pstScoreBlack += addPSTValues(this.getBlackKing(), PieceSquareTables.PST_BLACK_KING);
+        pstScoreBlack += addPSTValues(this.getBlackPawns(), PieceSquareTables.MG_BLACK_PAWNS);
+        pstScoreBlack += addPSTValues(this.getBlackKnights(), PieceSquareTables.MG_BLACK_KNIGHTS);
+        pstScoreBlack += addPSTValues(this.getBlackBishops(), PieceSquareTables.MG_BLACK_BISHOPS);
+        pstScoreBlack += addPSTValues(this.getBlackRooks(), PieceSquareTables.MG_BLACK_ROOKS);
+        pstScoreBlack += addPSTValues(this.getBlackQueen(), PieceSquareTables.MG_BLACK_QUEEN);
+        pstScoreBlack += addPSTValues(this.getBlackKing(), PieceSquareTables.MG_BLACK_KING);
+        if(currentPlayerIsWhite){
+            this.assessmentValue += (pstScoreWhite-pstScoreBlack);
+        } else {
+            this.assessmentValue += (pstScoreBlack-pstScoreWhite);
+        }*/
+
+        //PST Tapered Eval (dependent on game phase)
+        int pstScoreWhite = 0;
+        pstScoreWhite += addPSTValuesTaperedEval(this.getWhitePawns(), PieceSquareTables.MG_WHITE_PAWNS, PieceSquareTables.EG_WHITE_PAWNS);
+        pstScoreWhite += addPSTValuesTaperedEval(this.getWhiteKnights(), PieceSquareTables.MG_WHITE_KNIGHTS, PieceSquareTables.EG_WHITE_KNIGHTS);
+        pstScoreWhite += addPSTValuesTaperedEval(this.getWhiteBishops(), PieceSquareTables.MG_WHITE_BISHOPS, PieceSquareTables.EG_WHITE_BISHOPS);
+        pstScoreWhite += addPSTValuesTaperedEval(this.getWhiteRooks(), PieceSquareTables.MG_WHITE_ROOKS, PieceSquareTables.EG_WHITE_ROOKS);
+        pstScoreWhite += addPSTValuesTaperedEval(this.getWhiteQueen(), PieceSquareTables.MG_WHITE_QUEEN, PieceSquareTables.EG_WHITE_QUEEN);
+        pstScoreWhite += addPSTValuesTaperedEval(this.getWhiteKing(), PieceSquareTables.MG_WHITE_KING, PieceSquareTables.EG_WHITE_KING);
+        int pstScoreBlack = 0;
+        pstScoreBlack += addPSTValuesTaperedEval(this.getBlackPawns(), PieceSquareTables.MG_BLACK_PAWNS, PieceSquareTables.EG_BLACK_PAWNS);
+        pstScoreBlack += addPSTValuesTaperedEval(this.getBlackKnights(), PieceSquareTables.MG_BLACK_KNIGHTS, PieceSquareTables.EG_BLACK_KNIGHTS);
+        pstScoreBlack += addPSTValuesTaperedEval(this.getBlackBishops(), PieceSquareTables.MG_BLACK_BISHOPS, PieceSquareTables.EG_BLACK_BISHOPS);
+        pstScoreBlack += addPSTValuesTaperedEval(this.getBlackRooks(), PieceSquareTables.MG_BLACK_ROOKS, PieceSquareTables.EG_BLACK_ROOKS);
+        pstScoreBlack += addPSTValuesTaperedEval(this.getBlackQueen(), PieceSquareTables.MG_BLACK_QUEEN, PieceSquareTables.EG_BLACK_QUEEN);
+        pstScoreBlack += addPSTValuesTaperedEval(this.getBlackKing(), PieceSquareTables.MG_BLACK_KING, PieceSquareTables.EG_BLACK_KING);
         if(currentPlayerIsWhite){
             this.assessmentValue += (pstScoreWhite-pstScoreBlack);
         } else {
@@ -557,29 +579,50 @@ public class Board implements Comparable <Board> {
             }
         }
         //TODO: isolierte Bauern if wished
-/*
 
+
+        //TODO: Choose either PST or PST Tapered Eval!!
         //PST
-        int pstScoreWhite = 0;
-        pstScoreWhite += addPSTValues(this.getWhitePawns(), PieceSquareTables.PST_WHITE_PAWNS);
-        pstScoreWhite += addPSTValues(this.getWhiteKnights(), PieceSquareTables.PST_WHITE_KNIGHTS);
-        pstScoreWhite += addPSTValues(this.getWhiteBishops(), PieceSquareTables.PST_WHITE_BISHOPS);
-        pstScoreWhite += addPSTValues(this.getWhiteRooks(), PieceSquareTables.PST_WHITE_ROOKS);
-        pstScoreWhite += addPSTValues(this.getWhiteQueen(), PieceSquareTables.PST_WHITE_QUEEN);
-        pstScoreWhite += addPSTValues(this.getWhiteKing(), PieceSquareTables.PST_WHITE_KING);
+        /*int pstScoreWhite = 0;
+        pstScoreWhite += addPSTValues(this.getWhitePawns(), PieceSquareTables.MG_WHITE_PAWNS);
+        pstScoreWhite += addPSTValues(this.getWhiteKnights(), PieceSquareTables.MG_WHITE_KNIGHTS);
+        pstScoreWhite += addPSTValues(this.getWhiteBishops(), PieceSquareTables.MG_WHITE_BISHOPS);
+        pstScoreWhite += addPSTValues(this.getWhiteRooks(), PieceSquareTables.MG_WHITE_ROOKS);
+        pstScoreWhite += addPSTValues(this.getWhiteQueen(), PieceSquareTables.MG_WHITE_QUEEN);
+        pstScoreWhite += addPSTValues(this.getWhiteKing(), PieceSquareTables.MG_WHITE_KING);
         int pstScoreBlack = 0;
-        pstScoreBlack += addPSTValues(this.getBlackPawns(), PieceSquareTables.PST_BLACK_PAWNS);
-        pstScoreBlack += addPSTValues(this.getBlackKnights(), PieceSquareTables.PST_BLACK_KNIGHTS);
-        pstScoreBlack += addPSTValues(this.getBlackBishops(), PieceSquareTables.PST_BLACK_BISHOPS);
-        pstScoreBlack += addPSTValues(this.getBlackRooks(), PieceSquareTables.PST_BLACK_ROOKS);
-        pstScoreBlack += addPSTValues(this.getBlackQueen(), PieceSquareTables.PST_BLACK_QUEEN);
-        pstScoreBlack += addPSTValues(this.getBlackKing(), PieceSquareTables.PST_BLACK_KING);
+        pstScoreBlack += addPSTValues(this.getBlackPawns(), PieceSquareTables.MG_BLACK_PAWNS);
+        pstScoreBlack += addPSTValues(this.getBlackKnights(), PieceSquareTables.MG_BLACK_KNIGHTS);
+        pstScoreBlack += addPSTValues(this.getBlackBishops(), PieceSquareTables.MG_BLACK_BISHOPS);
+        pstScoreBlack += addPSTValues(this.getBlackRooks(), PieceSquareTables.MG_BLACK_ROOKS);
+        pstScoreBlack += addPSTValues(this.getBlackQueen(), PieceSquareTables.MG_BLACK_QUEEN);
+        pstScoreBlack += addPSTValues(this.getBlackKing(), PieceSquareTables.MG_BLACK_KING);
+        if(currentPlayerIsWhite){
+            this.assessmentValue += (pstScoreWhite-pstScoreBlack);
+        } else {
+            this.assessmentValue += (pstScoreBlack-pstScoreWhite);
+        }*/
+
+        //PST Tapered Eval (dependent on game phase)
+        int pstScoreWhite = 0;
+        pstScoreWhite += addPSTValuesTaperedEval(this.getWhitePawns(), PieceSquareTables.MG_WHITE_PAWNS, PieceSquareTables.EG_WHITE_PAWNS);
+        pstScoreWhite += addPSTValuesTaperedEval(this.getWhiteKnights(), PieceSquareTables.MG_WHITE_KNIGHTS, PieceSquareTables.EG_WHITE_KNIGHTS);
+        pstScoreWhite += addPSTValuesTaperedEval(this.getWhiteBishops(), PieceSquareTables.MG_WHITE_BISHOPS, PieceSquareTables.EG_WHITE_BISHOPS);
+        pstScoreWhite += addPSTValuesTaperedEval(this.getWhiteRooks(), PieceSquareTables.MG_WHITE_ROOKS, PieceSquareTables.EG_WHITE_ROOKS);
+        pstScoreWhite += addPSTValuesTaperedEval(this.getWhiteQueen(), PieceSquareTables.MG_WHITE_QUEEN, PieceSquareTables.EG_WHITE_QUEEN);
+        pstScoreWhite += addPSTValuesTaperedEval(this.getWhiteKing(), PieceSquareTables.MG_WHITE_KING, PieceSquareTables.EG_WHITE_KING);
+        int pstScoreBlack = 0;
+        pstScoreBlack += addPSTValuesTaperedEval(this.getBlackPawns(), PieceSquareTables.MG_BLACK_PAWNS, PieceSquareTables.EG_BLACK_PAWNS);
+        pstScoreBlack += addPSTValuesTaperedEval(this.getBlackKnights(), PieceSquareTables.MG_BLACK_KNIGHTS, PieceSquareTables.EG_BLACK_KNIGHTS);
+        pstScoreBlack += addPSTValuesTaperedEval(this.getBlackBishops(), PieceSquareTables.MG_BLACK_BISHOPS, PieceSquareTables.EG_BLACK_BISHOPS);
+        pstScoreBlack += addPSTValuesTaperedEval(this.getBlackRooks(), PieceSquareTables.MG_BLACK_ROOKS, PieceSquareTables.EG_BLACK_ROOKS);
+        pstScoreBlack += addPSTValuesTaperedEval(this.getBlackQueen(), PieceSquareTables.MG_BLACK_QUEEN, PieceSquareTables.EG_BLACK_QUEEN);
+        pstScoreBlack += addPSTValuesTaperedEval(this.getBlackKing(), PieceSquareTables.MG_BLACK_KING, PieceSquareTables.EG_BLACK_KING);
         if(currentPlayerIsWhite){
             this.assessmentValue += (pstScoreWhite-pstScoreBlack);
         } else {
             this.assessmentValue += (pstScoreBlack-pstScoreWhite);
         }
-*/
 
 
 
@@ -620,6 +663,43 @@ public class Board implements Comparable <Board> {
             bitboard = bitboard & bitboard-1;
         }
         return score;
+    }
+
+    // https://www.chessprogramming.org/Tapered_Eval
+    public int addPSTValuesTaperedEval(long bitboard, int[] pstMG, int[] pstEG){
+        int phase = this.calcGamePhase();
+        int opening = this.addPSTValues(bitboard, pstMG);
+        int endgame = this.addPSTValues(bitboard, pstEG);
+        int score = ((opening * (256 - phase)) + (endgame * phase)) / 256;
+        return score;
+    }
+
+    /**
+     * implemented according to: https://www.chessprogramming.org/Tapered_Eval
+     *
+     * @return game phase indicator, between 0 (opening/midgame) and 256 (late endgame)
+     */
+    public int calcGamePhase(){
+        int pawnPhase = 0;
+        int knightPhase = 1;
+        int bishopPhase = 1;
+        int rookPhase = 2;
+        int queenPhase = 4;
+
+        int totalPhase = 16*pawnPhase+4*(knightPhase+bishopPhase+rookPhase)+2*(queenPhase);
+        int phase = totalPhase;
+
+        phase -= pawnPhase * (Long.bitCount(this.getWhitePawns()) + Long.bitCount(this.getBlackPawns()));
+        phase -= knightPhase * (Long.bitCount(this.getWhiteKnights()) + Long.bitCount(this.getBlackKnights()));
+        phase -= bishopPhase * (Long.bitCount(this.getWhiteBishops()) + Long.bitCount(this.getBlackBishops()));
+        phase -= rookPhase * (Long.bitCount(this.getWhiteRooks()) + Long.bitCount(this.getBlackRooks()));
+        phase -= queenPhase * (Long.bitCount(this.getWhiteQueen()) + Long.bitCount(this.getBlackQueen()));
+
+        if (phase < 0) phase = 0; //in case of early promotion
+
+        phase = (phase * 256 + (totalPhase/2)) / totalPhase;
+
+        return phase;
     }
 
 

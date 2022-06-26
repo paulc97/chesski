@@ -2,7 +2,6 @@ import Model.Board;
 import Model.MoveGenerator;
 import Model.PieceSquareTables;
 import Model.PrincipalVariationSearch;
-import com.sun.jdi.event.MonitorContendedEnteredEvent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -35,7 +34,7 @@ public class MoveTests {
         System.out.println(Long.numberOfTrailingZeros(65280));
         //1111111100000000
         //result: 8
-        System.out.println(board.addPSTValues(board.getWhitePawns(), PieceSquareTables.PST_WHITE_PAWNS));
+        System.out.println(board.addPSTValues(board.getWhitePawns(), PieceSquareTables.MG_WHITE_PAWNS));
     }
 
     @Test
