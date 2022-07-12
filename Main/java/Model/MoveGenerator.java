@@ -592,8 +592,8 @@ public class MoveGenerator {
             long timeLimit = 100;
             if (b.getNextMoveCount()<timeDistribution.length) {
             timeLimit += timeDistribution[b.getNextMoveCount()];}
-            return iterativeDeepeningSearch(b, timeLimit).substring(0, 4);*/
-
+            return iterativeDeepeningSearch(b, timeLimit).substring(0, 4);
+*/
 
         System.out.println("Using principal variation search for move generation");
         //Iterative Deepening Search + PVS (mit PV Zugsortierung)
@@ -602,6 +602,11 @@ public class MoveGenerator {
             timeLimit += timeDistribution[b.getNextMoveCount()];}
         return PrincipalVariationSearch.moiterativeDeepeningPVSWithTimeLimitNoWindow(b, timeLimit).substring(0, 4);
 
+        //Iterative Deepening Search + PVS (mit PV Zugsortierung)
+        /*long timeLimit = 100;
+        if (b.getNextMoveCount()<timeDistribution.length) {
+            timeLimit += timeDistribution[b.getNextMoveCount()];}
+        return alphaBetaNullMoveTimeLimit(b, 4, Integer.MIN_VALUE, Integer.MAX_VALUE, true, System.currentTimeMillis(), timeLimit).substring(0, 4);*/
 
 
         //int suchtiefe = depthCalculator(b);
@@ -974,6 +979,110 @@ public class MoveGenerator {
 
             }
             //System.out.println("min out of for:" + bestMove + beta);
+            return bestMove + beta;
+        }
+    }
+
+    //based on https://www.researchgate.net/publication/297377298_Verified_Null-Move_Pruning
+    public static String alphaBetaNullMoveTimeLimit (Board b, int depth, int alpha, int beta, boolean isMaxPlayer, long startTime, long timeLimit){
+        int R = 2; //
+        long currentTime = System.currentTimeMillis();
+        long elapsedTime = (currentTime - startTime);
+        if(elapsedTime >= timeLimit){
+            outOfTime = true;
+        }
+
+
+        if(depth == 0||outOfTime){
+            assessedLeaves++;
+            String score = String.valueOf(b.assessBoardFromOwnPerspective());
+            if(outOfTime){
+                System.out.println("Out of Time!");
+            }
+            //System.out.println("b currently assessed, was created by move" + b.getCreatedByMove());
+            //System.out.println(b.getCreatedByMove() + score);
+            if(b.getCreatedByMove().equals("")) return "9999" + score; //um mögliche Errors zu vermeiden (kann nur == "" wenn mit Suchtiefe 0 gestartet -> kommt im richtigen Spiel nciht vor)
+            return b.getCreatedByMove() + score;
+        }
+
+
+        //here happens the null move magic
+        if (!b.isInCheck() && b.nullMoveOk()){
+            b.setKIPlaysWhite(!b.isKIPlayingWhite());
+            b.setCurrentPlayerIsWhite(!b.isCurrentPlayerIsWhite());
+
+            int value = Integer.parseInt(alphaBetaNullMoveTimeLimit(b, depth-R-1, -beta, -beta+1, !isMaxPlayer, startTime, timeLimit).substring(4));
+
+            if(value >= beta){
+                cutoffs++;
+                return b.getCreatedByMove() + value;
+            }
+
+
+        }
+
+        String moveList = validMoves(b);
+
+        if(outOfTime || b.isGameOver()||moveList.equals("")){
+            assessedLeaves++;
+            String score = String.valueOf(b.assessBoardFromOwnPerspective());
+            if(outOfTime){
+                System.out.println("Out of Time! (after Move Generation)");
+            }
+            //System.out.println("b currently assessed, was created by move" + b.getCreatedByMove());
+            //System.out.println(b.getCreatedByMove() + score);
+            if(b.getCreatedByMove().equals("")) return "9999" + score; //um mögliche Errors zu vermeiden (kann nur == "" wenn mit Suchtiefe 0 gestartet -> kommt im richtigen Spiel nciht vor)
+            return b.getCreatedByMove() + score;
+        }
+
+
+
+
+        if(isMaxPlayer){
+            String bestMove = "9999";
+            for(int i = 0; i<moveList.length(); i+=4){
+                if(outOfTime) break;
+                String move = moveList.substring(i,i+4);
+                Board newBoard = b.createBoardFromMove(move);
+                newBoard.setCreatedByMove(move);
+
+                String zwischenergebnis = alphaBetaTimeLimit(newBoard, depth-1, alpha, beta, false, startTime, timeLimit);
+
+                int currentEval = Integer.parseInt(zwischenergebnis.substring(4));
+
+                if(currentEval > alpha){
+                    bestMove = move;
+                    alpha = currentEval;
+                }
+
+                if (beta<=alpha){
+                    cutoffs++;
+                    break;
+                }
+            }
+            return bestMove + alpha;
+        } else {
+            String bestMove= "9999";
+            for(int i = 0; i<moveList.length(); i+=4){
+                if(outOfTime) break; //TODO: richtig?
+                String move = moveList.substring(i,i+4);
+                Board newBoard = b.createBoardFromMove(move);
+                newBoard.setCreatedByMove(move);
+
+                String zwischenergebnis = alphaBetaTimeLimit(newBoard, depth-1, alpha, beta, true, startTime, timeLimit);
+
+                int currentEval = Integer.parseInt(zwischenergebnis.substring(4));
+                if (currentEval < beta){
+                    bestMove = move;
+                    beta = currentEval;
+                }
+
+                if (beta <= alpha){
+                    cutoffs++;
+                    break;
+                }
+            }
+
             return bestMove + beta;
         }
     }

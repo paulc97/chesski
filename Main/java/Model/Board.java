@@ -42,9 +42,9 @@ public class Board implements Comparable <Board> {
     private ArrayList<Board> successorBoards = new ArrayList<>();
     private int assessmentValue = Integer.MAX_VALUE;
     private String createdByMove = "";
+    private boolean inCheck = false;
 
-
-    //WIP EP start
+//WIP EP start
     //ist File in der EnPassant möglich/erlaubt ist
     /*private long enPassantBitboardFile =0L;
     // eingefügt, um makeMove wie Video 16&17 zu machen
@@ -925,6 +925,15 @@ public class Board implements Comparable <Board> {
         this.enPassants = enPassants;
     }
 
+    //TODO
+    public boolean isInCheck() {
+        return inCheck;
+    }
+
+    //TODO
+    public boolean nullMoveOk() {
+        return true;
+    }
 
     /**
      * returns a long indicating the position of all white pieces
