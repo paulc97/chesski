@@ -23,7 +23,23 @@ public class MonteCarloTreeSearch {
             //TODO: nur einen expanden VS alle Kinder von selectedNode?
 
             //3. Simulation
-                //int simulationResult = simulate(expandedNode);
+            int simulationResult = 0;//
+              //int simulationResult = simulate(expandedNode);
+
+            //Perspektive der Bewertung festlegen (to-do: iscurrentplayer vs is ki playing..)
+            if(root.board.isCurrentPlayerIsWhite()){
+                if(simulationResult == 1){
+                    simulationResult = 1; //weiss gewonnen
+                } else if (simulationResult == 2){
+                    simulationResult = -1; //schwarz gewonnen
+                }
+            } else {
+                if(simulationResult == 1){
+                    simulationResult = -1; //weiss gewonnen
+                } else if (simulationResult == 2){
+                    simulationResult = 1; //schwarz gewonnen
+                }
+            }
 
             //4. Backpropagation
                 //backpropagate(expandedNode, simulationResult);
@@ -46,7 +62,7 @@ public class MonteCarloTreeSearch {
         double maxUCTvalue = -1;
         Node bestChild = null;
         for (int i = 0; i < node.children.size(); i++){
-            Node currentChild = node.children.get(0);
+            Node currentChild = node.children.get(i);
             double UCTvalue = calculateUCTvalue(node.visits, currentChild.visits, currentChild.winScore,Math.sqrt(2));
             if(UCTvalue > maxUCTvalue){
                 maxUCTvalue = UCTvalue;
@@ -66,35 +82,56 @@ public class MonteCarloTreeSearch {
         return exploitation + C * exploration;
     }
 
+    /**
+     * random move selection
+     * @param node
+     * @return 0 (draw) 1 (white has won) 2 (black has won)
+     */
+    public static int simulate(Node node){
 
+        Board b = node.board;
+        b.drawBoard();
 
-}
+        //sollen knoten auf dem simulationsweg generiert/kreiert werden?
+        while(!b.isGameOver()){
+            String allValidMoves = MoveGenerator.validMoves(b);
+            if (allValidMoves.equals("")) break;
+            System.out.println(allValidMoves);
+            int randomNumber = 0 + (int)(Math.random() * (allValidMoves.length()/4 - 0));
+            System.out.println(randomNumber);
+            String randomMove = allValidMoves.substring(randomNumber*4, randomNumber*4+4);
+            b = b.createBoardFromMove(randomMove);
 
-class Node{
-    //to-do: is player needed?
-    int visits = 0;
-    double winScore =0.0; //to-do: change name
-
-    Node parent;
-    List<Node> children = new ArrayList<Node>();
-
-    Board board;
-
-    Node(Node parent, Board board){ //to-do: player?
-        this.parent = parent;
-        this.board = board;
-    }
-    //to-do: extra "move" (String) -oder ausreichend, da in board gespeichert??
-
-    void expandAllChildren(){
-        List<Node> children = new ArrayList<>();
-        String allPossibleMoves = MoveGenerator.validMoves(this.board);
-        String[] moves = allPossibleMoves.split("(?<=\\G.{4})");
-        for(String move: moves){
-            Node newNode = new Node(this, board.createBoardFromMove(move));
-            children.add(newNode);
         }
-        this.children = children;
+        b.drawBoard();
+
+        if(b.isRemis()){
+            System.out.println("Game Over - Remis");
+            return 0;
+        } else {
+            if(b.isWhiteWon()){
+                System.out.println("Game Over - White Won");
+                return 1;
+            } else {
+                System.out.println("Game Over - Black Won");
+                return 2;
+            }
+        }
+
+        //in case of win: 1, loss: -1, draw: 0 //TODO: (differenziert?)
     }
 
+    //implementierung nach VL-Foliensatz
+    public static void backpropagate(Node node, int result){
+        Node currentNode = node;
+        while(currentNode != null){
+            currentNode.visits+=1;
+            currentNode.winScore+=result;
+            currentNode = currentNode.parent;
+        }
+    }
+
+
+
 }
+

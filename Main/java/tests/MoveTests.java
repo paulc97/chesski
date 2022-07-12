@@ -1,10 +1,8 @@
-import Model.Board;
-import Model.MoveGenerator;
-import Model.PieceSquareTables;
-import Model.PrincipalVariationSearch;
+import Model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import static Model.MoveGenerator.getQuiescenceSearchIterations;
@@ -959,6 +957,112 @@ public class MoveTests {
 
     }
 
+    //ab hier MCTS-Tests
+    @Test
+    void testCalcUCT(){
+        double calc = MonteCarloTreeSearch.calculateUCTvalue(6,4,3, Math.sqrt(2));
+        System.out.println(calc);
+
+    }
+
+    @Test
+    void selectionPhase(){
+        Board b = new Board("7k/5ppp/8/R7/5n2/3B4/2K5/8 b - - 0 1");
+        Node root = new Node(null, b);
+        Node child1 = new Node(root, b);
+        Node child2 = new Node(root, b);
+        Node child3 = new Node(root, b);
+        //root.children = new ArrayList<>();
+        root.children.add(child1);
+        root.children.add(child2);
+        root.children.add(child3);
+
+        root.visits = 5;
+        child1.visits =2;
+        child2.visits=2;
+        child3.visits=1;
+
+        child1.winScore = 6;
+        child2.winScore = 5;
+        child3.winScore = 6;
+        System.out.println(child1);
+        System.out.println(child2);
+        System.out.println(child3);
+
+        System.out.println(MonteCarloTreeSearch.calculateUCTvalue(child1.parent.visits, child1.visits, child1.winScore, Math.sqrt(2)));
+        System.out.println(MonteCarloTreeSearch.calculateUCTvalue(child3.parent.visits, child3.visits, child3.winScore, Math.sqrt(2)));
+
+        System.out.println(MonteCarloTreeSearch.selectNode(root));
+
+    }
+
+    @Test
+    void testRandomMove(){
+        Board b = new Board("7k/5ppp/8/R7/5n2/3B4/2K5/8 b - - 0 1");
+        String allValidMoves = MoveGenerator.validMoves(b);
+        System.out.println(allValidMoves);
+        int randomNumber = 0 + (int)(Math.random() * (allValidMoves.length()/4 - 0));
+        String randomMove = allValidMoves.substring(randomNumber*4, randomNumber*4+4);
+        System.out.println(randomMove);
+    }
+
+    @Test
+    void testSimulation(){
+        Board b = new Board("Q4R2/3kr3/1q3n1p/2p1p1p1/1p1bP1P1/1B1P3P/2PBK3/8 w - - 1 0");
+        Node root = new Node(null,b);
+        MonteCarloTreeSearch.simulate(root);
+
+    }
+
+    @Test
+    void testBackpropagation(){
+        Board b = new Board("7k/5ppp/8/R7/5n2/3B4/2K5/8 b - - 0 1");
+        Node root = new Node(null, b);
+        Node child1 = new Node(root, b);
+        Node child2 = new Node(root, b);
+        Node child3 = new Node(root, b);
+        //root.children = new ArrayList<>();
+        root.children.add(child1);
+        root.children.add(child2);
+        root.children.add(child3);
+
+        root.visits = 5;
+        root.winScore = 6;
+        child1.visits =2;
+        child2.visits=2;
+        child3.visits=1;
+
+        child1.winScore = 6;
+        child2.winScore = 5;
+        child3.winScore = 6;
+
+        Node child11 = new Node(child1,b);
+        MonteCarloTreeSearch.backpropagate(child11, 1);
+        //MonteCarloTreeSearch.backpropagate(child11, -2);
+        System.out.println(child11.visits);
+        System.out.println(child11.winScore);
+        System.out.println(child1.visits);
+        System.out.println(child1.winScore);
+        System.out.println(root.visits);
+        System.out.println(root.winScore);
+    }
+
+    @Test
+    void testExpandAllChildren(){
+        Board b = new Board("Q4R2/3kr3/1q3n1p/2p1p1p1/1p1bP1P1/1B1P3P/2PBK3/8 w - - 1 0");
+        String allPossibleMoves = MoveGenerator.validMoves(b);
+        int moveCount = MoveGenerator.getMoveCount(allPossibleMoves);
+        System.out.println(moveCount);
+        Node root = new Node(null, b);
+        root.expandAllChildren();
+        System.out.println("length of children: " + root.children.size());
+        for (Node child: root.children){
+            System.out.println(child);
+            System.out.println(child.visits);
+            System.out.println(child.winScore);
+            System.out.println(child.parent);
+        }
+    }
 
 
 
