@@ -571,16 +571,13 @@ public class MoveGenerator {
     public static String moveSelector(Board b, String validMoves, long usedTimeInMs) {
 
 
-        //defines the number of moves to use deepening search
-        int firstMoveThresholdMoves = 10;
-
         if (validMoves == null || validMoves.equals("")) {
             return validMoves;
         }
 
         if ((gameTimeLimit - usedTimeInMs) < panicModeTimeBuffer) {
             System.out.println("Entered panic mode");
-            int depth = 1;
+            int depth = 2;
             return alphaBeta(b, depth, Integer.MIN_VALUE, Integer.MAX_VALUE, true).substring(0, 4);
         }
 
@@ -589,23 +586,17 @@ public class MoveGenerator {
 
 /*            System.out.println("Using iterative deepening search for move generation");
             //Iterative Deepening Search (ohne Zugsortierung)
-            long timeLimit = 100;
-            if (b.getNextMoveCount()<timeDistribution.length) {
-            timeLimit += timeDistribution[b.getNextMoveCount()];}
+            long timeLimit = standardDeviationTimeLimit(b.getNextMoveCount(), 100L);
             return iterativeDeepeningSearch(b, timeLimit).substring(0, 4);
 */
 
         System.out.println("Using principal variation search for move generation");
         //Iterative Deepening Search + PVS (mit PV Zugsortierung)
-        long timeLimit = 100;
-        if (b.getNextMoveCount()<timeDistribution.length) {
-            timeLimit += timeDistribution[b.getNextMoveCount()];}
+        long timeLimit = gamePhaseTimeLimit(b, 250);
         return PrincipalVariationSearch.moiterativeDeepeningPVSWithTimeLimitNoWindow(b, timeLimit).substring(0, 4);
 
         //Iterative Deepening Search + PVS (mit PV Zugsortierung)
-        /*long timeLimit = 100;
-        if (b.getNextMoveCount()<timeDistribution.length) {
-            timeLimit += timeDistribution[b.getNextMoveCount()];}
+        /*long timeLimit = standardDeviationTimeLimit(b.getNextMoveCount(), 100L);
         return alphaBetaNullMoveTimeLimit(b, 4, Integer.MIN_VALUE, Integer.MAX_VALUE, true, System.currentTimeMillis(), timeLimit).substring(0, 4);*/
 
 
@@ -618,7 +609,7 @@ public class MoveGenerator {
     }
 
 
-/*    public int depthCalculator(Board b){
+    public int depthCalculator(Board b){
         if (b.getNextMoveCount()/2 < 10){
             return 1;
         }
@@ -626,8 +617,26 @@ public class MoveGenerator {
             return 3;
         }
         return 5;
+    }
 
-    }*/
+    public static long standardDeviationTimeLimit (int NextMoveCount, long minTimeLimit) {
+        long timeLimit = minTimeLimit;
+        if (NextMoveCount<timeDistribution.length) {
+            timeLimit += timeDistribution[NextMoveCount];}
+        return timeLimit;
+    }
+
+    public static long gamePhaseTimeLimit(Board b, long minTimeLimit) {
+        long timeLimit = minTimeLimit;
+        long phase = b.calcGamePhase();
+        if (phase > 20 && phase < 50){
+            timeLimit += 2500;
+        }
+        if (phase > 50) {
+            timeLimit += 1500;
+        }
+        return timeLimit;
+    }
 
 
 
