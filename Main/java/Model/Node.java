@@ -23,9 +23,12 @@ public class Node {
     public void expandAllChildren() {
         List<Node> children = new ArrayList<>();
         String allPossibleMoves = MoveGenerator.validMoves(this.board);
+        if (allPossibleMoves.equals("")) return; //in case that selected leaf node is terminal node
         String[] moves = allPossibleMoves.split("(?<=\\G.{4})");
         for (String move : moves) {
             Node newNode = new Node(this, board.createBoardFromMove(move));
+            newNode.board.setCreatedByMove(move);
+            //newNode.board.drawBoard();
             children.add(newNode);
         }
         this.children = children;

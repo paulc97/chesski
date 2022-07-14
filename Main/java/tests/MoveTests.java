@@ -1064,6 +1064,16 @@ public class MoveTests {
         }
     }
 
+    @Test
+    void testMCTS(){
+        Board b = new Board("Q4R2/3kr3/1q3n1p/2p1p1p1/1p1bP1P1/1B1P3P/2PBK3/8 w - - 1 0");
+        //b.drawBoard();
+        Node root = new Node(null, b);
+        String bestMove = MonteCarloTreeSearch.getBestMove(root, 100000);
+        System.out.println("best Move was: " + bestMove);
+
+    }
+
 
 
     @Test
