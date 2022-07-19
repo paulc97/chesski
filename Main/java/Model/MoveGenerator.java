@@ -114,7 +114,7 @@ public class MoveGenerator {
 
                     }
 
-                    System.out.println("Testing Move: " + move);
+                    //System.out.println("Testing Move: " + move);
 
                     //int pices = Long.bitCount(tempB.getAllPieces());
                     Board newBoard = tempB.createBoardFromMove(move);
