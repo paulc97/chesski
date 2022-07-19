@@ -207,6 +207,7 @@ public class Board implements Comparable <Board> {
 
     public Board createBoardFromMove (String move){
         Board newBoard = new Board(this);
+        //System.out.println("MakeMove: "+move);
         if (!this.isKIPlayingWhite()){
             newBoard.setKIPlaysWhite(false);
         }

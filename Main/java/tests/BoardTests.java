@@ -95,5 +95,26 @@ public class BoardTests {
 
     }
 
+    @Test
+    void testBitCounter(){
+
+        Board b = new Board("rnbqkbnr/pppppppp/8/8/8/8/R1PPPPPP/2BQKBNR w KQkq f4 0 1");
+
+        assertEquals(8, Long.bitCount(board.getWhitePawns()));
+    }
+
+    @Test
+    void testCaptureOrdering(){
+        Board b = new Board("rnb1kbnr/8/8/pppppppp/PPPPPPPP/3q4/3Q4/RNB1KBNR b KQkq - 0 1");
+
+        for(int i=0;i<1;i++){
+            String a = MoveGenerator.ownPossibleMoves(b).replace("-","");
+            System.out.println(a);
+            System.out.println(a.length()%4);
+            System.out.println(MoveGenerator.sortMovesCaptures(b,a));
+        }
+
+    }
+
 
 }

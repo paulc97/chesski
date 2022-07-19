@@ -2,6 +2,9 @@ package Model;
 
 import Model.Pieces.*;
 
+import Model.Board;
+
+
 import java.util.HashMap;
 
 import static Model.Mask.*;
@@ -41,6 +44,121 @@ public class MoveGenerator {
                 double standardDistribution = (1/Math.sqrt(2*Math.PI*(variance)))*Math.exp(-1*((((k)-expectationValue)*((k)-expectationValue))/(2*(variance))));
                 this.timeDistribution[i] = (long)Math.abs((standardDistribution)*(gameTimeLimit-panicModeTimeBuffer));
             }
+        }
+
+        public static String sortMovesCaptures(Board board,String moves){
+
+            String QueenCaptures = "";
+            String RookCaptures = "";
+            String PieceCaptures = "";
+            String PawnCaptures = "";
+            String nonCaptures = "";
+            String QueenPromotion = "";
+            String RookPromotion = "";
+            String PiecePromotion = "";
+
+            int Queencount;
+            int RookCount;
+            int PieceCount;
+            int PawnCount;
+
+            int newQueencount;
+            int newRookCount;
+            int newPieceCount;
+            int newPawnCount;
+
+            moves = moves.replace("-","");
+
+            System.out.println(board.isCurrentPlayerIsWhite());
+
+            if (board.isCurrentPlayerIsWhite()){
+                Queencount = Long.bitCount(board.getBlackQueen());
+                RookCount = Long.bitCount(board.getBlackRooks());
+                PieceCount = Long.bitCount(board.getBlackBishops()) + Long.bitCount(board.getBlackKnights());
+                PawnCount = Long.bitCount(board.getBlackPawns());
+
+            }else {
+                Queencount = Long.bitCount(board.getWhiteQueen());
+                RookCount = Long.bitCount(board.getWhiteRooks());
+                PieceCount = Long.bitCount(board.getWhiteBishops()) + Long.bitCount(board.getWhiteKnights());
+                PawnCount = Long.bitCount(board.getWhitePawns());
+            }
+
+            //System.out.println("QueenCount: " + Queencount);
+            //System.out.println("RookCount: " + RookCount);
+            //System.out.println("PieceCount: " + PieceCount);
+            //System.out.println("PawnCount: " + PawnCount);
+
+            Board tempB = new Board(board);
+
+                for(int i = 0;i<moves.length();i+=4){
+
+
+                    String move = moves.substring(i,i+4);
+
+                    if (move.contains("P")||move.contains("p")){
+                        // PromotionMove
+                        if (move.contains("Q")||move.contains("q")){
+                            QueenPromotion += move;
+                            continue;
+                        }else if(move.contains("R")||move.contains("r")){
+                            RookPromotion += move;
+                            continue;
+                        }else if(move.contains("N")||move.contains("n")){
+                            PiecePromotion += move;
+                            continue;
+                        }else if(move.contains("B")||move.contains("b")){
+                            PiecePromotion += move;
+                            continue;
+                        }
+
+                    }
+
+                    System.out.println("Testing Move: " + move);
+
+                    //int pices = Long.bitCount(tempB.getAllPieces());
+                    Board newBoard = tempB.createBoardFromMove(move);
+                    newBoard.setCreatedByMove(move);
+
+                    if (board.isCurrentPlayerIsWhite()){
+                        newQueencount = Long.bitCount(newBoard.getBlackQueen());
+                        newRookCount = Long.bitCount(newBoard.getBlackRooks());
+                        newPieceCount = Long.bitCount(newBoard.getBlackBishops()) + Long.bitCount(newBoard.getBlackKnights());
+                        newPawnCount = Long.bitCount(newBoard.getBlackPawns());
+
+                    }else {
+                        newQueencount = Long.bitCount(newBoard.getWhiteQueen());
+                        newRookCount = Long.bitCount(newBoard.getWhiteRooks());
+                        newPieceCount = Long.bitCount(newBoard.getWhiteBishops()) + Long.bitCount(newBoard.getWhiteKnights());
+                        newPawnCount = Long.bitCount(newBoard.getWhitePawns());
+                    }
+
+                    //System.out.println("NewQueenCount: " + newQueencount);
+                    //System.out.println("newRookCount: " + newRookCount);
+                    //System.out.println("newPieceCount: " + newPieceCount);
+                    //System.out.println("newPawnCount: " + newPawnCount);
+
+                    if (Queencount>newQueencount){
+                        //System.out.println("Capture");
+                        //System.out.println(move);
+                        QueenCaptures += move;
+                    }else if (RookCount>newRookCount) {
+                        //System.out.println("Non-Capture");
+                        RookCaptures+= move;
+                    }else if (PieceCount>newPieceCount) {
+                        //System.out.println("Non-Capture");
+                        PieceCaptures+= move;
+                    }else if (PawnCount>newPawnCount) {
+                        //System.out.println("Non-Capture");
+                        PawnCaptures+= move;
+                    }else{
+                        nonCaptures += move;
+                    }
+                }
+
+
+            return QueenPromotion+RookPromotion+PiecePromotion+QueenCaptures+RookCaptures+PieceCaptures+PawnCaptures;
+
         }
 
         public static String ownPossibleMoves(Board board) {
@@ -373,6 +491,10 @@ public class MoveGenerator {
 
         String moves = ownPossibleMoves(b).replace("-","");
 
+        //System.out.println("moves: "+moves);
+        //moves = sortMovesCaptures(b,moves);
+        //System.out.println("Sorted: "+moves);
+
         for (int i=0;i<moves.length();i+=4) {
 
             Board tempB = new Board(b);
@@ -420,7 +542,14 @@ public class MoveGenerator {
 
                 }
             }
-
+        //System.out.println("-----------------------------------");
+        //System.out.println("validMoves: " + validMoves);
+        //sortMovesCaptures(b,validMoves);
+        //System.out.println("Sorted:");
+        //System.out.println(validMoves.length()%4);
+        //System.out.println(b.bitboardsToFenParser());
+        //b.drawBoard();
+        //System.out.println("-----------------------------------");
         return validMoves;
 
     }
