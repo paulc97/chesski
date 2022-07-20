@@ -69,7 +69,7 @@ public class MoveGenerator {
 
             moves = moves.replace("-","");
 
-            System.out.println(board.isCurrentPlayerIsWhite());
+            //System.out.println(board.isCurrentPlayerIsWhite());
 
             if (board.isCurrentPlayerIsWhite()){
                 Queencount = Long.bitCount(board.getBlackQueen());
@@ -117,7 +117,9 @@ public class MoveGenerator {
                     //System.out.println("Testing Move: " + move);
 
                     //int pices = Long.bitCount(tempB.getAllPieces());
+                    //System.out.println("Moin");
                     Board newBoard = tempB.createBoardFromMove(move);
+                    //System.out.println("Bye");
                     newBoard.setCreatedByMove(move);
 
                     if (board.isCurrentPlayerIsWhite()){
@@ -544,7 +546,7 @@ public class MoveGenerator {
             }
         //System.out.println("-----------------------------------");
         //System.out.println("validMoves: " + validMoves);
-        //sortMovesCaptures(b,validMoves);
+        validMoves = sortMovesCaptures(b,validMoves);
         //System.out.println("Sorted:");
         //System.out.println(validMoves.length()%4);
         //System.out.println(b.bitboardsToFenParser());
@@ -704,6 +706,8 @@ public class MoveGenerator {
             return validMoves;
         }
 
+        //sortMovesCaptures(b,validMoves);
+
         if ((gameTimeLimit - usedTimeInMs) < panicModeTimeBuffer) {
             System.out.println("Entered panic mode");
             int depth = 2;
@@ -804,6 +808,7 @@ public class MoveGenerator {
             return b.getCreatedByMove() + score; //TODO: wann wird created by move gesetzt?
         }
         String moveList = validMoves(b);
+
         //System.out.println("move list:" + moveList);
         //System.out.println("in depth:" + depth);
 

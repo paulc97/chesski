@@ -105,7 +105,7 @@ public class BoardTests {
 
     @Test
     void testCaptureOrdering(){
-        Board b = new Board("8/1p5k/P7/1p1p4/2B5/1p1p4/8/7K w - - 0 1");
+        Board b = new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 
         for(int i=0;i<1;i++){
             String a = MoveGenerator.ownPossibleMoves(b).replace("-","");

@@ -2,6 +2,7 @@ package Model;
 
 import Model.Pieces.Zobrist;
 
+import javax.sound.midi.SysexMessage;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -65,8 +66,11 @@ public class Board implements Comparable <Board> {
       * or to create a new board based on an existing board and a move
      */
     public Board(String fenString) {
+        System.out.println("0");
         this.fenToBitboardParser(fenString);
-        this.getAssessmentValue();
+        System.out.println("1");
+        //this.getAssessmentValue();
+        System.out.println("2");
     }
 
     /**
@@ -163,7 +167,7 @@ public class Board implements Comparable <Board> {
             k++;
 
         }
-        this.getAssessmentValue();
+        //this.getAssessmentValue();
 
     }
 
@@ -212,7 +216,7 @@ public class Board implements Comparable <Board> {
             newBoard.setKIPlaysWhite(false);
         }
         makeMove(newBoard, move);
-        newBoard.assessBoardTPT(assesedBoards, zobrist);
+        //newBoard.assessBoardTPT(assesedBoards, zobrist);
         return newBoard;}
         //TODO: vllt hier schon createdByMove(move) unterbringen?
 
@@ -445,8 +449,9 @@ public class Board implements Comparable <Board> {
 
 
         //TODO: vllt assessBoard in MoveGenerator auslagern, damit Instanzvariable nicht benötigt? oder entsprechene Methoden im MoveGenerator static machen
+        //System.out.println("Moin");
         String ownValidMoves = MoveGenerator.validMoves(this);
-
+        //System.out.println("Bye");
         //create board with same positions but opponents's turn to count their moves
         Board copyButOpponentsTurn = new Board(this);
         copyButOpponentsTurn.setCurrentPlayerIsWhite(!copyButOpponentsTurn.isCurrentPlayerIsWhite());

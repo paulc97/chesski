@@ -8,11 +8,13 @@ public class LocalGame {
 
 
         MoveGenerator mg = new MoveGenerator();
+        System.out.println("MG was created");
         Board b1 = new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+        System.out.println("Board was created");
         long usedTime = 0;
 
         while(true){
-
+            System.out.println("While");
             if (b1.isCurrentPlayerIsWhite()){
                 b1.setKIPlaysWhite(true);
             } else {
@@ -20,8 +22,9 @@ public class LocalGame {
             }
 
             long currentTime = System.currentTimeMillis();
+            System.out.println("Starte Valid Move generation");
             String validMoves = mg.validMoves(b1);
-            //
+            System.out.println("Bin da :D");
             mg.makeMove(b1, mg.moveSelector(b1, validMoves, usedTime));
             System.out.println("FEN Representation: " + b1.bitboardsToFenParser());
 
