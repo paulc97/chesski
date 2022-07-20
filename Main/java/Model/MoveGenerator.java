@@ -157,7 +157,7 @@ public class MoveGenerator {
                 }
 
 
-            return QueenPromotion+RookPromotion+PiecePromotion+QueenCaptures+RookCaptures+PieceCaptures+PawnCaptures;
+            return QueenPromotion+RookPromotion+PiecePromotion+QueenCaptures+RookCaptures+PieceCaptures+PawnCaptures+nonCaptures;
 
         }
 
