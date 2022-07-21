@@ -193,7 +193,7 @@ public class Board implements Comparable <Board> {
         this.whiteToCastleQueenside = b.whiteToCastleQueenside;
         this.blackToCastleQueenside = b.blackToCastleQueenside;
         this.enPassants = b.enPassants;
-        this.assessmentValue = b.getAssessmentValue();
+        this.assessmentValue = Integer.MAX_VALUE;
 
     }
 
@@ -671,9 +671,22 @@ public class Board implements Comparable <Board> {
         return score;
     }
 
+    static int figureCount = 32;
+    static int gamePhase = 0;
+
     // https://www.chessprogramming.org/Tapered_Eval
     public int addPSTValuesTaperedEval(long bitboard, int[] pstMG, int[] pstEG){
-        int phase = this.calcGamePhase();
+        int phase = 50;//this.calcGamePhase();
+        int newFigureCount = Long.bitCount(this.getAllPieces());
+        if (newFigureCount == figureCount){
+            phase = gamePhase;
+        }else {
+            phase = this.calcGamePhase();
+            gamePhase = phase;
+            figureCount = newFigureCount;
+            //System.out.println("NewCalculated");
+        }
+
         int opening = this.addPSTValues(bitboard, pstMG);
         int endgame = this.addPSTValues(bitboard, pstEG);
         int score = ((opening * (256 - phase)) + (endgame * phase)) / 256;

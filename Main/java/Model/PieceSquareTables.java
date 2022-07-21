@@ -2,6 +2,8 @@ package Model;
 
 public class PieceSquareTables {
 
+    static int figures = 32;
+
     private static int[] calcBlackPST(int[] whitePST){
         int[] blackPST = new int[64];
 

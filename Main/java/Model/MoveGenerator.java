@@ -27,7 +27,7 @@ public class MoveGenerator {
         static int quiescenceSearchIterations = 0;
         static int cutoffs = 0;
 
-        static int averageNumberOfMoves = 30;
+        static int averageNumberOfMoves = 40;
         static private long[] timeDistribution = new long[averageNumberOfMoves];
         static double gameTimeLimit = 120000;
         static double panicModeTimeBuffer = 10000;
@@ -546,7 +546,7 @@ public class MoveGenerator {
             }
         //System.out.println("-----------------------------------");
         //System.out.println("validMoves: " + validMoves);
-        validMoves = sortMovesCaptures(b,validMoves);
+        //validMoves = sortMovesCaptures(b,validMoves);
         //System.out.println("Sorted:");
         //System.out.println(validMoves.length()%4);
         //System.out.println(b.bitboardsToFenParser());
@@ -725,7 +725,7 @@ public class MoveGenerator {
 
         System.out.println("Using principal variation search for move generation");
         //Iterative Deepening Search + PVS (mit PV Zugsortierung)
-        long timeLimit = gamePhaseTimeLimit(b, 250);
+        long timeLimit = standardDeviationTimeLimit(b.getNextMoveCount(), 300L); //gamePhaseTimeLimit(b, 250);
         return PrincipalVariationSearch.moiterativeDeepeningPVSWithTimeLimitNoWindow(b, timeLimit).substring(0, 4);
 
         //Iterative Deepening Search + PVS (mit PV Zugsortierung)
