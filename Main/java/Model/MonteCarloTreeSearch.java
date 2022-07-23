@@ -11,14 +11,36 @@ public class MonteCarloTreeSearch {
         Node root = node;
         root.expandAllChildren();
 
+        if(root.children.size() == 0){ //no possible Moves
+            System.out.println("MCTS-KI lost Game");
+            return null;
+        }
+
         while(System.currentTimeMillis() - startTime < timelimit){
             //1. Selection
             Node selectedNode = selectNode(root);
 
-            //if selected leaf node is terminal node, directly backpropagate it's value
-            if (selectedNode.board.isGameOver()){//TODO: check if necessary/what happens when leaf node is terminal node?
+            //if selected leaf node is terminal node, directly backpropagate its value
+            if (selectedNode.board.isGameOver()){
                 System.out.println("Selected Node was terminal node!");
+                System.out.println(selectedNode.board.isWhiteWon());
                 int simulationResult = simulate(selectedNode);
+
+                //Perspektive der Bewertung festlegen (to-do: iscurrentplayer vs is ki playing..)
+                if(root.board.isCurrentPlayerIsWhite()){
+                    if(simulationResult == 1){
+                        simulationResult = 1; //weiss gewonnen
+                    } else if (simulationResult == 2){
+                        simulationResult = -1; //schwarz gewonnen
+                    }
+                } else {
+                    if(simulationResult == 1){
+                        simulationResult = -1; //weiss gewonnen
+                    } else if (simulationResult == 2){
+                        simulationResult = 1; //schwarz gewonnen
+                    }
+                }
+
                 backpropagate(selectedNode, simulationResult);
                 break;
             }
@@ -26,7 +48,12 @@ public class MonteCarloTreeSearch {
             //2. Expansion (skip when visits of selected node == 0)
             if (selectedNode.visits>0){
                 selectedNode.expandAllChildren();
-                selectedNode = selectNode(selectedNode);
+                if(selectedNode.children.size()==0){ //skip further selection, if selectedNode has no children (i.e. is Terminal Node)
+                    System.out.println("tried to expand, but no children there!");
+                } else {
+                    selectedNode = selectNode(selectedNode);
+                }
+
 
             }
 
@@ -62,7 +89,7 @@ public class MonteCarloTreeSearch {
         System.out.println("bestNode visits: " + bestNode.visits);
         return bestNode.board.getCreatedByMove();
 
-
+        //TODO: was tun wenn bestChild null? also timelimit zu wenig?--Kann nicht vorkommen, da visit mind. 0
         //return "move which leads to child with max score bzw. auswahlkriterium";
 
     }
@@ -70,7 +97,7 @@ public class MonteCarloTreeSearch {
     public static Node selectNode(Node node){//TODO: ausprobieren/testen!
         //TODO: was tun, wnen children empty? (wie reagiert es jetzt?)
 
-        double maxUCTvalue = -1;
+        double maxUCTvalue = Double.MIN_VALUE;
         Node bestChild = null;
         for (int i = 0; i < node.children.size(); i++){
             Node currentChild = node.children.get(i);
@@ -83,6 +110,8 @@ public class MonteCarloTreeSearch {
         }
         if(bestChild == null) {
             System.out.println("bestChild was null!");
+            System.out.println(node.children.size());
+            System.out.println(node.children.get(0).winScore);
             return node; //in case that  selected leaf node was terminal node
         }
         if (bestChild.children.size() != 0) return selectNode(bestChild);
@@ -168,6 +197,10 @@ public class MonteCarloTreeSearch {
                 }
             }
 
+        }
+        if(bestChild == null){
+            System.out.println("BESTCHILDErROR!");
+            return node;
         }
         return bestChild;
     }

@@ -1,7 +1,9 @@
 package App;
 
 import Model.Board;
+import Model.MonteCarloTreeSearch;
 import Model.MoveGenerator;
+import Model.Node;
 
 public class LocalGame {
     public static void main(String[] args) {
@@ -25,7 +27,15 @@ public class LocalGame {
             //System.out.println("Starte Valid Move generation");
             String validMoves = mg.validMoves(b1);
             //System.out.println("Bin da :D");
-            mg.makeMove(b1, mg.moveSelector(b1, validMoves, usedTime));
+            if (b1.isKIPlayingWhite()){
+
+                long timeLimit = MoveGenerator.standardDeviationTimeLimit(b1.getNextMoveCount(), 300L);
+                Node node = new Node (null, b1);
+                MoveGenerator.makeMove(b1, MonteCarloTreeSearch.getBestMove(node, (int) timeLimit));
+            } else {
+                mg.makeMove(b1, mg.moveSelector(b1, validMoves, usedTime));
+            }
+
             //System.out.println("FEN Representation: " + b1.bitboardsToFenParser());
 
             b1.drawBoard();
