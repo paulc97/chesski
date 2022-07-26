@@ -325,7 +325,7 @@ public class Board implements Comparable <Board> {
             long attackedQueens = Long.bitCount(fieldsAttackedByBlack(this) & this.getOwnQueen());
             long attackedPieces = Long.bitCount(fieldsAttackedByBlack(this) & (this.getOwnBishops() | this.getOwnKnights() | this.getOwnRooks()));
             //System.out.println("APA" + attackedPawns + "AQ" + attackedQueens + "API" + attackedPieces);
-            this.assessmentValue -= (150*attackedPieces+200*attackedPawns+400*attackedQueens);
+            this.assessmentValue -= (150*attackedPieces+20*attackedPawns+400*attackedQueens);
 
             long attackedPawnsO = Long.bitCount((fieldsAttackedByWhite(this) & this.getOppositePawns()));
             long attackedQueensO = Long.bitCount(fieldsAttackedByWhite(this) & this.getOppositeQueen());
@@ -337,7 +337,7 @@ public class Board implements Comparable <Board> {
             long attackedQueens = Long.bitCount(fieldsAttackedByWhite(this) & this.getOwnQueen());
             long attackedPieces = Long.bitCount(fieldsAttackedByWhite(this) & (this.getOwnBishops() | this.getOwnKnights() | this.getOwnRooks()));
             //System.out.println("APA" + attackedPawns + "AQ" + attackedQueens + "API" + attackedPieces);
-            this.assessmentValue -= (150*attackedPieces+200*attackedPawns+400*attackedQueens);
+            this.assessmentValue -= (150*attackedPieces+20*attackedPawns+400*attackedQueens);
 
             long attackedPawnsO = Long.bitCount((fieldsAttackedByBlack(this) & this.getOppositePawns()));
             long attackedQueensO = Long.bitCount(fieldsAttackedByBlack(this) & this.getOppositeQueen());
@@ -529,7 +529,7 @@ public class Board implements Comparable <Board> {
             long attackedQueens = Long.bitCount(fieldsAttackedByBlack(this) & this.getOwnQueen());
             long attackedPieces = Long.bitCount(fieldsAttackedByBlack(this) & (this.getOwnBishops() | this.getOwnKnights() | this.getOwnRooks()));
             //System.out.println("APA" + attackedPawns + "AQ" + attackedQueens + "API" + attackedPieces);
-            this.assessmentValue -= (150*attackedPieces+200*attackedPawns+400*attackedQueens);
+            this.assessmentValue -= (150*attackedPieces+20*attackedPawns+400*attackedQueens);
 
             long attackedPawnsO = Long.bitCount((fieldsAttackedByWhite(this) & this.getOppositePawns()));
             long attackedQueensO = Long.bitCount(fieldsAttackedByWhite(this) & this.getOppositeQueen());
@@ -541,7 +541,7 @@ public class Board implements Comparable <Board> {
             long attackedQueens = Long.bitCount(fieldsAttackedByWhite(this) & this.getOwnQueen());
             long attackedPieces = Long.bitCount(fieldsAttackedByWhite(this) & (this.getOwnBishops() | this.getOwnKnights() | this.getOwnRooks()));
             //System.out.println("APA" + attackedPawns + "AQ" + attackedQueens + "API" + attackedPieces);
-            this.assessmentValue -= (150*attackedPieces+200*attackedPawns+400*attackedQueens);
+            this.assessmentValue -= (150*attackedPieces+20*attackedPawns+400*attackedQueens);
 
             long attackedPawnsO = Long.bitCount((fieldsAttackedByBlack(this) & this.getOppositePawns()));
             long attackedQueensO = Long.bitCount(fieldsAttackedByBlack(this) & this.getOppositeQueen());
