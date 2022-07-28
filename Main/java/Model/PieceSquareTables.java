@@ -2,6 +2,8 @@ package Model;
 
 public class PieceSquareTables {
 
+    static int figures = 32;
+
     private static int[] calcBlackPST(int[] whitePST){
         int[] blackPST = new int[64];
 
@@ -11,7 +13,7 @@ public class PieceSquareTables {
         return blackPST;
     }
 
-    //MIDGAME TABLES
+    //values from https://www.chessprogramming.org/PeSTO%27s_Evaluation_Function
     public static final int[] MG_WHITE_PAWNS = {
             0,   0,   0,   0,   0,   0,  0,   0,
             98, 134,  61,  95,  68, 126, 34, -11,
@@ -71,7 +73,16 @@ public class PieceSquareTables {
             -30,-10, 20, 30, 30, 20,-10,-30,
             -30,-30,  0,  0,  0,  0,-30,-30,
             -50,-30,-30,-30,-30,-30,-30,-50
-    };
+            //MG KING TABLE nach PeSTO (Normalschach)
+            /*-65,  23,  16, -15, -56, -34,   2,  13,
+            29,  -1, -20,  -7,  -8,  -4, -38, -29,
+            -9,  24,   2, -16, -20,   6,  22, -22,
+            -17, -20, -12, -27, -30, -25, -14, -36,
+            -49,  -1, -27, -39, -46, -44, -33, -51,
+            -14, -14, -22, -46, -44, -30, -15, -27,
+            1,   7,  -8, -64, -43, -16,   9,   8,
+            -15,  36,  12, -54,   8, -28,  24,  14*/
+    };//NOTE: this is king end//TODO: change values (attention: pseudolegal moves!)
 
     //MG CALCULATION
     public static final int[] MG_BLACK_PAWNS = calcBlackPST(MG_WHITE_PAWNS);
@@ -142,7 +153,16 @@ public class PieceSquareTables {
             -30,-10, 40, 40, 40, 40,-10,-30,
             -30,-10,-10,-10,-10,-10,-10,-30,
             -50,-30,-30,-30,-30,-30,-30,-50
-    };
+            //EG KING TABLE nach PeSTO (Normalschach)
+            /*-74, -35, -18, -18, -11,  15,   4, -17,
+    -12,  17,  14,  17,  17,  38,  23,  11,
+     10,  17,  23,  15,  20,  45,  44,  13,
+     -8,  22,  24,  27,  26,  33,  26,   3,
+    -18,  -4,  21,  24,  27,  23,   9, -11,
+    -19,  -3,  11,  21,  23,  16,   7,  -9,
+    -27, -11,   4,  13,  14,   4,  -5, -17,
+    -53, -34, -21, -11, -28, -14, -24, -43*/
+    };//NOTE: same as king mg//TODO: change values (attention: pseudolegal moves!)
 
     //EG CALCULATION
     public static final int[] EG_BLACK_PAWNS = calcBlackPST(EG_WHITE_PAWNS);

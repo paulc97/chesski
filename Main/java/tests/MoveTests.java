@@ -2,6 +2,7 @@ import Model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import static Model.MoveGenerator.getQuiescenceSearchIterations;
@@ -621,7 +622,7 @@ public class MoveTests {
             PrincipalVariationSearch.assessedLeaves = 0;
             startEpoch = System.currentTimeMillis();
             //String result = PrincipalVariationSearch.PVSearch(b, i, Integer.MIN_VALUE, Integer.MAX_VALUE,false); //Achtung: negativer Wert für bewertung!
-            String result = PrincipalVariationSearch.principalVariationSearchWithoutTimelimit(b, i, true);
+            String result = PrincipalVariationSearch.moiterativeDeepeningPVSNoTimeLimitNoWindow(b, i, true);
             PrincipalVariationSearch.currentPv= null; //Zurücksetzen für next "Großiteration"
             endepoch = System.currentTimeMillis();
             time += endepoch - startEpoch;
@@ -656,7 +657,7 @@ public class MoveTests {
             PrincipalVariationSearch.assessedLeaves = 0;
             startEpoch = System.currentTimeMillis();
             //String result = PrincipalVariationSearch.PVSearch(b, i, Integer.MIN_VALUE, Integer.MAX_VALUE,false); //Achtung: negativer Wert für bewertung!
-            String result = PrincipalVariationSearch.principalVariationSearchWithoutTimelimit(b, i, true);
+            String result = PrincipalVariationSearch.moiterativeDeepeningPVSNoTimeLimitNoWindow(b, i, true);
             PrincipalVariationSearch.currentPv= null; //Zurücksetzen für next "Großiteration"
             endepoch = System.currentTimeMillis();
             time += endepoch - startEpoch;
@@ -690,7 +691,7 @@ public class MoveTests {
             PrincipalVariationSearch.assessedLeaves = 0;
             startEpoch = System.currentTimeMillis();
             //String result = PrincipalVariationSearch.PVSearch(b, i, Integer.MIN_VALUE, Integer.MAX_VALUE,false); //Achtung: negativer Wert für bewertung!
-            String result = PrincipalVariationSearch.principalVariationSearchWithoutTimelimit(b, i, false);
+            String result = PrincipalVariationSearch.moiterativeDeepeningPVSNoTimeLimitNoWindow(b, i, false);
             PrincipalVariationSearch.currentPv= null; //Zurücksetzen für next "Großiteration"
             endepoch = System.currentTimeMillis();
             time += endepoch - startEpoch;
@@ -820,7 +821,7 @@ public class MoveTests {
             PrincipalVariationSearch.assessedLeaves = 0;
             startEpoch = System.currentTimeMillis();
             //String result = PrincipalVariationSearch.PVSearch(b, i, Integer.MIN_VALUE, Integer.MAX_VALUE,false); //Achtung: negativer Wert für bewertung!
-            String result = PrincipalVariationSearch.nullWindowSearch(b, i, true);
+            String result = PrincipalVariationSearch.moiterativeDeepeningPVSNoTimeLimitWW(b, i, true);
             PrincipalVariationSearch.currentPv= null; //Zurücksetzen für next "Großiteration"
             endepoch = System.currentTimeMillis();
             time += endepoch - startEpoch;
@@ -981,15 +982,15 @@ public class MoveTests {
         child2.visits=2;
         child3.visits=1;
 
-        child1.score = 6;
-        child2.score = 5;
-        child3.score = 6;
+        child1.winScore = 6;
+        child2.winScore = 5;
+        child3.winScore = 6;
         System.out.println(child1);
         System.out.println(child2);
         System.out.println(child3);
 
-        System.out.println(MonteCarloTreeSearch.calculateUCTvalue(child1.parent.visits, child1.visits, child1.score, Math.sqrt(2)));
-        System.out.println(MonteCarloTreeSearch.calculateUCTvalue(child3.parent.visits, child3.visits, child3.score, Math.sqrt(2)));
+        System.out.println(MonteCarloTreeSearch.calculateUCTvalue(child1.parent.visits, child1.visits, child1.winScore, Math.sqrt(2)));
+        System.out.println(MonteCarloTreeSearch.calculateUCTvalue(child3.parent.visits, child3.visits, child3.winScore, Math.sqrt(2)));
 
         System.out.println(MonteCarloTreeSearch.selectNode(root));
 
@@ -1026,24 +1027,24 @@ public class MoveTests {
         root.children.add(child3);
 
         root.visits = 5;
-        root.score = 6;
+        root.winScore = 6;
         child1.visits =2;
         child2.visits=2;
         child3.visits=1;
 
-        child1.score = 6;
-        child2.score = 5;
-        child3.score = 6;
+        child1.winScore = 6;
+        child2.winScore = 5;
+        child3.winScore = 6;
 
         Node child11 = new Node(child1,b);
         MonteCarloTreeSearch.backpropagate(child11, 1);
         //MonteCarloTreeSearch.backpropagate(child11, -2);
         System.out.println(child11.visits);
-        System.out.println(child11.score);
+        System.out.println(child11.winScore);
         System.out.println(child1.visits);
-        System.out.println(child1.score);
+        System.out.println(child1.winScore);
         System.out.println(root.visits);
-        System.out.println(root.score);
+        System.out.println(root.winScore);
     }
 
     @Test
@@ -1058,7 +1059,7 @@ public class MoveTests {
         for (Node child: root.children){
             System.out.println(child);
             System.out.println(child.visits);
-            System.out.println(child.score);
+            System.out.println(child.winScore);
             System.out.println(child.parent);
         }
     }
