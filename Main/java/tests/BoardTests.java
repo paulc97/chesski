@@ -2,13 +2,13 @@
 
 import Model.Board;
 import Model.MoveGenerator;
-import Model.Zobrist;
+import Model.Pieces.Zobrist;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 
-import static Model.Mask.Columns;
+import static Model.Mask.FileMasks8;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class BoardTests {
@@ -69,7 +69,7 @@ public class BoardTests {
 
     @Test
     void testDigitConversion(){
-        System.out.println(Columns[("c7").charAt(0)-97]);
+        System.out.println(FileMasks8[("c7").charAt(0)-97]);
     }
 
     @Test

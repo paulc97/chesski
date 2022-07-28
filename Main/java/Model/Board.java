@@ -1,5 +1,8 @@
 package Model;
 
+import Model.Pieces.Zobrist;
+
+import javax.sound.midi.SysexMessage;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -275,10 +278,10 @@ public class Board implements Comparable <Board> {
                 }
             }
         }
-        if ((this.getOwnKing() & CENTER) != 0){
+        if ((this.getOwnKing() & CENTRE) != 0){
             return this.assessmentValue = 10000000; //Spieler hat gewonnen
         }
-        if ((this.getOppositeKing() & CENTER) != 0){
+        if ((this.getOppositeKing() & CENTRE) != 0){
             return this.assessmentValue = -10000000; //Spieler hat verloren (schlechterer Wert, als Spieler befindet sich im Schach)
             //TODO: wenn nurnoch pseudilegale Züge generieren: Wert anpassen, sodass Schach(matt) im Vergleich anders bewertet wird
         }
@@ -366,13 +369,13 @@ public class Board implements Comparable <Board> {
         }
         //Doppelbauern
         for (int i = 0; i<8; i++){
-            if (Long.bitCount(Columns[i]& this.getOwnPawns())>1){
+            if (Long.bitCount(FileMasks8[i]& this.getOwnPawns())>1){
                 this.assessmentValue -= 50;
                 //System.out.println("Doppelbauer in" + i);
             }
         }
         for (int i = 0; i<8; i++){
-            if (Long.bitCount(Columns[i]& this.getOppositePawns())>1){
+            if (Long.bitCount(FileMasks8[i]& this.getOppositePawns())>1){
                 this.assessmentValue += 50;
                 //System.out.println("Doppelbauer in" + i);
             }
@@ -479,10 +482,10 @@ public class Board implements Comparable <Board> {
                 }
             }
         }
-        if ((this.getOwnKing() & CENTER) != 0){
+        if ((this.getOwnKing() & CENTRE) != 0){
             return this.assessmentValue = 10000000; //Spieler hat gewonnen
         }
-        if ((this.getOppositeKing() & CENTER) != 0){
+        if ((this.getOppositeKing() & CENTRE) != 0){
             return this.assessmentValue = -10000000; //Spieler hat verloren (schlechterer Wert, als Spieler befindet sich im Schach)
             //TODO: wenn nurnoch pseudilegale Züge generieren: Wert anpassen, sodass Schach(matt) im Vergleich anders bewertet wird
         }
@@ -570,13 +573,13 @@ public class Board implements Comparable <Board> {
         }
         //Doppelbauern
         for (int i = 0; i<8; i++){
-            if (Long.bitCount(Columns[i]& this.getOwnPawns())>1){
+            if (Long.bitCount(FileMasks8[i]& this.getOwnPawns())>1){
                 this.assessmentValue -= 50;
                 //System.out.println("Doppelbauer in" + i);
             }
         }
         for (int i = 0; i<8; i++){
-            if (Long.bitCount(Columns[i]& this.getOppositePawns())>1){
+            if (Long.bitCount(FileMasks8[i]& this.getOppositePawns())>1){
                 this.assessmentValue += 50;
                 //System.out.println("Doppelbauer in" + i);
             }

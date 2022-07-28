@@ -2,6 +2,8 @@ package Model;
 
 import Model.Pieces.*;
 
+import Model.Board;
+
 
 import java.util.HashMap;
 
@@ -186,8 +188,8 @@ public class MoveGenerator {
         long unsafe;
        // OCCUPIED=WP|WN|WB|WR|WQ|WK|BP|BN|BB|BR|BQ|BK;
         //pawn
-        unsafe=((b.getWhitePawns()>>>7)&~COLUMN_A);//pawn capture right
-        unsafe|=((b.getWhitePawns()>>>9)&~COLUMN_H);//pawn capture left
+        unsafe=((b.getWhitePawns()>>>7)&~FILE_A);//pawn capture right
+        unsafe|=((b.getWhitePawns()>>>9)&~FILE_H);//pawn capture left
         long possibility;
         //knight
         long WN = b.getWhiteKnights();
@@ -204,10 +206,10 @@ public class MoveGenerator {
             }
             if (iLocation%8<4)
             {
-                possibility &=~COLUMN_GH;
+                possibility &=~FILE_GH;
             }
             else {
-                possibility &=~COLUMN_AB;
+                possibility &=~FILE_AB;
             }
             unsafe |= possibility;
             WN&=~i;
@@ -246,10 +248,10 @@ public class MoveGenerator {
         }
         if (iLocation%8<4)
         {
-            possibility &=~COLUMN_GH;
+            possibility &=~FILE_GH;
         }
         else {
-            possibility &=~COLUMN_AB;
+            possibility &=~FILE_AB;
         }
         unsafe |= possibility;
         return unsafe;
@@ -258,8 +260,8 @@ public class MoveGenerator {
         long unsafe;
         //OCCUPIED=WP|WN|WB|WR|WQ|WK|BP|BN|BB|BR|BQ|BK;
         //pawn
-        unsafe=((b.getBlackPawns()<<7)&~COLUMN_H);//pawn capture right
-        unsafe|=((b.getBlackPawns()<<9)&~COLUMN_A);//pawn capture left
+        unsafe=((b.getBlackPawns()<<7)&~FILE_H);//pawn capture right
+        unsafe|=((b.getBlackPawns()<<9)&~FILE_A);//pawn capture left
         long possibility;
         //knight
         long BN = b.getBlackKnights();
@@ -276,10 +278,10 @@ public class MoveGenerator {
             }
             if (iLocation%8<4)
             {
-                possibility &=~COLUMN_GH;
+                possibility &=~FILE_GH;
             }
             else {
-                possibility &=~COLUMN_AB;
+                possibility &=~FILE_AB;
             }
             unsafe |= possibility;
             BN&=~i;
@@ -318,10 +320,10 @@ public class MoveGenerator {
         }
         if (iLocation%8<4)
         {
-            possibility &=~COLUMN_GH;
+            possibility &=~FILE_GH;
         }
         else {
-            possibility &=~COLUMN_AB;
+            possibility &=~FILE_AB;
         }
         unsafe |= possibility;
         return unsafe;
@@ -343,23 +345,23 @@ public class MoveGenerator {
         } else if (move.charAt(3)=='P') {//pawn promotion
             int start, end;
             if (Character.isUpperCase(move.charAt(2))) {
-                start=Long.numberOfTrailingZeros(Columns[move.charAt(0)-'0']& Rows[1]);
-                end=Long.numberOfTrailingZeros(Columns[move.charAt(1)-'0']& Rows[0]);
+                start=Long.numberOfTrailingZeros(FileMasks8[move.charAt(0)-'0']&RankMasks8[1]);
+                end=Long.numberOfTrailingZeros(FileMasks8[move.charAt(1)-'0']&RankMasks8[0]);
             } else {
-                start=Long.numberOfTrailingZeros(Columns[move.charAt(0)-'0']& Rows[6]);
-                end=Long.numberOfTrailingZeros(Columns[move.charAt(1)-'0']& Rows[7]);
+                start=Long.numberOfTrailingZeros(FileMasks8[move.charAt(0)-'0']&RankMasks8[6]);
+                end=Long.numberOfTrailingZeros(FileMasks8[move.charAt(1)-'0']&RankMasks8[7]);
             }
             if (type==move.charAt(2)) {board|=(1L<<end);} else {board&=~(1L<<start); board&=~(1L<<end);}
         } else if (move.charAt(3)=='E') {//en passant
             int start, end;
             if (move.charAt(2)=='W') {
-                start=Long.numberOfTrailingZeros(Columns[move.charAt(0)-'0']& Rows[3]);
-                end=Long.numberOfTrailingZeros(Columns[move.charAt(1)-'0']& Rows[2]);
-                board&=~(Columns[move.charAt(1)-'0']& Rows[3]);
+                start=Long.numberOfTrailingZeros(FileMasks8[move.charAt(0)-'0']&RankMasks8[3]);
+                end=Long.numberOfTrailingZeros(FileMasks8[move.charAt(1)-'0']&RankMasks8[2]);
+                board&=~(FileMasks8[move.charAt(1)-'0']&RankMasks8[3]);
             } else {
-                start=Long.numberOfTrailingZeros(Columns[move.charAt(0)-'0']& Rows[4]);
-                end=Long.numberOfTrailingZeros(Columns[move.charAt(1)-'0']& Rows[5]);
-                board&=~(Columns[move.charAt(1)-'0']& Rows[4]);
+                start=Long.numberOfTrailingZeros(FileMasks8[move.charAt(0)-'0']&RankMasks8[4]);
+                end=Long.numberOfTrailingZeros(FileMasks8[move.charAt(1)-'0']&RankMasks8[5]);
+                board&=~(FileMasks8[move.charAt(1)-'0']&RankMasks8[4]);
             }
             if (((board>>>start)&1)==1) {board&=~(1L<<start); board|=(1L<<end);}
         } else {
@@ -677,13 +679,13 @@ public class MoveGenerator {
         //Check if King is in CENTRE
 
 
-        if((CENTER &b.getWhiteKing())!=0){
+        if((CENTRE&b.getWhiteKing())!=0){
             //Weißer König wird angegriffen
             b.setGameOver(true);
             b.setWhiteWon(true);
             return;
         }
-        if((CENTER &b.getBlackKing())!=0){
+        if((CENTRE&b.getBlackKing())!=0){
             b.setGameOver(true);
             b.setWhiteWon(false);
             return;

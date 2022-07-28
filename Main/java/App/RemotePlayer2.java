@@ -22,7 +22,7 @@ public class RemotePlayer2 {
     private MoveGenerator mg = new MoveGenerator();
 
     //Config
-    private final String userName1 = "NextMagnus" + String.valueOf(Math.random());
+    private final String userName1 = String.valueOf(Math.random());
     private long playerId1 = 0;
     private int gameId1 = 0;
 
@@ -125,7 +125,7 @@ public class RemotePlayer2 {
                 }
 
                 // get the game List to join a game
-                if (playerId1 != 0) {
+                if (!(playerId1 == 0)) {
                     MessageObj messageObj = new MessageObj(1);
                     session.getBasicRemote().sendText(g.toJson(messageObj));
                 }
@@ -162,7 +162,7 @@ public class RemotePlayer2 {
 
 
                 //if empty create a new game
-                if (gameId1 != 0) {
+                if (gameId1 == 0) {
                     System.out.println("Going to create a new game");
                     MessageObj response = new MessageObj(2, userName1, playerId1, "KingOfTheHill");
                     session.getBasicRemote().sendText(me.encode(response));

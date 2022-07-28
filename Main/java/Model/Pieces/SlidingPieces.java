@@ -161,17 +161,17 @@ public class SlidingPieces {
     public static long DAndAntiDMoves(int s,long OCCUPIED)
     {
         long binaryS=1L<<s;
-        long possibilitiesDiagonal = ((OCCUPIED& Diagonals[(s / 8) + (s % 8)]) - (2 * binaryS)) ^ Long.reverse(Long.reverse(OCCUPIED& Diagonals[(s / 8) + (s % 8)]) - (2 * Long.reverse(binaryS)));
-        long possibilitiesAntiDiagonal = ((OCCUPIED& AntiDiagonals[(s / 8) + 7 - (s % 8)]) - (2 * binaryS)) ^ Long.reverse(Long.reverse(OCCUPIED& AntiDiagonals[(s / 8) + 7 - (s % 8)]) - (2 * Long.reverse(binaryS)));
-        return (possibilitiesDiagonal& Diagonals[(s / 8) + (s % 8)]) | (possibilitiesAntiDiagonal& AntiDiagonals[(s / 8) + 7 - (s % 8)]);
+        long possibilitiesDiagonal = ((OCCUPIED&DiagonalMasks8[(s / 8) + (s % 8)]) - (2 * binaryS)) ^ Long.reverse(Long.reverse(OCCUPIED&DiagonalMasks8[(s / 8) + (s % 8)]) - (2 * Long.reverse(binaryS)));
+        long possibilitiesAntiDiagonal = ((OCCUPIED&AntiDiagonalMasks8[(s / 8) + 7 - (s % 8)]) - (2 * binaryS)) ^ Long.reverse(Long.reverse(OCCUPIED&AntiDiagonalMasks8[(s / 8) + 7 - (s % 8)]) - (2 * Long.reverse(binaryS)));
+        return (possibilitiesDiagonal&DiagonalMasks8[(s / 8) + (s % 8)]) | (possibilitiesAntiDiagonal&AntiDiagonalMasks8[(s / 8) + 7 - (s % 8)]);
     }
 
     public static long HAndVMoves(int s,long OCCUPIED)
     {
         long binaryS=1L<<s;
         long possibilitiesHorizontal = (OCCUPIED - 2 * binaryS) ^ Long.reverse(Long.reverse(OCCUPIED) - 2 * Long.reverse(binaryS));
-        long possibilitiesVertical = ((OCCUPIED& Columns[s % 8]) - (2 * binaryS)) ^ Long.reverse(Long.reverse(OCCUPIED& Columns[s % 8]) - (2 * Long.reverse(binaryS)));
-        return (possibilitiesHorizontal& Rows[s / 8]) | (possibilitiesVertical& Columns[s % 8]);
+        long possibilitiesVertical = ((OCCUPIED&FileMasks8[s % 8]) - (2 * binaryS)) ^ Long.reverse(Long.reverse(OCCUPIED&FileMasks8[s % 8]) - (2 * Long.reverse(binaryS)));
+        return (possibilitiesHorizontal&RankMasks8[s / 8]) | (possibilitiesVertical&FileMasks8[s % 8]);
 
     }
 }
