@@ -807,6 +807,7 @@ public class MoveGenerator {
             if(b.getCreatedByMove().equals("")) return "9999" + score; //um mögliche Errors zu vermeiden (kann nur == "" wenn mit Suchtiefe 0 gestartet -> kommt im richtigen Spiel nciht vor)
             return b.getCreatedByMove() + score; //TODO: wann wird created by move gesetzt?
         }
+
         String moveList = validMoves(b);
 
         //System.out.println("move list:" + moveList);
@@ -833,6 +834,8 @@ public class MoveGenerator {
             for(int i = 0; i<moveList.length(); i+=4){
 
                 String move = moveList.substring(i,i+4);
+
+                //System.out.println("Iteration: " + i + " with move: " + move);
                 Board newBoard = b.createBoardFromMove(move);
                 newBoard.setCreatedByMove(move);
 
@@ -850,6 +853,9 @@ public class MoveGenerator {
                     //System.out.println("Beta cutoff!");
                     break; //beta-cutoff
                 }
+
+
+
             }
             return bestMove + alpha;
         } else {
@@ -857,6 +863,9 @@ public class MoveGenerator {
             for(int i = 0; i<moveList.length(); i+=4){
 
                 String move = moveList.substring(i,i+4);
+                //System.out.println("Iteration: " + i + " with move: " + move);
+
+
                 Board newBoard = b.createBoardFromMove(move);
                 newBoard.setCreatedByMove(move);
 
@@ -1082,6 +1091,7 @@ public class MoveGenerator {
                     cutoffs++;
                     break; //beta-cutoff
                 }
+
             }
             //System.out.println("max out of for:" + bestMove + alpha);
             return bestMove + alpha;
@@ -1184,7 +1194,7 @@ public class MoveGenerator {
         if(isMaxPlayer){
             String bestMove = "9999";
             for(int i = 0; i<moveList.length(); i+=4){
-                if(outOfTime) break;
+                if(outOfTime) break; //TODO: richtig? -> out of time wird vor der for Schleife berechnet und evaluiert und kann hier meiner Meinung nach nie true sein... Die nächste Überprüfung dürfte beim nächsten Selbsaufruf erfolgen...
                 String move = moveList.substring(i,i+4);
                 Board newBoard = b.createBoardFromMove(move);
                 newBoard.setCreatedByMove(move);
@@ -1194,7 +1204,7 @@ public class MoveGenerator {
                 int currentEval = Integer.parseInt(zwischenergebnis.substring(4));
 
                 if(currentEval > alpha){
-                    bestMove = move;
+                    bestMove = move; //equiv. zu b.getCreatedByMove();
                     alpha = currentEval;
                 }
 
@@ -1341,6 +1351,7 @@ public class MoveGenerator {
 
             String bestMove= "";
             for(int i = 0; i<moveList.length(); i+=4){
+
                 String move = moveList.substring(i,i+4);
                 Board newBoard = b.createBoardFromMove(move);
                 newBoard.setCreatedByMove(move);

@@ -12,8 +12,6 @@ import static Model.MoveGenerator.*;
 
 public class Board implements Comparable <Board> {
 
-    //private MoveGenerator moveGenerator = new MoveGenerator();
-
     private boolean gameOver = false;
     private boolean whiteWon = false;
     private boolean remis = false;
@@ -45,21 +43,6 @@ public class Board implements Comparable <Board> {
     private String createdByMove = "";
     private boolean inCheck = false;
 
-//WIP EP start
-    //ist File in der EnPassant möglich/erlaubt ist
-    /*private long enPassantBitboardFile =0L;
-    // eingefügt, um makeMove wie Video 16&17 zu machen
-    //TODO: combine/integrate with privateString enPassants, fix BitboardGeneration correct
-
-
-    public long getEnPassantBitboardFile() {
-        return enPassantBitboardFile;
-    }
-
-    public void setEnPassantBitboardFile(long enPassantBitboardFile) {
-        this.enPassantBitboardFile = enPassantBitboardFile;
-    }*/
-    //WIP EP ende
 
     /**
      * Overloaded constructors - allows to create a board from a fen string
@@ -218,34 +201,16 @@ public class Board implements Comparable <Board> {
         makeMove(newBoard, move);
         //newBoard.assessBoardTPT(assesedBoards, zobrist);
         return newBoard;}
-        //TODO: vllt hier schon createdByMove(move) unterbringen?
-
-
-    /**
-     * Creates all possible successor boards for this board (1 level), including assessment and sorting by assessment
-     */
-   // public void generateSuccessorBoards(Board b, String validMoves){
-   //     for (int i=0;i<validMoves.length();i+=4) {
-    //        String move = validMoves.substring(i,i+4);
-   //         Board newBoard = createBoardFromMove(move);
-   //         newBoard.setCreatedByMove(move);
-   //         newBoard.assessBoard();
-    //        successorBoards.add(newBoard);
-   //     }
-   //     successorBoards.sort(Board::compareTo);
-   // }
 
 
     /**
      * Sets and returns the assessment value for the board
      * The board is assessed from the perspective of the current player
      */
-    //TODO check if double works
     public int assessBoard(){
 
         this.assessmentValue = 0;
 
-        //TODO: vllt assessBoard in MoveGenerator auslagern, damit Instanzvariable nicht benötigt? oder entsprechene Methoden im MoveGenerator static machen
         String ownValidMoves = MoveGenerator.validMoves(this);
 
         //create board with same positions but opponents's turn to count their moves
@@ -283,10 +248,7 @@ public class Board implements Comparable <Board> {
         }
         if ((this.getOppositeKing() & CENTRE) != 0){
             return this.assessmentValue = -10000000; //Spieler hat verloren (schlechterer Wert, als Spieler befindet sich im Schach)
-            //TODO: wenn nurnoch pseudilegale Züge generieren: Wert anpassen, sodass Schach(matt) im Vergleich anders bewertet wird
         }
-
-
 
         //Count material
         this.assessmentValue += Long.bitCount(this.getOwnPawns())-Long.bitCount(this.getOppositePawns())*100;
@@ -295,26 +257,10 @@ public class Board implements Comparable <Board> {
         this.assessmentValue += (Long.bitCount(this.getOwnBishops())-Long.bitCount(this.getOppositeBishops()))*300;
         this.assessmentValue += (Long.bitCount(this.getOwnQueen())-Long.bitCount(this.getOppositeQueen()))*900;
 
-        //TODO: Assess positions
         if ((getOwnKing() & EXTENDED_CENTRE) != 0){
             this.assessmentValue += kingInExtendedCenter;
         }
 
-/*
-        if (isCurrentPlayerIsWhite()){
-            //Evaluate Pawn positions
-            this.assessmentValue += (Long.bitCount(this.getOwnPawns()&RankMasks8[6])*5);
-            this.assessmentValue += (Long.bitCount(this.getOwnPawns()&RankMasks8[5]));
-            this.assessmentValue += (Long.bitCount((this.getOwnPawns()&RankMasks8[5]) & FileMasks8[2] & FileMasks8[3] & FileMasks8[4] & FileMasks8[5]));
-            this.assessmentValue += (Long.bitCount((this.getOwnPawns()&RankMasks8[5]) & FileMasks8[3] & FileMasks8[4]));
-            this.assessmentValue += (Long.bitCount(this.getOwnPawns()&RankMasks8[4])*0.5);
-            this.assessmentValue += (Long.bitCount((this.getOwnPawns()&RankMasks8[4]) & FileMasks8[2] & FileMasks8[3] & FileMasks8[4] & FileMasks8[5])*0.5);
-            this.assessmentValue += (Long.bitCount((this.getOwnPawns()&RankMasks8[4]) & FileMasks8[3] & FileMasks8[4])*1.5);
-            this.assessmentValue += (Long.bitCount((this.getOwnPawns()&RankMasks8[3]) & FileMasks8[3] & FileMasks8[4])*2);
-            //TODO to be discussed if we want to continue
-        }
-*/
-        //TODO: double vs int bzw. alles (auch oberen Teil, in dems um Schach(matt) geht) *10
         //Mobilität
         this.assessmentValue += (int) MoveGenerator.getMoveCount(ownValidMoves)*10;
         this.assessmentValue -= (int) MoveGenerator.getMoveCount(opponentsValidMoves)*10;
@@ -345,6 +291,7 @@ public class Board implements Comparable <Board> {
             //System.out.println("APA" + attackedPawns + "AQ" + attackedQueens + "API" + attackedPieces);
             this.assessmentValue += (150*attackedPiecesO+20*attackedPawnsO+400*attackedQueensO);
         }
+
         //Hanging Pieces
         if(currentPlayerIsWhite){
             long hangingPawns = Long.bitCount(fieldsAttackedByBlack(this) &~fieldsAttackedByWhite(this) & this.getOwnPawns());
@@ -367,6 +314,7 @@ public class Board implements Comparable <Board> {
             long hangingQueenO = Long.bitCount(fieldsAttackedByBlack(this) &~fieldsAttackedByWhite(this) & this.getOppositeQueen());
             this.assessmentValue += (300*hangingPiecesO+50*hangingPawnsO+700*hangingQueenO);
         }
+
         //Doppelbauern
         for (int i = 0; i<8; i++){
             if (Long.bitCount(FileMasks8[i]& this.getOwnPawns())>1){
@@ -380,29 +328,6 @@ public class Board implements Comparable <Board> {
                 //System.out.println("Doppelbauer in" + i);
             }
         }
-        //TODO: isolierte Bauern if wished
-
-        //TODO: Choose either PST or PST Tapered Eval!!
-        //PST
-        /*int pstScoreWhite = 0;
-        pstScoreWhite += addPSTValues(this.getWhitePawns(), PieceSquareTables.MG_WHITE_PAWNS);
-        pstScoreWhite += addPSTValues(this.getWhiteKnights(), PieceSquareTables.MG_WHITE_KNIGHTS);
-        pstScoreWhite += addPSTValues(this.getWhiteBishops(), PieceSquareTables.MG_WHITE_BISHOPS);
-        pstScoreWhite += addPSTValues(this.getWhiteRooks(), PieceSquareTables.MG_WHITE_ROOKS);
-        pstScoreWhite += addPSTValues(this.getWhiteQueen(), PieceSquareTables.MG_WHITE_QUEEN);
-        pstScoreWhite += addPSTValues(this.getWhiteKing(), PieceSquareTables.MG_WHITE_KING);
-        int pstScoreBlack = 0;
-        pstScoreBlack += addPSTValues(this.getBlackPawns(), PieceSquareTables.MG_BLACK_PAWNS);
-        pstScoreBlack += addPSTValues(this.getBlackKnights(), PieceSquareTables.MG_BLACK_KNIGHTS);
-        pstScoreBlack += addPSTValues(this.getBlackBishops(), PieceSquareTables.MG_BLACK_BISHOPS);
-        pstScoreBlack += addPSTValues(this.getBlackRooks(), PieceSquareTables.MG_BLACK_ROOKS);
-        pstScoreBlack += addPSTValues(this.getBlackQueen(), PieceSquareTables.MG_BLACK_QUEEN);
-        pstScoreBlack += addPSTValues(this.getBlackKing(), PieceSquareTables.MG_BLACK_KING);
-        if(currentPlayerIsWhite){
-            this.assessmentValue += (pstScoreWhite-pstScoreBlack);
-        } else {
-            this.assessmentValue += (pstScoreBlack-pstScoreWhite);
-        }*/
 
         //PST Tapered Eval (dependent on game phase)
         int pstScoreWhite = 0;
@@ -432,12 +357,7 @@ public class Board implements Comparable <Board> {
 
         this.assessmentValue = 0;
 
-        //System.out.println("HashStart");
-
         long hashedBord = z.getZobristHash(this.getWhitePawns(),this.getWhiteKnights(),this.getWhiteBishops(),this.getWhiteRooks(),this.getWhiteQueen(),this.getWhiteKing(),this.getBlackPawns(),this.getBlackKnights(),this.getBlackBishops(),this.getBlackRooks(),this.getBlackQueen(),this.getBlackKing(),this.isWhiteToCastleKingside(),this.isWhiteToCastleQueenside(),this.isBlackToCastleKingside(),this.isBlackToCastleQueenside(),this.isCurrentPlayerIsWhite());
-
-        //System.out.println("Hash: "+ hashedBord);
-
 
         if (assesedBoards.containsKey(hashedBord)){
             //System.out.println("FoundValue");
@@ -446,17 +366,12 @@ public class Board implements Comparable <Board> {
             return assesedBoards.get(hashedBord);
         }
 
-
-
-        //TODO: vllt assessBoard in MoveGenerator auslagern, damit Instanzvariable nicht benötigt? oder entsprechene Methoden im MoveGenerator static machen
-        //System.out.println("Moin");
         String ownValidMoves = MoveGenerator.validMoves(this);
-        //System.out.println("Bye");
+
         //create board with same positions but opponents's turn to count their moves
         Board copyButOpponentsTurn = new Board(this);
         copyButOpponentsTurn.setCurrentPlayerIsWhite(!copyButOpponentsTurn.isCurrentPlayerIsWhite());
         String opponentsValidMoves = MoveGenerator.validMoves(copyButOpponentsTurn);
-
 
         // define assessment values for certain positions
         int kingInExtendedCenter = 300;
@@ -466,7 +381,7 @@ public class Board implements Comparable <Board> {
             if(currentPlayerIsWhite){
                 this.assessmentValue = -1000000;
                 if(ownValidMoves.equals("")){
-                    this.assessmentValue = -10000000; //Spieler ist Schachmatt
+                    this.assessmentValue = -10000000;
                 }
             } else {
                 this.assessmentValue = 1000000;
@@ -478,19 +393,16 @@ public class Board implements Comparable <Board> {
             } else {
                 this.assessmentValue = -1000000;
                 if(ownValidMoves.equals("")){
-                    this.assessmentValue = -10000000; //Spieler ist Schachmatt
+                    this.assessmentValue = -10000000;
                 }
             }
         }
         if ((this.getOwnKing() & CENTRE) != 0){
-            return this.assessmentValue = 10000000; //Spieler hat gewonnen
+            return this.assessmentValue = 10000000;
         }
         if ((this.getOppositeKing() & CENTRE) != 0){
-            return this.assessmentValue = -10000000; //Spieler hat verloren (schlechterer Wert, als Spieler befindet sich im Schach)
-            //TODO: wenn nurnoch pseudilegale Züge generieren: Wert anpassen, sodass Schach(matt) im Vergleich anders bewertet wird
+            return this.assessmentValue = -10000000;
         }
-
-
 
         //Count material
         this.assessmentValue += Long.bitCount(this.getOwnPawns())-Long.bitCount(this.getOppositePawns())*100;
@@ -499,26 +411,10 @@ public class Board implements Comparable <Board> {
         this.assessmentValue += (Long.bitCount(this.getOwnBishops())-Long.bitCount(this.getOppositeBishops()))*300;
         this.assessmentValue += (Long.bitCount(this.getOwnQueen())-Long.bitCount(this.getOppositeQueen()))*900;
 
-        //TODO: Assess positions
         if ((getOwnKing() & EXTENDED_CENTRE) != 0){
             this.assessmentValue += kingInExtendedCenter;
         }
 
-/*
-        if (isCurrentPlayerIsWhite()){
-            //Evaluate Pawn positions
-            this.assessmentValue += (Long.bitCount(this.getOwnPawns()&RankMasks8[6])*5);
-            this.assessmentValue += (Long.bitCount(this.getOwnPawns()&RankMasks8[5]));
-            this.assessmentValue += (Long.bitCount((this.getOwnPawns()&RankMasks8[5]) & FileMasks8[2] & FileMasks8[3] & FileMasks8[4] & FileMasks8[5]));
-            this.assessmentValue += (Long.bitCount((this.getOwnPawns()&RankMasks8[5]) & FileMasks8[3] & FileMasks8[4]));
-            this.assessmentValue += (Long.bitCount(this.getOwnPawns()&RankMasks8[4])*0.5);
-            this.assessmentValue += (Long.bitCount((this.getOwnPawns()&RankMasks8[4]) & FileMasks8[2] & FileMasks8[3] & FileMasks8[4] & FileMasks8[5])*0.5);
-            this.assessmentValue += (Long.bitCount((this.getOwnPawns()&RankMasks8[4]) & FileMasks8[3] & FileMasks8[4])*1.5);
-            this.assessmentValue += (Long.bitCount((this.getOwnPawns()&RankMasks8[3]) & FileMasks8[3] & FileMasks8[4])*2);
-            //TODO to be discussed if we want to continue
-        }
-*/
-        //TODO: double vs int bzw. alles (auch oberen Teil, in dems um Schach(matt) geht) *10
         //Mobilität
         this.assessmentValue += (int) MoveGenerator.getMoveCount(ownValidMoves)*10;
         this.assessmentValue -= (int) MoveGenerator.getMoveCount(opponentsValidMoves)*10;
@@ -571,6 +467,7 @@ public class Board implements Comparable <Board> {
             long hangingQueenO = Long.bitCount(fieldsAttackedByBlack(this) &~fieldsAttackedByWhite(this) & this.getOppositeQueen());
             this.assessmentValue += (300*hangingPiecesO+50*hangingPawnsO+700*hangingQueenO);
         }
+
         //Doppelbauern
         for (int i = 0; i<8; i++){
             if (Long.bitCount(FileMasks8[i]& this.getOwnPawns())>1){
@@ -584,8 +481,6 @@ public class Board implements Comparable <Board> {
                 //System.out.println("Doppelbauer in" + i);
             }
         }
-        //TODO: isolierte Bauern if wished
-
 
         //TODO: Choose either PST or PST Tapered Eval!!
         //PST
@@ -630,18 +525,14 @@ public class Board implements Comparable <Board> {
             this.assessmentValue += (pstScoreBlack-pstScoreWhite);
         }
 
-
-
         //System.out.println("InsertStart");
         assesedBoards.put(hashedBord,(int)this.assessmentValue);
         //System.out.println("InsertStop");
         return (int)this.assessmentValue;
     }
 
-    //Für MiniMax brauchen wir aber tatsächlich immer nur die Bewertungsfunktion von einer perspektive
-    //bei den MinKnoten sollen ja die kleinsten Werte (schlechtesten aus MaxPlayers perspektive ausgewählt werden)
-    public int assessBoardFromOwnPerspective() { //TODO: kann weg, wenn wir uns drauf geeignigt haben, was assessBoard zurückgibt
-        //TODO: wenn KI gegen sich selbst spielt, immer KIPlaysWhite switchen nach jedem Zug
+
+    public int assessBoardFromOwnPerspective() {
 
         if (KIPlaysWhite) {//momentan immer true
             if (currentPlayerIsWhite) {
