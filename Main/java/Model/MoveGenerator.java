@@ -2,9 +2,6 @@ package Model;
 
 import Model.Pieces.*;
 
-import Model.Board;
-
-
 import java.util.HashMap;
 
 import static Model.Mask.*;
@@ -12,10 +9,7 @@ import static Model.Mask.*;
 
 public class MoveGenerator {
 
-    private static boolean outOfTime = false; //used for Iterative Deepening
-    //https://github.com/nealyoung/CS171/blob/master/AI.java
-
-
+        private static boolean outOfTime = false; //used for Iterative Deepening
         static Pawns pawns = new Pawns();
         static SlidingPieces slidingPieces = new SlidingPieces();
         static Knights knights = new Knights();
@@ -172,21 +166,21 @@ public class MoveGenerator {
                 list += slidingPieces.bishopMoves(board) + "-";
                 list += slidingPieces.queenMoves(board);
 
-            //TODO: Remove king in check/check mate situations from possible move list
             //format: rank-old file-old rank-new file-new
             //rank wird nach oben größer, file nach links
             //6050 wäre move von (Bitboard Layout 1) 48 auf 40
 
             return list;
         }
-        //TODO: possible moves der gegenseite?
 
+    /**
+     *
+     * @param b
+     * @return bitboard which includes all positions which can be reached by white figures
+     */
 
-    //gibt Bitboard mit allen Positionen auf denen White Landen könnte (inkl. eigener weißer Figuren)
-    // wenn dann mit BlackKing-Bitboard verundet (&) eine 1 ergibt, könnte BlackKing geschlagen
     public static long fieldsAttackedByWhite(Board b) {
         long unsafe;
-       // OCCUPIED=WP|WN|WB|WR|WQ|WK|BP|BN|BB|BR|BQ|BK;
         //pawn
         unsafe=((b.getWhitePawns()>>>7)&~FILE_A);//pawn capture right
         unsafe|=((b.getWhitePawns()>>>9)&~FILE_H);//pawn capture left
@@ -484,23 +478,18 @@ public class MoveGenerator {
     }
 
 
-
-    //"valid" i.e. eigener King ist danach nicht (mehr) im Schach
-    //public static void perft(long WP,long WN,long WB,long WR,long WQ,long WK,long BP,long BN,long BB,long BR,long BQ,long BK,long EP,boolean CWK,boolean CWQ,boolean CBK,boolean CBQ,boolean WhiteToMove,int depth)
+    /**
+     *
+     * @param b
+     * @return list of valid moves, i. e. moves after which own king is not in check
+     */
     public static String validMoves(Board b)
     {
         String validMoves = "";
-
         String moves = ownPossibleMoves(b).replace("-","");
-
-        //System.out.println("moves: "+moves);
-        //moves = sortMovesCaptures(b,moves);
-        //System.out.println("Sorted: "+moves);
-
         for (int i=0;i<moves.length();i+=4) {
 
             Board tempB = new Board(b);
-
             tempB.setWhitePawns(executeMoveforOneBitboard(b.getWhitePawns(), moves.substring(i,i+4), 'P'));
             tempB.setWhiteKnights(executeMoveforOneBitboard(b.getWhiteKnights(), moves.substring(i,i+4), 'N'));
             tempB.setWhiteBishops(executeMoveforOneBitboard(b.getWhiteBishops(), moves.substring(i,i+4), 'B'));
@@ -532,9 +521,7 @@ public class MoveGenerator {
                     if (((1L<<start)&b.getBlackRooks()&(1L<<7))!=0) {tempB.setBlackToCastleKingside(false);}
                     if (((1L<<start)&b.getBlackRooks()&1L)!=0) {tempB.setBlackToCastleQueenside(false);}
                 }
-
                 tempB.setCurrentPlayerIsWhite(!b.isCurrentPlayerIsWhite());
-
 
                 //check if own King is NOT in danger after move
                 if (((tempB.getWhiteKing()& fieldsAttackedByBlack(tempB))==0 && b.isCurrentPlayerIsWhite()) ||
@@ -544,44 +531,33 @@ public class MoveGenerator {
 
                 }
             }
-        //System.out.println("-----------------------------------");
-        //System.out.println("validMoves: " + validMoves);
-        //validMoves = sortMovesCaptures(b,validMoves);
-        //System.out.println("Sorted:");
-        //System.out.println(validMoves.length()%4);
-        //System.out.println(b.bitboardsToFenParser());
-        //b.drawBoard();
-        //System.out.println("-----------------------------------");
         return validMoves;
 
     }
 
+    /**
+     * executes one moves for all bitboards of a given board
+     * @param b
+     * @param move
+     */
     public static void makeMove(Board b, String move){
 
+        //game is over
         if (move == null || move.equals("")){
-
-            //wird angegriffen?
             if(b.isCurrentPlayerIsWhite()){
-
-
-
-                if((fieldsAttackedByBlack(b)&b.getWhiteKing())!=0){
-                    //Weißer König wird angegriffen
+                if((fieldsAttackedByBlack(b)&b.getWhiteKing())!=0){ //white king is attacked
                     b.setGameOver(true);
                     b.setWhiteWon(false);
                     return;
                 }
-
-            }else { //Schwarz am Zug
+            }else {
                 if((fieldsAttackedByWhite(b)&b.getBlackKing())!=0){
                     b.setGameOver(true);
                     b.setWhiteWon(true);
                     return;
                 }
-
             }
-
-            //wird nicht angegriffen -> Remis
+            //no king is attacked -> Remis
             b.setGameOver(true);
             b.setRemis(true);
             return;
@@ -597,14 +573,14 @@ public class MoveGenerator {
         //System.out.println(player+" played: "+convertMoveDigitsToField(move.charAt(0),move.charAt(1))+"->"+convertMoveDigitsToField(move.charAt(2),move.charAt(3)));
 
 
-            String oldFEN = b.bitboardsToFenParser().split(" ")[0]; //für 50-Zug-Remis-Regel
+        String oldFEN = b.bitboardsToFenParser().split(" ")[0]; //used for 50-Move-Remis-Rule
         long oldWhitePawns = b.getWhitePawns();
         long oldBlackPawns = b.getBlackPawns();
 
         long oldWhiteKing = b.getWhiteKing();
         long oldBlackKing = b.getBlackKing();
 
-        //Castling (muss ->vor<- Änderung auf Bitboard durchgeführt werden)
+        //Castling
         if (Character.isDigit(move.charAt(3))) {//'regular' move
             int start=(Character.getNumericValue(move.charAt(0))*8)+(Character.getNumericValue(move.charAt(0+1)));
             if (((1L<<start)&b.getWhiteKing())!=0) { b.setWhiteToCastleKingside(false); b.setWhiteToCastleQueenside(false);}
@@ -615,11 +591,9 @@ public class MoveGenerator {
             if (((1L<<start)&b.getBlackRooks()&1L)!=0) {b.setBlackToCastleQueenside(false);}
         }
 
-        //En Passant (muss ->vor<- Änderung auf Bitboard durchgeführt werden)
+        //En Passant
         //b.setEnPassantBitboardFile(makeMoveEP(b.getWhitePawns()|b.getBlackPawns(),move));
         b.setEnPassants(executeEnPassant(b.getWhitePawns()|b.getBlackPawns(),move));
-
-
 
         b.setWhitePawns(executeMoveforOneBitboard(b.getWhitePawns(), move, 'P'));
         b.setWhiteKnights(executeMoveforOneBitboard(b.getWhiteKnights(), move, 'N'));
@@ -634,18 +608,14 @@ public class MoveGenerator {
         b.setBlackQueen(executeMoveforOneBitboard(b.getBlackQueen(), move, 'q'));
         b.setBlackKing(executeMoveforOneBitboard(b.getBlackKing(), move, 'k'));
 
-        //Castling auch vor Änderung der King Position??
         b.setWhiteRooks(executeCastling(b.getWhiteRooks(), oldWhiteKing|oldBlackKing, move, 'R'));
         b.setBlackRooks(executeCastling(b.getBlackRooks(), oldWhiteKing|oldBlackKing, move, 'r'));
 
+        b.setCurrentPlayerIsWhite(!b.isCurrentPlayerIsWhite()); //change player color for next move
 
-
-
-        b.setCurrentPlayerIsWhite(!b.isCurrentPlayerIsWhite());
-
-        if(b.getWhitePawns()!=oldWhitePawns||b.getBlackPawns()!=oldBlackPawns){ //wurde ein Bauer bewegt?(/geschlagen)
+        if(b.getWhitePawns()!=oldWhitePawns||b.getBlackPawns()!=oldBlackPawns){ //check if pawn was captured or moved
             b.setHalfMoveCount(-1);
-        } else {  //wurde eine Figur geschlagen?
+        } else {  //check if figure was captured
             String newFEN = b.bitboardsToFenParser().split(" ")[0]; //für 50-Zug-Remis-Regel;
 
             int oldFigureCount =0;
@@ -661,26 +631,19 @@ public class MoveGenerator {
                 }
             }
             if (oldFigureCount!=newFigureCount) b.setHalfMoveCount(-1);
+            //TODO: hier calculateGamephase neuberechnungsbedingung unterbringen
         }
-
-
-
 
         if(b.isCurrentPlayerIsWhite()){
             b.setHalfMoveCount(b.getHalfMoveCount()+1);
 
         }else{
             b.setHalfMoveCount(b.getHalfMoveCount()+1);
-            b.setNextMoveCount(b.getNextMoveCount()+1); //"full" move after black
-
+            b.setNextMoveCount(b.getNextMoveCount()+1);
         }
 
-
         //Check if King is in CENTRE
-
-
         if((CENTRE&b.getWhiteKing())!=0){
-            //Weißer König wird angegriffen
             b.setGameOver(true);
             b.setWhiteWon(true);
             return;
@@ -690,8 +653,7 @@ public class MoveGenerator {
             b.setWhiteWon(false);
             return;
         }
-
-        //50-Züge-Remis-Regel
+        //50-Move-Remis-Rule
         if(b.getHalfMoveCount()>=100){
             b.setGameOver(true);
             b.setRemis(true);
@@ -701,12 +663,9 @@ public class MoveGenerator {
 
     public static String moveSelector(Board b, String validMoves, long usedTimeInMs) {
 
-
         if (validMoves == null || validMoves.equals("")) {
             return validMoves;
         }
-
-        //sortMovesCaptures(b,validMoves);
 
         if ((gameTimeLimit - usedTimeInMs) < panicModeTimeBuffer) {
             System.out.println("Entered panic mode");
@@ -714,33 +673,11 @@ public class MoveGenerator {
             return alphaBeta(b, depth, Integer.MIN_VALUE, Integer.MAX_VALUE, true).substring(0, 4);
         }
 
-        //TODO: Das hier nicht löschen!! Ist Variante ohne PVS nur mit IDS!
-
-
-/*            System.out.println("Using iterative deepening search for move generation");
-            //Iterative Deepening Search (ohne Zugsortierung)
-            long timeLimit = standardDeviationTimeLimit(b.getNextMoveCount(), 100L);
-            return iterativeDeepeningSearch(b, timeLimit).substring(0, 4);
-*/
-
         System.out.println("Using principal variation search for move generation");
-        //Iterative Deepening Search + PVS (mit PV Zugsortierung)
         long timeLimit = standardDeviationTimeLimit(b.getNextMoveCount(), 300L); //gamePhaseTimeLimit(b, 250);
-        return PrincipalVariationSearch.moiterativeDeepeningPVSWithTimeLimitNoWindow(b, timeLimit).substring(0, 4);
-
-        //Iterative Deepening Search + PVS (mit PV Zugsortierung)
-        /*long timeLimit = standardDeviationTimeLimit(b.getNextMoveCount(), 100L);
-        return alphaBetaNullMoveTimeLimit(b, 4, Integer.MIN_VALUE, Integer.MAX_VALUE, true, System.currentTimeMillis(), timeLimit).substring(0, 4);*/
-
-
-        //int suchtiefe = depthCalculator(b);
-        //System.out.println("Using alpha beta search for move generation");
-        //return alphaBeta(b, suchtiefe, Integer.MIN_VALUE, Integer.MAX_VALUE, true).substring(0, 4);
-
-        //String bestMoveFromMinMax = minMax(b, suchtiefe, true).substring(0,4);
+        return PrincipalVariationSearch.principalVariationSearchWithTimelimit(b, timeLimit).substring(0, 4);
 
     }
-
 
     public int depthCalculator(Board b){
         if (b.getNextMoveCount()/2 < 10){
@@ -772,82 +709,42 @@ public class MoveGenerator {
     }
 
 
-
-    //TODO: generell mal überlegen, ob wir auf einem einzigen Board (static) arbeiten wollen und dann mit make/undo moves
-    //oder immer viele einzelne Boards generieren wollen?
-    //ersteres wahrscheinlich aufwandärmer hinsichtlich rechenzeit etc.?
-
-    //TODO: sollte intial nicht mit suchtiefe 0 aufgerufen werden, sonst (ergibt ja auch keinen sinn) fehler wegen getCreatedByMove...
-
     /**
-     *
+     * performs alphaBeta search in order to get the best move
      * @param b
-     * @param depth
-     * @param alpha
-     * @param beta
+     * @param depth maximal search depth
+     * @param alpha initialized with Integer.MIN_VALUE
+     * @param beta initialized with Integer.MAX_VALUE
      * @param isMaxPlayer
-     * @return String in this format: XXXXY.. where XXXX is representation of move and Y.. value of Bewertungsfunktion
+     * @return String in this format: XXXXY.. where XXXX is representation of move and Y.. value of assessment function
      */
     public static String alphaBeta (Board b, int depth, int alpha, int beta, boolean isMaxPlayer){
-        //System.out.println("Is KI playing white: "+ b.isKIPlayingWhite());
-        //System.out.println("Current player is white: "+ b.isCurrentPlayerIsWhite());
-        //System.out.println("Is max player: "+isMaxPlayer);
-
-
         if(depth == 0){
             assessedLeaves++;
-            //TODO: "gameOver" wird momentan am Anfang von makeMove gesetzt, wenn eigener Player Schachmatt ist
-            //wenn am Ende von Make move noch "gameOver" gesetzt würde, wenn anderer Player Schachmatt ist (oder gleich am Ende von validMoves, wenn das leer ist
-            //dann könnte man hier die moveList auch erst nach dem check dass nicht gameOver ist generieren und so evtl. Zeit sparen
-            //momentan könnte moveList jedoch noch "" sein ohne dass gameOver schon gesetzt wurde
-            //TODO: muss dan bei der Bewertungsfunktion überprüft werden, ob gerade verloren ist/König im Schachmatt steht?
             String score = String.valueOf(b.assessBoardFromOwnPerspective());
 
-            //System.out.println(b.getCreatedByMove() + score);
-            if(b.getCreatedByMove().equals("")) return "9999" + score; //um mögliche Errors zu vermeiden (kann nur == "" wenn mit Suchtiefe 0 gestartet -> kommt im richtigen Spiel nciht vor)
-            return b.getCreatedByMove() + score; //TODO: wann wird created by move gesetzt?
+            if(b.getCreatedByMove().equals("")) return "9999" + score;
+            return b.getCreatedByMove() + score;
         }
         String moveList = validMoves(b);
-
-        //System.out.println("move list:" + moveList);
-        //System.out.println("in depth:" + depth);
-
         if(b.isGameOver()||moveList.equals("")){
             assessedLeaves++;
-            //TODO: "gameOver" wird momentan am Anfang von makeMove gesetzt, wenn eigener Player Schachmatt ist
-            //wenn am Ende von Make move noch "gameOver" gesetzt würde, wenn anderer Player Schachmatt ist (oder gleich am Ende von validMoves, wenn das leer ist
-            //dann könnte man hier die moveList auch erst nach dem check dass nicht gameOver ist generieren und so evtl. Zeit sparen
-            //momentan könnte moveList jedoch noch "" sein ohne dass gameOver schon gesetzt wurde
-            //TODO: muss dan bei der Bewertungsfunktion überprüft werden, ob gerade verloren ist/König im Schachmatt steht?
             String score = String.valueOf(b.assessBoardFromOwnPerspective());
-
-            //System.out.println(b.getCreatedByMove() + score);
-            if(b.getCreatedByMove().equals("")) return "9999" + score; //um mögliche Errors zu vermeiden (kann nur == "" wenn mit Suchtiefe 0 gestartet -> kommt im richtigen Spiel nciht vor)
-            return b.getCreatedByMove() + score; //TODO: wann wird created by move gesetzt?
+            if(b.getCreatedByMove().equals("")) return "9999" + score;
+            return b.getCreatedByMove() + score;
         }
-
-
-
         if(isMaxPlayer){
-            String bestMove = "9999";
+            String bestMove = "9999"; //prevents NullPointerException, value will be overwritten
             for(int i = 0; i<moveList.length(); i+=4){
-
                 String move = moveList.substring(i,i+4);
                 Board newBoard = b.createBoardFromMove(move);
                 newBoard.setCreatedByMove(move);
-
                 int currentEval = Integer.parseInt(alphaBeta(newBoard, depth-1, alpha, beta, false).substring(4));
-                //System.out.println("alpha was:" + alpha);
-                //System.out.println("beta was:" + beta);
                 if(currentEval > alpha){
-                    bestMove = move; //equiv. zu b.getCreatedByMove();
+                    bestMove = move;
                     alpha = currentEval;
                 }
-                //System.out.println("alpha is:" + alpha);
-                //alpha = Math.max(alpha,currentEval); wird redundant, siehe 2 Zeilen vorher
-
                 if (beta<=alpha){
-                    //System.out.println("Beta cutoff!");
                     break; //beta-cutoff
                 }
             }
@@ -855,123 +752,73 @@ public class MoveGenerator {
         } else {
             String bestMove= "9999";
             for(int i = 0; i<moveList.length(); i+=4){
-
                 String move = moveList.substring(i,i+4);
                 Board newBoard = b.createBoardFromMove(move);
                 newBoard.setCreatedByMove(move);
-
                 int currentEval = Integer.parseInt(alphaBeta(newBoard, depth-1, alpha, beta, true).substring(4));
-                //System.out.println("beta was:" + beta);
-                //System.out.println("alpha was:" + alpha);
                 if (currentEval < beta){
                     bestMove = move;
                     beta = currentEval;
                 }
-                //System.out.println("beta is:" + beta);
-                //beta = Math.min(beta, currentEval);
-
                 if (beta <= alpha){
-                    //System.out.println("Alpha cutoff!");
-                    break; //alpha-cutoff
+                    break;
                 }
-
             }
             return bestMove + beta;
         }
     }
 
-
-    //das gleiche wie alphaBeta nur ohne cutoffs
     public static String minMax (Board b, int depth, boolean isMaxPlayer){
 
         if (depth == 0){
             assessedLeaves++;
-            //TODO: "gameOver" wird momentan am Anfang von makeMove gesetzt, wenn eigener Player Schachmatt ist
-            //wenn am Ende von Make move noch "gameOver" gesetzt würde, wenn anderer Player Schachmatt ist (oder gleich am Ende von validMoves, wenn das leer ist
-            //dann könnte man hier die moveList auch erst nach dem check dass nicht gameOver ist generieren und so evtl. Zeit sparen
-            //momentan könnte moveList jedoch noch "" sein ohne dass gameOver schon gesetzt wurde
-            //TODO: muss dan bei der Bewertungsfunktion überprüft werden, ob gerade verloren ist/König im Schachmatt steht?
-
             String score = String.valueOf(b.assessBoardFromOwnPerspective());
-
-            //System.out.println(b.getCreatedByMove() + score);
-            return b.getCreatedByMove() + score; //TODO: wann wird created by move gesetzt?
+            return b.getCreatedByMove() + score;
         }
-
         String moveList = validMoves(b);
-        //System.out.println("Valid Move List: " + moveList);
-
         if(b.isGameOver()||moveList.equals("")){
             assessedLeaves++;
-            //TODO: "gameOver" wird momentan am Anfang von makeMove gesetzt, wenn eigener Player Schachmatt ist
-            //wenn am Ende von Make move noch "gameOver" gesetzt würde, wenn anderer Player Schachmatt ist (oder gleich am Ende von validMoves, wenn das leer ist
-            //dann könnte man hier die moveList auch erst nach dem check dass nicht gameOver ist generieren und so evtl. Zeit sparen
-            //momentan könnte moveList jedoch noch "" sein ohne dass gameOver schon gesetzt wurde
-            //TODO: muss dan bei der Bewertungsfunktion überprüft werden, ob gerade verloren ist/König im Schachmatt steht?
-
             String score = String.valueOf(b.assessBoardFromOwnPerspective());
-
-            //System.out.println(b.getCreatedByMove() + score);
-            return b.getCreatedByMove() + score; //TODO: wann wird created by move gesetzt?
+            return b.getCreatedByMove() + score;
         }
-
-
-
         if(isMaxPlayer){
-            //System.out.println("This is max player");
             String bestMove = "";
             int max = -Integer.MAX_VALUE;
             for(int i = 0; i<moveList.length(); i+=4){
-
                 String move = moveList.substring(i,i+4);
-
-                //System.out.println("Iteration: " + i + " with move: " + move);
                 Board newBoard = b.createBoardFromMove(move);
                 newBoard.setCreatedByMove(move);
-
                 String zwischenergebnis = minMax(newBoard, depth-1, false);
-                //System.out.println("zwischenergebnis: " + zwischenergebnis);
                 int currentEval = Integer.parseInt(zwischenergebnis.substring(4));
-                //System.out.println("currentEval: "+ currentEval + "in iteration (max): " + i + "of move: " + move);
                 if(currentEval > max){
-                    bestMove = move; //equiv. zu b.getCreatedByMove();
+                    bestMove = move;
                     max = currentEval;
-                    //System.out.println("was greater!");
                 }
-
-
-
             }
-            //System.out.println("best move(max): " + bestMove + "with score: " + max);
             return bestMove + max;
         } else {
-            //System.out.println("This is min player");
             String bestMove= "";
             int min = Integer.MAX_VALUE;
             for(int i = 0; i<moveList.length(); i+=4){
-
                 String move = moveList.substring(i,i+4);
-                //System.out.println("Iteration: " + i + " with move: " + move);
-
-
                 Board newBoard = b.createBoardFromMove(move);
                 newBoard.setCreatedByMove(move);
-
                 int currentEval = Integer.parseInt(minMax(newBoard, depth-1, true).substring(4));
-                //System.out.println("currentEval: "+ currentEval + "in iteration (min): " + i + "of move: " + move);
                 if (currentEval < min){
                     bestMove = move;
                     min = currentEval;
-                    //System.out.println("was lower!");
                 }
-
             }
-            //System.out.println("best move(min): " + bestMove + "with score: " + min);
             return bestMove + min;
         }
     }
 
-    //IDS
+    /**
+     * performs iterative deepening search (without move ordering) until timeLimit exceeds
+     * @param b
+     * @param timeLimit
+     * @return
+     */
     public static String iterativeDeepeningSearch(Board b, long timeLimit){
         System.out.println("Starting iterative deepening search with time limit: "+timeLimit);
         long startTime = System.currentTimeMillis();
@@ -979,7 +826,6 @@ public class MoveGenerator {
         int depth = 1;
         String bestMoveSoFar ="";
         outOfTime = false;
-
         while(true){
             long currentTime = System.currentTimeMillis();
             if (currentTime >= endTime){
@@ -987,141 +833,79 @@ public class MoveGenerator {
             }
             long newTimeLimit = endTime-currentTime;
             String result = alphaBetaTimeLimit(b, depth, Integer.MIN_VALUE, Integer.MAX_VALUE, true, currentTime, newTimeLimit); //TODO
-
-            if(!outOfTime){ //ohne den check könnte bestMoveSoFar mit move aus unkomplettierter Suche überschrieben werden, der könnte (momentan noch) schlechter sein
+            if(!outOfTime){ //only condider completed iterations
                 bestMoveSoFar = result;
                 System.out.println("depth was: " + depth);
             }
             depth++;
-            //System.out.println("Increased depth, current:" + depth);
         }
         return bestMoveSoFar;
     }
 
-    //Alpha-Beta with Time-Limit for IDS
-    //TODO: aktualisieren, falls alphaBeta Methode verändert wird
     public static String alphaBetaTimeLimit (Board b, int depth, int alpha, int beta, boolean isMaxPlayer, long startTime, long timeLimit){
-        //System.out.println("Is KI playing white: "+ b.isKIPlayingWhite());
-        //System.out.println("Current player is white: "+ b.isCurrentPlayerIsWhite());
-        //System.out.println("Is max player: "+isMaxPlayer);
-
         long currentTime = System.currentTimeMillis();
         long elapsedTime = (currentTime - startTime);
         if(elapsedTime >= timeLimit){
             outOfTime = true;
         }
-
-
-/*       if (depth == 0) {
-           //System.out.println("Calling qs with move" +b.getCreatedByMove());
-            return quiescenceSearchv1(b, alpha, beta, !isMaxPlayer);
-        }*/
-
         if(depth == 0||outOfTime){
             assessedLeaves++;
             String score = String.valueOf(b.assessBoardFromOwnPerspective());
             if(outOfTime){
                 System.out.println("Out of Time!");
             }
-            //System.out.println("b currently assessed, was created by move" + b.getCreatedByMove());
-            //System.out.println(b.getCreatedByMove() + score);
-            if(b.getCreatedByMove().equals("")) return "9999" + score; //um mögliche Errors zu vermeiden (kann nur == "" wenn mit Suchtiefe 0 gestartet -> kommt im richtigen Spiel nciht vor)
+            if(b.getCreatedByMove().equals("")) return "9999" + score;
             return b.getCreatedByMove() + score;
         }
-
-
-
-
-        String moveList = validMoves(b);
-
+         String moveList = validMoves(b);
         if(outOfTime || b.isGameOver()||moveList.equals("")){
             assessedLeaves++;
             String score = String.valueOf(b.assessBoardFromOwnPerspective());
             if(outOfTime){
                 System.out.println("Out of Time! (after Move Generation)");
             }
-            //System.out.println("b currently assessed, was created by move" + b.getCreatedByMove());
-            //System.out.println(b.getCreatedByMove() + score);
-            if(b.getCreatedByMove().equals("")) return "9999" + score; //um mögliche Errors zu vermeiden (kann nur == "" wenn mit Suchtiefe 0 gestartet -> kommt im richtigen Spiel nciht vor)
+            if(b.getCreatedByMove().equals("")) return "9999" + score;
             return b.getCreatedByMove() + score;
         }
-
-        //https://stackoverflow.com/questions/15447580/java-minimax-alpha-beta-pruning-recursion-return
-
         if(isMaxPlayer){
             String bestMove = "9999";
             for(int i = 0; i<moveList.length(); i+=4){
-                if(outOfTime) break; //TODO: richtig? -> out of time wird vor der for Schleife berechnet und evaluiert und kann hier meiner Meinung nach nie true sein... Die nächste Überprüfung dürfte beim nächsten Selbsaufruf erfolgen...
+                if(outOfTime) break;
                 String move = moveList.substring(i,i+4);
                 Board newBoard = b.createBoardFromMove(move);
                 newBoard.setCreatedByMove(move);
-                //System.out.println("max" + "board was created by move:" + move);
-
-                //System.out.println("max: wird mit alpha" + alpha + "und beta:" + beta +"aufgerufen");
                 String zwischenergebnis = alphaBetaTimeLimit(newBoard, depth-1, alpha, beta, false, startTime, timeLimit);
-                //System.out.println("move:" + move + "ze(max): "+zwischenergebnis);
                 int currentEval = Integer.parseInt(zwischenergebnis.substring(4));
-                //System.out.println("currentEval is:" + currentEval);
-                //System.out.println("alpha was:" + alpha);
-                //System.out.println("beta was:" + beta);
                 if(currentEval > alpha){
-                    bestMove = move; //equiv. zu b.getCreatedByMove();
-
+                    bestMove = move;
                     alpha = currentEval;
                 }
-                //System.out.println("best Move is currently" + bestMove);
-                /*if(bestMove.equals("")){
-                    //System.out.println("nothing!");
-                    bestMove = "9999";
-                }*/
-                //System.out.println("alpha is:" + alpha);
-                //alpha = Math.max(alpha,currentEval); wird redundant, siehe 2 Zeilen vorher
-
                 if (beta<=alpha){
-                    //System.out.println("Beta cutoff!");
                     cutoffs++;
                     break; //beta-cutoff
                 }
             }
-            //System.out.println("max out of for:" + bestMove + alpha);
             return bestMove + alpha;
         } else {
             String bestMove= "9999";
             for(int i = 0; i<moveList.length(); i+=4){
-                if(outOfTime) break; //TODO: richtig?
+                if(outOfTime) break;
                 String move = moveList.substring(i,i+4);
                 Board newBoard = b.createBoardFromMove(move);
                 newBoard.setCreatedByMove(move);
-                //System.out.println("min" + "board was created by move:" + move);
-
-                //System.out.println("min: wird mit alpha" + alpha + "und beta:" + beta +"aufgerufen");
                 String zwischenergebnis = alphaBetaTimeLimit(newBoard, depth-1, alpha, beta, true, startTime, timeLimit);
-                //System.out.println("move:" + move + "ze: "+ zwischenergebnis);
                 int currentEval = Integer.parseInt(zwischenergebnis.substring(4));
-                //System.out.println("currentEval is:" + currentEval);
-                //System.out.println("beta was:" + beta);
-                //System.out.println("alpha was:" + alpha);
                 if (currentEval < beta){
                     bestMove = move;
 
                     beta = currentEval;
                 }
-                //System.out.println("best move is currently:" + bestMove);
-                /*if(bestMove.equals("")){
-                    //System.out.println("nothing!");
-                    bestMove = "9999";
-                }*/
-                //System.out.println("beta is:" + beta );
-                //beta = Math.min(beta, currentEval);
-
                 if (beta <= alpha){
-                    //System.out.println("Alpha cutoff!");
                     cutoffs++;
                     break; //alpha-cutoff
                 }
 
             }
-            //System.out.println("min out of for:" + bestMove + beta);
             return bestMove + beta;
         }
     }
@@ -1230,60 +1014,22 @@ public class MoveGenerator {
         }
     }
 
-    //IDS ohne Zeitlimit (für Benchmarkvergleich mit IDS+PVS)
+    /**
+     * performs iterative deepening search (without move ordering) until a given maximal depth
+     * method is used for benchmark comparison with principal variation search
+     * @param b
+     * @param depth
+     * @param isMaxPlayer
+     * @return
+     */
     public static String iterativeDeepeningSearchNoTimeLimit(Board b, int depth, boolean isMaxPlayer){
-        //System.out.println("Starting iterative deepening search with depth: "+depth);
-
         String result ="";
-
         for(int i = 1; i <= depth; i++){
-            //System.out.println("current depth: " + i);
-
             result = alphaBeta(b, i, Integer.MIN_VALUE, Integer.MAX_VALUE, isMaxPlayer);
-
         }
         return result;
 
     }
-
-/*    public static String quiescenceSearchv2(Board b, int alpha, int beta, boolean isMaxPlayer){
-        String moveList = validMoves(b);
-
-            String bestMove = "";
-
-            //recursion anchor
-            if (b.getAssessmentValue() >= beta || moveList.equals("")){
-                System.out.println("Finished quiescence search");
-                return b.getCreatedByMove() + beta;
-            }
-
-            //System.out.println("Using quiescence search (evalValue:"+b.getAssessmentValue()+"(>=) beta: "+beta+")");
-            alpha = Math.max(alpha, b.getAssessmentValue());
-
-            for(int i = 0; i<moveList.length(); i+=4){
-
-                String move = moveList.substring(i,i+4);
-                Board newBoard = b.createBoardFromMove(move);
-                newBoard.setCreatedByMove(move);
-
-                String intermediateResult = quiescenceSearchv2(newBoard, (-1*beta), (-1*alpha), false);
-                int currentEval = -1*Integer.parseInt(intermediateResult.substring(4));
-
-                if(currentEval >= beta){
-                    bestMove = move;
-                    alpha = currentEval;
-                }
-
-                if(bestMove.equals("")){
-                    bestMove = "9999";
-                }
-
-                alpha = Math.max(alpha,currentEval);
-            }
-
-            return bestMove + alpha;
-
-    }*/
 
     public static String quiescenceSearchv1(Board b, int alpha, int beta, boolean isMaxPlayer){
         String moveList = validMoves(b);
