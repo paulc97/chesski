@@ -1,4 +1,4 @@
-package Model.Pieces;
+package Model;
 
 import Model.Mask;
 

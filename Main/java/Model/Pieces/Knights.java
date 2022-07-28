@@ -3,7 +3,6 @@ package Model.Pieces;
 import Model.Board;
 
 import static Model.Mask.*;
-import static Model.Mask.RANK_8;
 
 public class Knights implements Piece {
 
@@ -26,11 +25,11 @@ public class Knights implements Piece {
                 }
                 if (iLocation%8<4)
                 {
-                    possibility &=~FILE_GH&(~(b.getWhitePieces()|b.getBlackKing()));
+                    possibility &=~COLUMN_GH &(~(b.getWhitePieces()|b.getBlackKing()));
                     //TODO: NOT_WHITE_PIECES == ~(b.getWhitePieces()|b.getBlackKing()) ? Gegner-König immer dazunehmen nötig?
                 }
                 else {
-                    possibility &=~FILE_AB&(~(b.getWhitePieces()|b.getBlackKing()));
+                    possibility &=~COLUMN_AB &(~(b.getWhitePieces()|b.getBlackKing()));
                 }
                 long j=possibility&~(possibility-1);
                 while (j != 0)
@@ -61,11 +60,11 @@ public class Knights implements Piece {
                 }
                 if (iLocation%8<4)
                 {
-                    possibility &=~FILE_GH&(~(b.getBlackPieces()|b.getWhiteKing()));
+                    possibility &=~COLUMN_GH &(~(b.getBlackPieces()|b.getWhiteKing()));
                     //TODO: s.o. ? Gegner-König immer dazunehmen nötig?
                 }
                 else {
-                    possibility &=~FILE_AB&(~(b.getBlackPieces()|b.getWhiteKing()));
+                    possibility &=~COLUMN_AB &(~(b.getBlackPieces()|b.getWhiteKing()));
                 }
                 long j=possibility&~(possibility-1);
                 while (j != 0)

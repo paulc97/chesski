@@ -4,7 +4,7 @@ import Model.Board;
 import Model.MoveGenerator;
 
 import static Model.Mask.*;
-import static Model.Mask.FILE_AB;
+import static Model.Mask.COLUMN_AB;
 
 public class King implements Piece {
 
@@ -24,10 +24,10 @@ public class King implements Piece {
             }
             if (iLocation%8<4)
             {
-                possibility &=~FILE_GH&(~(b.getWhitePieces()|b.getBlackKing())); //TODO: (Verständnisfrage) Hier würde FILE_H auch reichen, oder?
+                possibility &=~COLUMN_GH &(~(b.getWhitePieces()|b.getBlackKing())); //TODO: (Verständnisfrage) Hier würde FILE_H auch reichen, oder?
             }
             else {
-                possibility &=~FILE_AB&(~(b.getWhitePieces()|b.getBlackKing()));
+                possibility &=~COLUMN_AB &(~(b.getWhitePieces()|b.getBlackKing()));
             }
             long j=possibility&~(possibility-1);
             while (j != 0)
@@ -70,9 +70,9 @@ public class King implements Piece {
                 possibility = KING_B7 >> (9 - iLocation);
             }
             if (iLocation % 8 < 4) {
-                possibility &= ~FILE_GH & (~(b.getBlackPieces() | b.getWhiteKing()));
+                possibility &= ~COLUMN_GH & (~(b.getBlackPieces() | b.getWhiteKing()));
             } else {
-                possibility &= ~FILE_AB & (~(b.getBlackPieces() | b.getWhiteKing()));
+                possibility &= ~COLUMN_AB & (~(b.getBlackPieces() | b.getWhiteKing()));
             }
             long j = possibility & ~(possibility - 1);
             while (j != 0) {
