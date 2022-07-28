@@ -170,14 +170,8 @@ public class MoveGenerator {
                 list += slidingPieces.bishopMoves(board) + "-";
                 list += slidingPieces.queenMoves(board);
 
-            //TODO: Remove king in check/check mate situations from possible move list
-            //format: rank-old file-old rank-new file-new
-            //rank wird nach oben größer, file nach links
-            //6050 wäre move von (Bitboard Layout 1) 48 auf 40
-
             return list;
         }
-        //TODO: possible moves der gegenseite?
 
 
     //gibt Bitboard mit allen Positionen auf denen White Landen könnte (inkl. eigener weißer Figuren)
@@ -390,19 +384,6 @@ public class MoveGenerator {
         return rookBoard;
     }
 
-    //when pawn moves forward 2 spaces, then on that file an en passant can happen
-    /*public static long makeMoveEP(long board,String move) {
-        if (Character.isDigit(move.charAt(3))) {
-            int start=(Character.getNumericValue(move.charAt(0))*8)+(Character.getNumericValue(move.charAt(1)));
-            if ((Math.abs(move.charAt(0)-move.charAt(2))==2)&&(((board>>>start)&1)==1)) {//pawn double push
-                //board, to be sure that type is a pawn
-
-
-                return FileMasks8[move.charAt(1)-'0']; //return file on which that pawn push occured on
-            }
-        }
-        return 0; //-> no en passant allowed
-    }*/
 
     public static String executeEnPassant(long board, String move) {
         if (Character.isDigit(move.charAt(3))) {
@@ -433,7 +414,7 @@ public class MoveGenerator {
         char f =(char)(97+(file-48));
         int r = (Math.abs(rank-48-8));
         return ""+f+r;
-    }  //TODO: fix for Queenpromotion/Ep Notation
+    }
 
     public static String convert4digitMoveToField (String move){
         return convertMoveDigitsToField(move.charAt(0),move.charAt(1)) + "->" + convertMoveDigitsToField(move.charAt(2),move.charAt(3));
@@ -469,7 +450,6 @@ public class MoveGenerator {
         }
 
         if (moveBitboardPosition.charAt(3) == 'E') {
-            //TODO: Add case handling for enpassant
             return move;
         }
 
@@ -482,9 +462,6 @@ public class MoveGenerator {
     }
 
 
-
-    //"valid" i.e. eigener King ist danach nicht (mehr) im Schach
-    //public static void perft(long WP,long WN,long WB,long WR,long WQ,long WK,long BP,long BN,long BB,long BR,long BQ,long BK,long EP,boolean CWK,boolean CWQ,boolean CBK,boolean CBQ,boolean WhiteToMove,int depth)
     public static String validMoves(Board b)
     {
         String validMoves = "";
@@ -511,7 +488,6 @@ public class MoveGenerator {
             tempB.setBlackRooks(executeMoveforOneBitboard(b.getBlackRooks(), moves.substring(i,i+4), 'r'));
             tempB.setBlackQueen(executeMoveforOneBitboard(b.getBlackQueen(), moves.substring(i,i+4), 'q'));
             tempB.setBlackKing(executeMoveforOneBitboard(b.getBlackKing(), moves.substring(i,i+4), 'k'));
-            //tempB.setEnPassantBitboardFile(makeMoveEP(b.getWhitePawns()|b.getBlackPawns(),moves.substring(i,i+4)));
             tempB.setEnPassants(executeEnPassant(b.getWhitePawns()|b.getBlackPawns(),moves.substring(i,i+4)));
 
             tempB.setWhiteRooks(executeCastling(tempB.getWhiteRooks(), b.getWhiteKing()|b.getBlackKing(), moves.substring(i,i+4), 'R'));
@@ -662,21 +638,16 @@ public class MoveGenerator {
         }
 
 
-
-
         if(b.isCurrentPlayerIsWhite()){
             b.setHalfMoveCount(b.getHalfMoveCount()+1);
 
         }else{
             b.setHalfMoveCount(b.getHalfMoveCount()+1);
             b.setNextMoveCount(b.getNextMoveCount()+1); //"full" move after black
-
         }
 
 
         //Check if King is in CENTRE
-
-
         if((CENTRE&b.getWhiteKing())!=0){
             //Weißer König wird angegriffen
             b.setGameOver(true);
@@ -712,8 +683,7 @@ public class MoveGenerator {
             return alphaBeta(b, depth, Integer.MIN_VALUE, Integer.MAX_VALUE, true).substring(0, 4);
         }
 
-        //TODO: Das hier nicht löschen!! Ist Variante ohne PVS nur mit IDS!
-
+        //Das hier nicht löschen!! Ist Variante ohne PVS nur mit IDS!
 
 /*            System.out.println("Using iterative deepening search for move generation");
             //Iterative Deepening Search (ohne Zugsortierung)
@@ -730,8 +700,6 @@ public class MoveGenerator {
         /*long timeLimit = standardDeviationTimeLimit(b.getNextMoveCount(), 100L);
         return alphaBetaNullMoveTimeLimit(b, 4, Integer.MIN_VALUE, Integer.MAX_VALUE, true, System.currentTimeMillis(), timeLimit).substring(0, 4);*/
 
-
-        //int suchtiefe = depthCalculator(b);
         //System.out.println("Using alpha beta search for move generation");
         //return alphaBeta(b, suchtiefe, Integer.MIN_VALUE, Integer.MAX_VALUE, true).substring(0, 4);
 
@@ -740,15 +708,6 @@ public class MoveGenerator {
     }
 
 
-    public int depthCalculator(Board b){
-        if (b.getNextMoveCount()/2 < 10){
-            return 1;
-        }
-        if (b.getNextMoveCount()/2 < 40){
-            return 3;
-        }
-        return 5;
-    }
 
     public static long standardDeviationTimeLimit (int NextMoveCount, long minTimeLimit) {
         long timeLimit = minTimeLimit;
@@ -769,13 +728,6 @@ public class MoveGenerator {
         return timeLimit;
     }
 
-
-
-    //TODO: generell mal überlegen, ob wir auf einem einzigen Board (static) arbeiten wollen und dann mit make/undo moves
-    //oder immer viele einzelne Boards generieren wollen?
-    //ersteres wahrscheinlich aufwandärmer hinsichtlich rechenzeit etc.?
-
-    //TODO: sollte intial nicht mit suchtiefe 0 aufgerufen werden, sonst (ergibt ja auch keinen sinn) fehler wegen getCreatedByMove...
 
     /**
      *
