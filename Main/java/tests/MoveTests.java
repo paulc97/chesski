@@ -26,6 +26,11 @@ public class MoveTests {
     }
 
     @Test
+    void PawnMoveTest() {
+        assertEquals("1", moveGenerator.ownPossibleMoves(board));
+    }
+
+    @Test
     void sthTest(){
 
         board = new Board("7r/Pn6/8/8/8/1P3P2/2K4p/k1n5 w - - 4 265");
