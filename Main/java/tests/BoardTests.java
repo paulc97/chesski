@@ -2,7 +2,7 @@
 
 import Model.Board;
 import Model.MoveGenerator;
-import Model.Pieces.Zobrist;
+import Model.Zobrist;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

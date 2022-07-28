@@ -2,8 +2,6 @@ package Model;
 
 import Model.Pieces.*;
 
-import Model.Board;
-
 
 import java.util.HashMap;
 

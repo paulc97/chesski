@@ -1,8 +1,5 @@
 package Model;
 
-import Model.Pieces.Zobrist;
-
-import javax.sound.midi.SysexMessage;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
