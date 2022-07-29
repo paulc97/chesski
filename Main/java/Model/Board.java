@@ -222,12 +222,12 @@ public class Board implements Comparable <Board> {
         if((fieldsAttackedByBlack(this) & this.getWhiteKing()) != 0)
         {
             if(currentPlayerIsWhite){
-            this.assessmentValue = -1000000;
+                this.assessmentValue = -1000000;
                 if(ownValidMoves.equals("")){
-                    this.assessmentValue = -10000000; //Spieler ist Schachmatt
+                    this.assessmentValue = -10000000; //player is checkmate
                 }
             } else {
-            this.assessmentValue = 1000000;
+                this.assessmentValue = 1000000;
             }
         }
         if((fieldsAttackedByWhite(this) & this.getBlackKing())!=0){
@@ -236,15 +236,15 @@ public class Board implements Comparable <Board> {
             } else {
                 this.assessmentValue = -1000000;
                 if(ownValidMoves.equals("")){
-                    this.assessmentValue = -10000000; //Spieler ist Schachmatt
+                    this.assessmentValue = -10000000; //player is checkmate
                 }
             }
         }
         if ((this.getOwnKing() & CENTRE) != 0){
-            return this.assessmentValue = 10000000; //Spieler hat gewonnen
+            return this.assessmentValue = 10000000; //player has won
         }
         if ((this.getOppositeKing() & CENTRE) != 0){
-            return this.assessmentValue = -10000000; //Spieler hat verloren (schlechterer Wert, als Spieler befindet sich im Schach)
+            return this.assessmentValue = -10000000; //player has lost
         }
 
         //Count material
@@ -258,7 +258,7 @@ public class Board implements Comparable <Board> {
             this.assessmentValue += kingInExtendedCenter;
         }
 
-        //Mobilität
+        //Mobility
         this.assessmentValue += (int) MoveGenerator.getMoveCount(ownValidMoves)*10;
         this.assessmentValue -= (int) MoveGenerator.getMoveCount(opponentsValidMoves)*10;
 
@@ -312,7 +312,7 @@ public class Board implements Comparable <Board> {
             this.assessmentValue += (300*hangingPiecesO+50*hangingPawnsO+700*hangingQueenO);
         }
 
-        //Doppelbauern
+        //Doubled pawns
         for (int i = 0; i<8; i++){
             if (Long.bitCount(FileMasks8[i]& this.getOwnPawns())>1){
                 this.assessmentValue -= 50;
@@ -412,7 +412,7 @@ public class Board implements Comparable <Board> {
             this.assessmentValue += kingInExtendedCenter;
         }
 
-        //Mobilität
+        //Mobility
         this.assessmentValue += (int) MoveGenerator.getMoveCount(ownValidMoves)*10;
         this.assessmentValue -= (int) MoveGenerator.getMoveCount(opponentsValidMoves)*10;
 
@@ -465,7 +465,7 @@ public class Board implements Comparable <Board> {
             this.assessmentValue += (300*hangingPiecesO+50*hangingPawnsO+700*hangingQueenO);
         }
 
-        //Doppelbauern
+        //Doubled pawns
         for (int i = 0; i<8; i++){
             if (Long.bitCount(FileMasks8[i]& this.getOwnPawns())>1){
                 this.assessmentValue -= 50;
@@ -479,7 +479,7 @@ public class Board implements Comparable <Board> {
             }
         }
 
-        //TODO: Choose either PST or PST Tapered Eval!!
+        //Choose either PST or PST Tapered Eval!
         //PST
         /*int pstScoreWhite = 0;
         pstScoreWhite += addPSTValues(this.getWhitePawns(), PieceSquareTables.MG_WHITE_PAWNS);
