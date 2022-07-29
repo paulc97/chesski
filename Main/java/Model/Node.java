@@ -4,21 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Node {
-    //to-do: is player needed?
     public int visits = 0;
-    public double winScore = 0.0; //to-do: change name
-
+    public double score = 0.0;
     public Node parent;
     public List<Node> children = new ArrayList<Node>();
-
     public Board board;
 
-    public Node(Node parent, Board board) { //to-do: player?
+    public Node(Node parent, Board board) {
         this.parent = parent;
         this.board = board;
     }
-    //to-do: extra "move" (String) -oder ausreichend, da in board gespeichert??
-
 
     public void expandAllChildren() {
         List<Node> children = new ArrayList<>();
@@ -28,10 +23,8 @@ public class Node {
         for (String move : moves) {
             Node newNode = new Node(this, board.createBoardFromMove(move));
             newNode.board.setCreatedByMove(move);
-            //newNode.board.drawBoard();
             children.add(newNode);
         }
         this.children = children;
     }
-
 }

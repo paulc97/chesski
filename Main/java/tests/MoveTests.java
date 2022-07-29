@@ -9,51 +9,38 @@ import static Model.MoveGenerator.getQuiescenceSearchIterations;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class MoveTests {
-
     Board board;
     MoveGenerator moveGenerator;
-
     @BeforeEach
     void setUp() {
         //board = new Board("rnbqkbnr/1p1pp1p1/p1p2p1p/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1");
         board = new Board("7r/Pn6/8/8/8/8/2K4p/k1n5 w KQkq - 4 265");
         moveGenerator = new MoveGenerator();
     }
-
     @Test
     void substringTest(){
         System.out.println("12345000".substring(4));
     }
-
-    @Test
-    void PawnMoveTest() {
-        assertEquals("1", moveGenerator.ownPossibleMoves(board));
-    }
-
     @Test
     void sthTest(){
-
         board = new Board("7r/Pn6/8/8/8/1P3P2/2K4p/k1n5 w - - 4 265");
         System.out.println(Long.numberOfTrailingZeros(65280));
         //1111111100000000
         //result: 8
         System.out.println(board.addPSTValues(board.getWhitePawns(), PieceSquareTables.MG_WHITE_PAWNS));
     }
-
     @Test
     void assessmentTest1(){
         board = new Board("3N4/6K1/1p6/1r1p1k2/1rP1P1N1/2Q1Rn2/2p5/1PPP4 w - - 0 1");
         MoveGenerator mg = new MoveGenerator();
         System.out.println(board.assessBoard());
     }
-
     @Test
     void minmaxTest1(){
         board = new Board("4k2n/8/N4q2/1P6/3PPPP1/6P1/1P6/2R1K3 w - - 0 1");
         String result = moveGenerator.minMax(board, 1, true);
         System.out.println("result is: " + result);
     }
-
     @Test
     void minmaxTest2(){
         board = new Board("2Q5/6K1/1p2N3/1r1p1k2/1r2R1N1/5n2/2p5/8 w - - 0 1");
@@ -61,23 +48,19 @@ public class MoveTests {
         System.out.println("result is: " + result);
         String move = result.substring(0,4);
         System.out.println(moveGenerator.convertMoveDigitsToField(move.charAt(0),move.charAt(1)) + "->" + moveGenerator.convertMoveDigitsToField(move.charAt(2),move.charAt(3)));
-
     }
-
-/*    @Test
-    void pvsTest1(){
-        board = new Board("4k2n/8/N4q2/1P6/3PPPP1/6P1/1P6/2R1K3 w - - 0 1");
-        String result = PrincipalVariationSearch.iterativeDeepeningPVSNoTimeLimit(board, 2, false);
-        System.out.println("result is: " + result);
-    }*/
-
+    /*    @Test
+        void pvsTest1(){
+            board = new Board("4k2n/8/N4q2/1P6/3PPPP1/6P1/1P6/2R1K3 w - - 0 1");
+            String result = PrincipalVariationSearch.iterativeDeepeningPVSNoTimeLimit(board, 2, false);
+            System.out.println("result is: " + result);
+        }*/
     @Test
     void alphaBetaTest1(){
         board = new Board("4k2n/8/N4q2/1P6/3PPPP1/6P1/1P6/2R1K3 w - - 0 1");
         String result = moveGenerator.alphaBeta(board, 2, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
         System.out.println("result is: " + result);
     }
-
     @Test
     void alphaBetaTest2(){
         board = new Board("K7/8/8/8/8/8/8/2k5 w - - 0 1");
@@ -86,7 +69,6 @@ public class MoveTests {
         String move = result.substring(0,4);
         System.out.println(moveGenerator.convertMoveDigitsToField(move.charAt(0),move.charAt(1)) + "->" + moveGenerator.convertMoveDigitsToField(move.charAt(2),move.charAt(3)));
     }
-
     @Test
     void alphaBetaTest3(){
         board = new Board("2Q5/6K1/1p2N3/1r1p1k2/1r2R1N1/5n2/2p5/8 w - - 0 1");
@@ -95,7 +77,6 @@ public class MoveTests {
         String move = result.substring(0,4);
         System.out.println(moveGenerator.convertMoveDigitsToField(move.charAt(0),move.charAt(1)) + "->" + moveGenerator.convertMoveDigitsToField(move.charAt(2),move.charAt(3)));
     }
-
     @Test
     void alphaBetaTestForum(){
         board = new Board("krr3rr/pp6/8/8/8/3K4/8/8 b - - 0 1");
@@ -104,8 +85,6 @@ public class MoveTests {
         String move = result.substring(0,4);
         System.out.println(moveGenerator.convertMoveDigitsToField(move.charAt(0),move.charAt(1)) + "->" + moveGenerator.convertMoveDigitsToField(move.charAt(2),move.charAt(3)));
     }
-
-
     @Test
     void iterativeDeepeningSearch(){
         board = new Board("4k2n/8/N4q2/1P6/3PPPP1/6P1/1P6/2R1K3 w - - 0 1");
@@ -113,7 +92,6 @@ public class MoveTests {
         System.out.println("result is: " + result);
     }
     //TODO: bei timeLimit 6000 Error bei "move:2012ze(max): 3" -> IndexOutOfBounds (getCreatedByMove erfolgt nicht) in suchtiefe 4
-
     @Test
     void iterativeDeepeningSearch2(){
         board = new Board("2Q5/6K1/1p2N3/1r1p1k2/1r2R1N1/5n2/2p5/8 w - - 0 1");
@@ -122,8 +100,6 @@ public class MoveTests {
         String move = result.substring(0,4);
         System.out.println(moveGenerator.convertMoveDigitsToField(move.charAt(0),move.charAt(1)) + "->" + moveGenerator.convertMoveDigitsToField(move.charAt(2),move.charAt(3)));
     }
-
-
     @Test
     void validMovesTest2(){
         Board b1 = new Board("7r/Pn6/8/8/8/8/2K4p/k1n5 w KQkq - 4 265");
@@ -132,7 +108,6 @@ public class MoveTests {
         moveGenerator.makeMove(b1,moveGenerator.moveSelector(b1, valMoves, 1));
         System.out.println(b1.bitboardsToFenParser());
     }
-
     @Test
     void enPassantTest(){
         Board b1 = new Board("rnbqkbn1/pppp4/8/3Ppp2/6pP/N2B1p1N/P1PP3R/2RQK3 w q e6 0 12");
@@ -142,7 +117,6 @@ public class MoveTests {
         moveGenerator.makeMove(b1,"34WE");
         System.out.println(b1.bitboardsToFenParser());
     }
-
     @Test
     void castlingTest(){
         Board b1 = new Board("r3k1R1/8/4P2P/8/2P5/N1RP3N/P3B3/3QK3 b q - 0 12");
@@ -161,105 +135,76 @@ public class MoveTests {
         moveGenerator.makeMove(b1,"0402");
         System.out.println(b1.bitboardsToFenParser());
     }
-
-
-
-
-
     @Test
     void BishopMoveTest() {
         assertEquals("0", moveGenerator.getMoveCount(moveGenerator.checkBishopMoves(board)));
     }
-
     @Test
     void RookMoveTest() {
         assertEquals("0", moveGenerator.getMoveCount(moveGenerator.checkRookMoves(board)));
     }
-
     @Test
     void QueenMoveTest() {
         assertEquals("18", moveGenerator.getMoveCount(moveGenerator.checkQueenMoves(board)));
     }
-
     @Test
     void movesTest(){
         assertEquals("18", moveGenerator.ownPossibleMoves(board));
     }
-
-
     @Test
     void validMovesTest(){
         assertEquals(0, moveGenerator.getMoveCount(moveGenerator.validMoves(new Board("2k5/R1P4R/8/8/8/3K4/8/8 b - - 0 1"))));
     }
-
     @Test
     void KingMoves(){
         //assertEquals(26, moveGenerator.getMoveCount(moveGenerator.validMoves(new Board("4k3/8/8/8/8/8/8/R3K2R w - - 0 1")))); //TODO: erkennt Castle nicht
         assertEquals(2, moveGenerator.getMoveCount(moveGenerator.validMoves(new Board("8/8/8/8/8/4k3/8/4K3 w - - 0 1"))));
     }
-
     //@Test
     //void testMovesCount(){
-
-     //   TestBoard[] boards = new TestBoard[1000];
-
-     //   for(TestBoard oneBoard:boards){
-     //       assertEquals(oneBoard.moves,moveGenerator.ownPossibleMoves("",new Board(oneBoard.Board)));
-     //   }
-
+    //   TestBoard[] boards = new TestBoard[1000];
+    //   for(TestBoard oneBoard:boards){
+    //       assertEquals(oneBoard.moves,moveGenerator.ownPossibleMoves("",new Board(oneBoard.Board)));
+    //   }
     //}
-
     @Test
     void benchmark(){
-
         //StartPosition
         long timesStart = 0;
         long startEpoch = 0;
         long endepoch = 0;
-
         for (int i = 0;i<500000;i++){
             startEpoch = System.currentTimeMillis();
             moveGenerator.ownPossibleMoves(new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"));
             endepoch = System.currentTimeMillis();
             timesStart += endepoch - startEpoch;
         }
-
         long timesMid = 0;
-
         for (int i = 0;i<500000;i++){
             startEpoch = System.currentTimeMillis();
             moveGenerator.ownPossibleMoves(new Board("r1bqk2r/ppp1bppp/2np1n2/4p3/2B1P3/3P1N2/PPP2PPP/RNBQK2R w KQkq - 0 1"));
             endepoch = System.currentTimeMillis();
             timesMid += endepoch - startEpoch;
         }
-
         long timesEnd = 0;
-
         for (int i = 0;i<500000;i++){
             startEpoch = System.currentTimeMillis();
             moveGenerator.ownPossibleMoves(new Board("4k3/8/8/3PP3/3pp3/8/8/3K4 w - - 0 1"));
             endepoch = System.currentTimeMillis();
             timesEnd += endepoch - startEpoch ;
         }
-
         System.out.println("Generating Start Position took "+(timesStart*0.000002)+" Milliseconds");
         System.out.println("Generating Mid Position took "+(timesMid*0.000002)+" Milliseconds");
         System.out.println("Generating End Position took "+(timesEnd*0.000002)+" Milliseconds");
-
-
     }
-
     @Test
     void assessBoardbenchmark1(){
-
         //StartPosition
         long timesStart = 0;
         long startEpoch = 0;
         long endepoch = 0;
-
         Board b = new Board("6k1/r4ppp/r7/1b6/8/8/4QPPP/4R1K1 w - - 0 1");
         //MoveGenerator mg = new MoveGenerator();
-
         for (int i = 0;i<1000;i++){
             startEpoch = System.currentTimeMillis();
             b.assessBoardTPT(MoveGenerator.assesedBoards,MoveGenerator.zobrist);
@@ -268,21 +213,15 @@ public class MoveTests {
         }
         System.out.println("Assessment value: " + b.assessBoardTPT(MoveGenerator.assesedBoards,MoveGenerator.zobrist));
         System.out.println("Rating board took "+(timesStart*0.001)+" Milliseconds");
-
-
     }
-
     @Test
     void assessBoardbenchmark2(){
-
         //StartPosition
         long timesStart = 0;
         long startEpoch = 0;
         long endepoch = 0;
-
         Board b = new Board("Q4R2/3kr3/1q3n1p/2p1p1p1/1p1bP1P1/1B1P3P/2PBK3/8 w - - 1 0");
         MoveGenerator mg = new MoveGenerator();
-
         for (int i = 0;i<1000;i++){
             startEpoch = System.currentTimeMillis();
             b.assessBoardTPT(MoveGenerator.assesedBoards,MoveGenerator.zobrist);
@@ -291,21 +230,15 @@ public class MoveTests {
         }
         System.out.println("Assessment value: " + b.assessBoardTPT(MoveGenerator.assesedBoards,MoveGenerator.zobrist));
         System.out.println("Rating board took "+(timesStart*0.001)+" Milliseconds");
-
-
     }
-
     @Test
     void assessBoardbenchmark3(){
-
         //StartPosition
         long timesStart = 0;
         long startEpoch = 0;
         long endepoch = 0;
-
         Board b = new Board("7k/5ppp/8/R7/5n2/3B4/2K5/8 b - - 0 1");
         MoveGenerator mg = new MoveGenerator();
-
         for (int i = 0;i<1000;i++){
             startEpoch = System.currentTimeMillis();
             b.assessBoardTPT(mg.assesedBoards,mg.zobrist);
@@ -314,16 +247,10 @@ public class MoveTests {
         }
         System.out.println("Assessment value: " + b.assessBoardTPT(mg.assesedBoards,mg.zobrist));
         System.out.println("Rating board took "+(timesStart*0.001)+" Milliseconds");
-
-
     }
-
     @Test
     void minimaxBenchmark1(){
-
         Board b = new Board("6k1/r4ppp/r7/1b6/8/8/4QPPP/4R1K1 w - - 0 1");
-
-
         for (int i = 1; i <= 6; i++) {
             //StartPosition
             long time = 0;
@@ -342,17 +269,11 @@ public class MoveTests {
             System.out.println("Assessed leaves: "+ MoveGenerator.getAssessedLeaves());
             System.out.println("Assessed leaves per second: "+(MoveGenerator.getAssessedLeaves()/(time*0.001)));
             System.out.println("Quiescence Search Iterations: "+getQuiescenceSearchIterations());
-
         }
-
     }
-
     @Test
     void minimaxBenchmark2(){
-
         Board b = new Board("Q4R2/3kr3/1q3n1p/2p1p1p1/1p1bP1P1/1B1P3P/2PBK3/8 w - - 1 0");
-
-
         for (int i = 1; i <= 4; i++) {
             //StartPosition
             long time = 0;
@@ -371,17 +292,11 @@ public class MoveTests {
             System.out.println("Assessed leaves: "+ MoveGenerator.getAssessedLeaves());
             System.out.println("Assessed leaves per second: "+(MoveGenerator.getAssessedLeaves()/(time*0.001)));
             System.out.println("Quiescence Search Iterations: "+getQuiescenceSearchIterations());
-
         }
-
     }
-
     @Test
     void minimaxBenchmark3(){
-
         Board b = new Board("7k/5ppp/8/R7/5n2/3B4/2K5/8 b - - 0 1");
-
-
         for (int i = 1; i <= 7; i++) {
             //StartPosition
             long time = 0;
@@ -400,19 +315,11 @@ public class MoveTests {
             System.out.println("Assessed leaves: "+ MoveGenerator.getAssessedLeaves());
             System.out.println("Assessed leaves per second: "+(MoveGenerator.getAssessedLeaves()/(time*0.001)));
             System.out.println("Quiescence Search Iterations: "+getQuiescenceSearchIterations());
-
         }
-
     }
-
     @Test
     void alphaBetaBenchmark1(){
-
-
-
         Board b = new Board("6k1/r4ppp/r7/1b6/8/8/4QPPP/4R1K1 w - - 0 1");
-
-
         for (int i = 1; i <= 5; i++) {
             //StartPosition
             long time = 0;
@@ -434,19 +341,11 @@ public class MoveTests {
             System.out.println("LeavesFoundAsHash: " + MoveGenerator.zobrist.found);
             MoveGenerator.zobrist.found = 0;
             MoveGenerator.assesedBoards = new HashMap<Long,Integer>();
-
         }
-
     }
-
     @Test
     void alphaBetaBenchmark2(){
-
-
-
         Board b = new Board("Q4R2/3kr3/1q3n1p/2p1p1p1/1p1bP1P1/1B1P3P/2PBK3/8 w - - 1 0");
-
-
         for (int i = 1; i <= 5; i++) {
             //StartPosition
             long time = 0;
@@ -468,22 +367,13 @@ public class MoveTests {
             System.out.println("LeavesFoundAsHash: " + MoveGenerator.zobrist.found);
             MoveGenerator.zobrist.found = 0;
             MoveGenerator.assesedBoards = new HashMap<Long,Integer>();
-
         }
-
     }
-
     @Test
     void alphaBetaBenchmark3(){
-
-
-
         Board b = new Board("7k/5ppp/8/R7/5n2/3B4/2K5/8 b - - 0 1");
-
-
         for (int i = 1; i <= 7; i++) {
             //StartPosition
-
             long time = 0;
             long startEpoch = 0;
             long endepoch = 0;
@@ -503,24 +393,16 @@ public class MoveTests {
             System.out.println("LeavesFoundAsHash: " + MoveGenerator.zobrist.found);
             MoveGenerator.zobrist.found = 0;
             MoveGenerator.assesedBoards = new HashMap<Long,Integer>();
-
         }
-
     }
-
     @Test
     void alphaBetaTimeBenchmark1(){
-
-
-
         Board b = new Board("6k1/r4ppp/r7/1b6/8/8/4QPPP/4R1K1 w - - 0 1");
-
         for (int i = 1; i <= 15; i++) {
             //StartPosition
             long time = 0;
             long startEpoch = 0;
             long endepoch = 0;
-
             MoveGenerator.setAssessedLeaves(0);
             MoveGenerator.setQuiescenceSearchIterations(0);
             MoveGenerator.setCutoffs(0);
@@ -537,19 +419,11 @@ public class MoveTests {
             System.out.println("Assessed leaves per second: "+(MoveGenerator.getAssessedLeaves()/(time*0.001)));
             System.out.println("Quiescence Search Iterations: "+getQuiescenceSearchIterations());
             System.out.println("Number of cutoffs "+MoveGenerator.getCutoffs());
-
         }
-
     }
-
-
     @Test
     void alphaBetaTimeBenchmark2(){
-
-
-
         Board b = new Board("Q4R2/3kr3/1q3n1p/2p1p1p1/1p1bP1P1/1B1P3P/2PBK3/8 w - - 1 0");
-
         for (int i = 1; i <= 15; i++) {
             //StartPosition
             long time = 0;
@@ -572,17 +446,10 @@ public class MoveTests {
             System.out.println("Quiescence Search Iterations: "+getQuiescenceSearchIterations());
             System.out.println("Number of cutoffs "+MoveGenerator.getCutoffs());
         }
-
     }
-
-
     @Test
     void alphaBetaTimeBenchmark3(){
-
-
-
         Board b = new Board("7k/5ppp/8/R7/5n2/3B4/2K5/8 b - - 0 1");
-
         for (int i = 1; i <= 15; i++) {
             //StartPosition
             long time = 0;
@@ -604,21 +471,12 @@ public class MoveTests {
             System.out.println("Assessed leaves per second: "+(MoveGenerator.getAssessedLeaves()/(time*0.001)));
             System.out.println("Quiescence Search Iterations: "+getQuiescenceSearchIterations());
             System.out.println("Number of cutoffs "+MoveGenerator.getCutoffs());
-
         }
-
     }
-
-
     ///////HIER BENCHMARKS FÜR PVS//////
     @Test
     void IDSwithPVSBenchmark1(){
-
-
-
         Board b = new Board("6k1/r4ppp/r7/1b6/8/8/4QPPP/4R1K1 w - - 0 1");
-
-
         for (int i = 1; i <= 5; i++) {
             //StartPosition
             long time = 0;
@@ -627,7 +485,7 @@ public class MoveTests {
             PrincipalVariationSearch.assessedLeaves = 0;
             startEpoch = System.currentTimeMillis();
             //String result = PrincipalVariationSearch.PVSearch(b, i, Integer.MIN_VALUE, Integer.MAX_VALUE,false); //Achtung: negativer Wert für bewertung!
-            String result = PrincipalVariationSearch.moiterativeDeepeningPVSNoTimeLimitNoWindow(b, i, true);
+            String result = PrincipalVariationSearch.principalVariationSearchWithoutTimelimit(b, i, true);
             PrincipalVariationSearch.currentPv= null; //Zurücksetzen für next "Großiteration"
             endepoch = System.currentTimeMillis();
             time += endepoch - startEpoch;
@@ -640,20 +498,11 @@ public class MoveTests {
             System.out.println("LeavesFoundAsHash: " + MoveGenerator.zobrist.found);
             MoveGenerator.zobrist.found = 0;
             MoveGenerator.assesedBoards = new HashMap<Long,Integer>();
-
-
         }
-
     }
-
     @Test
     void IDSwithPVSBenchmark2(){
-
-
-
         Board b = new Board("Q4R2/3kr3/1q3n1p/2p1p1p1/1p1bP1P1/1B1P3P/2PBK3/8 w - - 1 0");
-
-
         for (int i = 1; i <= 5; i++) {
             //StartPosition
             long time = 0;
@@ -662,7 +511,7 @@ public class MoveTests {
             PrincipalVariationSearch.assessedLeaves = 0;
             startEpoch = System.currentTimeMillis();
             //String result = PrincipalVariationSearch.PVSearch(b, i, Integer.MIN_VALUE, Integer.MAX_VALUE,false); //Achtung: negativer Wert für bewertung!
-            String result = PrincipalVariationSearch.moiterativeDeepeningPVSNoTimeLimitNoWindow(b, i, true);
+            String result = PrincipalVariationSearch.principalVariationSearchWithoutTimelimit(b, i, true);
             PrincipalVariationSearch.currentPv= null; //Zurücksetzen für next "Großiteration"
             endepoch = System.currentTimeMillis();
             time += endepoch - startEpoch;
@@ -675,19 +524,11 @@ public class MoveTests {
             System.out.println("LeavesFoundAsHash: " + MoveGenerator.zobrist.found);
             MoveGenerator.zobrist.found = 0;
             MoveGenerator.assesedBoards = new HashMap<Long,Integer>();
-
         }
-
     }
-
     @Test
     void IDSwithPVSBenchmark3(){
-
-
-
         Board b = new Board("7k/5ppp/8/R7/5n2/3B4/2K5/8 b - - 0 1");
-
-
         for (int i = 1; i <= 7; i++) {
             //StartPosition
             long time = 0;
@@ -696,7 +537,7 @@ public class MoveTests {
             PrincipalVariationSearch.assessedLeaves = 0;
             startEpoch = System.currentTimeMillis();
             //String result = PrincipalVariationSearch.PVSearch(b, i, Integer.MIN_VALUE, Integer.MAX_VALUE,false); //Achtung: negativer Wert für bewertung!
-            String result = PrincipalVariationSearch.moiterativeDeepeningPVSNoTimeLimitNoWindow(b, i, false);
+            String result = PrincipalVariationSearch.principalVariationSearchWithoutTimelimit(b, i, false);
             PrincipalVariationSearch.currentPv= null; //Zurücksetzen für next "Großiteration"
             endepoch = System.currentTimeMillis();
             time += endepoch - startEpoch;
@@ -709,21 +550,13 @@ public class MoveTests {
             System.out.println("LeavesFoundAsHash: " + MoveGenerator.zobrist.found);
             MoveGenerator.zobrist.found = 0;
             MoveGenerator.assesedBoards = new HashMap<Long,Integer>();
-
         }
-
     }
-
     //////HIER BENCHMARKS FÜR ISOLIERTE IDS (OHNE ZEITLIMIT) ZUM VERGLEICH MIT PVS/////////////
     //iterativeDeepeningSearchNoTimeLimit
     @Test
     void IDSwithOUTPVSBenchmark1(){
-
-
-
         Board b = new Board("6k1/r4ppp/r7/1b6/8/8/4QPPP/4R1K1 w - - 0 1");
-
-
         for (int i = 1; i <= 5; i++) {
             //StartPosition
             long time = 0;
@@ -744,17 +577,10 @@ public class MoveTests {
             MoveGenerator.zobrist.found = 0;
             MoveGenerator.assesedBoards = new HashMap<Long,Integer>();
         }
-
     }
-
     @Test
     void IDSwithOUTPVSBenchmark2(){
-
-
-
         Board b = new Board("Q4R2/3kr3/1q3n1p/2p1p1p1/1p1bP1P1/1B1P3P/2PBK3/8 w - - 1 0");
-
-
         for (int i = 1; i <= 5; i++) {
             //StartPosition
             long time = 0;
@@ -775,17 +601,10 @@ public class MoveTests {
             MoveGenerator.zobrist.found = 0;
             MoveGenerator.assesedBoards = new HashMap<Long,Integer>();
         }
-
     }
-
     @Test
     void IDSwithOUTPVSBenchmark3(){
-
-
-
         Board b = new Board("7k/5ppp/8/R7/5n2/3B4/2K5/8 b - - 0 1");
-
-
         for (int i = 1; i <= 7; i++) {
             //StartPosition
             long time = 0;
@@ -806,18 +625,11 @@ public class MoveTests {
             MoveGenerator.zobrist.found = 0;
             MoveGenerator.assesedBoards = new HashMap<Long,Integer>();
         }
-
     }
-
     ///////HIER BENCHMARKS FÜR PVS mit Nullfenstersuche//////
     @Test
     void IDSwithPVSMinimalWindowBenchmark1(){
-
-
-
         Board b = new Board("6k1/r4ppp/r7/1b6/8/8/4QPPP/4R1K1 w - - 0 1");
-
-
         for (int i = 1; i <= 5; i++) {
             //StartPosition
             long time = 0;
@@ -826,7 +638,7 @@ public class MoveTests {
             PrincipalVariationSearch.assessedLeaves = 0;
             startEpoch = System.currentTimeMillis();
             //String result = PrincipalVariationSearch.PVSearch(b, i, Integer.MIN_VALUE, Integer.MAX_VALUE,false); //Achtung: negativer Wert für bewertung!
-            String result = PrincipalVariationSearch.moiterativeDeepeningPVSNoTimeLimitWW(b, i, true);
+            String result = PrincipalVariationSearch.nullWindowSearch(b, i, true);
             PrincipalVariationSearch.currentPv= null; //Zurücksetzen für next "Großiteration"
             endepoch = System.currentTimeMillis();
             time += endepoch - startEpoch;
@@ -841,22 +653,12 @@ public class MoveTests {
             PrincipalVariationSearch.researchNeeded = 0;
             MoveGenerator.zobrist.found = 0;
             MoveGenerator.assesedBoards = new HashMap<Long,Integer>();
-
-
         }
-
     }
-
-
     //DIE SIND NUR ZUM PERSÖNLICHEN TESTEN!
 /*    @Test
     void pvsBenchmark1(){
-
-
-
         Board b = new Board("6k1/r4ppp/r7/1b6/8/8/4QPPP/4R1K1 w - - 0 1");
-
-
         for (int i = 1; i <= 4; i++) {
             //StartPosition
             long time = 0;
@@ -874,19 +676,11 @@ public class MoveTests {
             System.out.println("Elapsed time: "+time+" ms");
             System.out.println("Assessed leaves: "+PrincipalVariationSearch.assessedLeaves);
             System.out.println("Assessed leaves per second: "+(PrincipalVariationSearch.assessedLeaves/(time*0.001)));
-
         }
-
     }*/
-
 /*    @Test
     void pvsBenchmark2(){
-
-
-
         Board b = new Board("Q4R2/3kr3/1q3n1p/2p1p1p1/1p1bP1P1/1B1P3P/2PBK3/8 w - - 1 0");
-
-
         for (int i = 1; i <= 4; i++) {
             //StartPosition
             long time = 0;
@@ -904,72 +698,47 @@ public class MoveTests {
             System.out.println("Elapsed time: "+time+" ms");
             System.out.println("Assessed leaves: "+PrincipalVariationSearch.assessedLeaves);
             System.out.println("Assessed leaves per second: "+(PrincipalVariationSearch.assessedLeaves/(time*0.001)));
-
         }
-
     }*/
-
     ////////////////7
-
     @Test
     void testZobristValid(){
-
         Board b = new Board("7k/5ppp/8/R7/5n2/3B4/2K5/8 b - - 0 1");
         MoveGenerator mg = new MoveGenerator();
-
         for (int i = 0;i<1000;i++){
-          //  System.out.println("Key for Board:"+ mg.zobrist.getZobristHash(b.getWhitePawns(),b.getWhiteKnights(),b.getWhiteBishops(),b.getWhiteRooks(),b.getWhiteQueen(),b.getWhiteKing(),b.getBlackPawns(),b.getBlackKnights(),b.getBlackBishops(),b.getBlackRooks(),b.getBlackQueen(),b.getBlackKing(),b.isWhiteToCastleKingside(),b.isWhiteToCastleQueenside(),b.isBlackToCastleKingside(),b.isBlackToCastleQueenside(),b.isCurrentPlayerIsWhite()));
-
+            //  System.out.println("Key for Board:"+ mg.zobrist.getZobristHash(b.getWhitePawns(),b.getWhiteKnights(),b.getWhiteBishops(),b.getWhiteRooks(),b.getWhiteQueen(),b.getWhiteKing(),b.getBlackPawns(),b.getBlackKnights(),b.getBlackBishops(),b.getBlackRooks(),b.getBlackQueen(),b.getBlackKing(),b.isWhiteToCastleKingside(),b.isWhiteToCastleQueenside(),b.isBlackToCastleKingside(),b.isBlackToCastleQueenside(),b.isCurrentPlayerIsWhite()));
         }
-
     }
-
     @Test
     void testZobristTime(){
-
         Board b = new Board("7k/5ppp/8/R7/5n2/3B4/2K5/8 b - - 0 1");
         MoveGenerator mg = new MoveGenerator();
-
         long startEpoch = System.currentTimeMillis();
         for (int i = 0;i<100;i++){
-
             //b.assessBoardTPT(mg.assesedBoards,mg.zobrist);
-
         }
         long endEpoch = System.currentTimeMillis();
         long time = endEpoch - startEpoch;
         System.out.println("Took: "+ time);
-
-
     }
-
     @Test
     void testNoZobristTime(){
-
         Board b = new Board("7k/5ppp/8/R7/5n2/3B4/2K5/8 b - - 0 1");
         MoveGenerator mg = new MoveGenerator();
-
         long startEpoch = System.currentTimeMillis();
         for (int i = 0;i<100;i++){
-
             //b.assessBoard();
-
         }
         long endEpoch = System.currentTimeMillis();
         long time = endEpoch - startEpoch;
         System.out.println("Took: "+ time);
-
-
     }
-
     //ab hier MCTS-Tests
     @Test
     void testCalcUCT(){
         double calc = MonteCarloTreeSearch.calculateUCTvalue(6,4,3, Math.sqrt(2));
         System.out.println(calc);
-
     }
-
     @Test
     void selectionPhase(){
         Board b = new Board("7k/5ppp/8/R7/5n2/3B4/2K5/8 b - - 0 1");
@@ -981,26 +750,24 @@ public class MoveTests {
         root.children.add(child1);
         root.children.add(child2);
         root.children.add(child3);
-
         root.visits = 5;
         child1.visits =2;
         child2.visits=2;
         child3.visits=1;
 
-        child1.winScore = 6;
-        child2.winScore = 5;
-        child3.winScore = 6;
+        child1.score = 6;
+        child2.score = 5;
+        child3.score = 6;
         System.out.println(child1);
         System.out.println(child2);
         System.out.println(child3);
 
-        System.out.println(MonteCarloTreeSearch.calculateUCTvalue(child1.parent.visits, child1.visits, child1.winScore, Math.sqrt(2)));
-        System.out.println(MonteCarloTreeSearch.calculateUCTvalue(child3.parent.visits, child3.visits, child3.winScore, Math.sqrt(2)));
+        System.out.println(MonteCarloTreeSearch.calculateUCTvalue(child1.parent.visits, child1.visits, child1.score, Math.sqrt(2)));
+        System.out.println(MonteCarloTreeSearch.calculateUCTvalue(child3.parent.visits, child3.visits, child3.score, Math.sqrt(2)));
 
         System.out.println(MonteCarloTreeSearch.selectNode(root));
 
     }
-
     @Test
     void testRandomMove(){
         Board b = new Board("7k/5ppp/8/R7/5n2/3B4/2K5/8 b - - 0 1");
@@ -1010,15 +777,12 @@ public class MoveTests {
         String randomMove = allValidMoves.substring(randomNumber*4, randomNumber*4+4);
         System.out.println(randomMove);
     }
-
     @Test
     void testSimulation(){
         Board b = new Board("Q4R2/3kr3/1q3n1p/2p1p1p1/1p1bP1P1/1B1P3P/2PBK3/8 w - - 1 0");
         Node root = new Node(null,b);
         MonteCarloTreeSearch.simulate(root);
-
     }
-
     @Test
     void testBackpropagation(){
         Board b = new Board("7k/5ppp/8/R7/5n2/3B4/2K5/8 b - - 0 1");
@@ -1032,24 +796,24 @@ public class MoveTests {
         root.children.add(child3);
 
         root.visits = 5;
-        root.winScore = 6;
+        root.score = 6;
         child1.visits =2;
         child2.visits=2;
         child3.visits=1;
 
-        child1.winScore = 6;
-        child2.winScore = 5;
-        child3.winScore = 6;
+        child1.score = 6;
+        child2.score = 5;
+        child3.score = 6;
 
         Node child11 = new Node(child1,b);
         MonteCarloTreeSearch.backpropagate(child11, 1);
         //MonteCarloTreeSearch.backpropagate(child11, -2);
         System.out.println(child11.visits);
-        System.out.println(child11.winScore);
+        System.out.println(child11.score);
         System.out.println(child1.visits);
-        System.out.println(child1.winScore);
+        System.out.println(child1.score);
         System.out.println(root.visits);
-        System.out.println(root.winScore);
+        System.out.println(root.score);
     }
 
     @Test
@@ -1064,11 +828,10 @@ public class MoveTests {
         for (Node child: root.children){
             System.out.println(child);
             System.out.println(child.visits);
-            System.out.println(child.winScore);
+            System.out.println(child.score);
             System.out.println(child.parent);
         }
     }
-
     @Test
     void testMCTS(){
         Board b = new Board("Q4R2/3kr3/1q3n1p/2p1p1p1/1p1bP1P1/1B1P3P/2PBK3/8 w - - 1 0");
@@ -1076,11 +839,7 @@ public class MoveTests {
         Node root = new Node(null, b);
         String bestMove = MonteCarloTreeSearch.getBestMove(root, 100000);
         System.out.println("best Move was: " + bestMove);
-
     }
-
-
-
     @Test
     void debugForumMoves(){
         System.out.println(moveGenerator.convertMoveDigitsToField('5','2'));
@@ -1091,9 +850,7 @@ public class MoveTests {
         //assertEquals(3, moveGenerator.getMoveCount(moveGenerator.checkValidKingMoves(new Board("r3k2r/ppp1npbp/b3p1p1/8/8/4P3/PPP2PPP/R3K2R w KQkq - 0 1")))); //TODO: King does not check if Field is attacked. Does not check if he castles trough check.
         //assertEquals(13, moveGenerator.getMoveCount(moveGenerator.checkpawnMoves(new Board("rnbqkb1r/ppp1pppp/5n2/3p4/4P3/2N5/PPPP1PPP/R1BQKBNR w KQkq - 2 1"))));//TODO: Pawn does not check if Figure is infront of him.
         //assertEquals(2, moveGenerator.getMoveCount(moveGenerator.checkValidKingMoves(new Board("r2kq3/3r4/8/8/7b/p7/P3BN2/R3K2R w KQq - 0 1"))));
-
     }
-
     @Test
     void ForumsMoves(){
         assertEquals(20, moveGenerator.getMoveCount(moveGenerator.validMoves(new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w - - 0 1"))));
@@ -1127,9 +884,6 @@ public class MoveTests {
         assertEquals(12, moveGenerator.getMoveCount(moveGenerator.validMoves(new Board("5k1r/8/4B3/p7/PP6/8/P7/KQ1N4 b - - 0 30"))));
         assertEquals(33, moveGenerator.getMoveCount(moveGenerator.validMoves(new Board("rnbqkb1r/ppp1pppp/5n2/3p4/4P3/2N5/PPPP1PPP/R1BQKBNR w KQkq - 2 1"))));//TODO:Pawn
         assertEquals(16, moveGenerator.getMoveCount(moveGenerator.validMoves(new Board("8/8/8/8/2R5/6pk/1r6/6K1 w - – 0 51"))));
-
     }
-
-
 }
 

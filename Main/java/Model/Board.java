@@ -46,11 +46,7 @@ public class Board implements Comparable <Board> {
       * or to create a new board based on an existing board and a move
      */
     public Board(String fenString) {
-        System.out.println("0");
         this.fenToBitboardParser(fenString);
-        System.out.println("1");
-        //this.getAssessmentValue();
-        System.out.println("2");
     }
 
     /**
@@ -1129,6 +1125,321 @@ public class Board implements Comparable <Board> {
 
     public void setKIPlaysWhite(boolean KIPlaysWhite) {
         this.KIPlaysWhite = KIPlaysWhite;
+    }
+
+    //TODO: only for benchmark comparison, not used by actual KI
+    public int assessBoardStaticPST(){
+
+        this.assessmentValue = 0;
+
+        String ownValidMoves = MoveGenerator.validMoves(this);
+
+        //create board with same positions but opponents's turn to count their moves
+        Board copyButOpponentsTurn = new Board(this.bitboardsToFenParser());
+        copyButOpponentsTurn.setCurrentPlayerIsWhite(!copyButOpponentsTurn.isCurrentPlayerIsWhite());
+        String opponentsValidMoves = MoveGenerator.validMoves(copyButOpponentsTurn);
+
+
+        // define assessment values for certain positions
+        int kingInExtendedCenter = 300;
+
+        if((fieldsAttackedByBlack(this) & this.getWhiteKing()) != 0)
+        {
+            if(currentPlayerIsWhite){
+                this.assessmentValue = -1000000;
+                if(ownValidMoves.equals("")){
+                    this.assessmentValue = -10000000; //player is checkmate
+                }
+            } else {
+                this.assessmentValue = 1000000;
+            }
+        }
+        if((fieldsAttackedByWhite(this) & this.getBlackKing())!=0){
+            if (currentPlayerIsWhite) {
+                this.assessmentValue = 1000000;
+            } else {
+                this.assessmentValue = -1000000;
+                if(ownValidMoves.equals("")){
+                    this.assessmentValue = -10000000; //player is checkmate
+                }
+            }
+        }
+        if ((this.getOwnKing() & CENTRE) != 0){
+            return this.assessmentValue = 10000000; //player has won
+        }
+        if ((this.getOppositeKing() & CENTRE) != 0){
+            return this.assessmentValue = -10000000; //player has lost
+        }
+
+        //Count material
+        this.assessmentValue += Long.bitCount(this.getOwnPawns())-Long.bitCount(this.getOppositePawns())*100;
+        this.assessmentValue += (Long.bitCount(this.getOwnKnights())-Long.bitCount(this.getOppositeKnights()))*300;
+        this.assessmentValue += (Long.bitCount(this.getOwnRooks())-Long.bitCount(this.getOppositeRooks()))*500;
+        this.assessmentValue += (Long.bitCount(this.getOwnBishops())-Long.bitCount(this.getOppositeBishops()))*300;
+        this.assessmentValue += (Long.bitCount(this.getOwnQueen())-Long.bitCount(this.getOppositeQueen()))*900;
+
+        if ((getOwnKing() & EXTENDED_CENTRE) != 0){
+            this.assessmentValue += kingInExtendedCenter;
+        }
+
+        //Mobility
+        this.assessmentValue += (int) MoveGenerator.getMoveCount(ownValidMoves)*10;
+        this.assessmentValue -= (int) MoveGenerator.getMoveCount(opponentsValidMoves)*10;
+
+        //Attacked Pieces
+        if (currentPlayerIsWhite){
+            long attackedPawns = Long.bitCount((fieldsAttackedByBlack(this) & this.getOwnPawns()));
+            long attackedQueens = Long.bitCount(fieldsAttackedByBlack(this) & this.getOwnQueen());
+            long attackedPieces = Long.bitCount(fieldsAttackedByBlack(this) & (this.getOwnBishops() | this.getOwnKnights() | this.getOwnRooks()));
+            //System.out.println("APA" + attackedPawns + "AQ" + attackedQueens + "API" + attackedPieces);
+            this.assessmentValue -= (150*attackedPieces+20*attackedPawns+400*attackedQueens);
+
+            long attackedPawnsO = Long.bitCount((fieldsAttackedByWhite(this) & this.getOppositePawns()));
+            long attackedQueensO = Long.bitCount(fieldsAttackedByWhite(this) & this.getOppositeQueen());
+            long attackedPiecesO = Long.bitCount(fieldsAttackedByWhite(this) & (this.getOppositeBishops() | this.getOppositeKnights() | this.getOppositeRooks()));
+            //System.out.println("APA" + attackedPawns + "AQ" + attackedQueens + "API" + attackedPieces);
+            this.assessmentValue += (150*attackedPiecesO+20*attackedPawnsO+400*attackedQueensO);
+        } else {
+            long attackedPawns = Long.bitCount((fieldsAttackedByWhite(this) & this.getOwnPawns()));
+            long attackedQueens = Long.bitCount(fieldsAttackedByWhite(this) & this.getOwnQueen());
+            long attackedPieces = Long.bitCount(fieldsAttackedByWhite(this) & (this.getOwnBishops() | this.getOwnKnights() | this.getOwnRooks()));
+            //System.out.println("APA" + attackedPawns + "AQ" + attackedQueens + "API" + attackedPieces);
+            this.assessmentValue -= (150*attackedPieces+20*attackedPawns+400*attackedQueens);
+
+            long attackedPawnsO = Long.bitCount((fieldsAttackedByBlack(this) & this.getOppositePawns()));
+            long attackedQueensO = Long.bitCount(fieldsAttackedByBlack(this) & this.getOppositeQueen());
+            long attackedPiecesO = Long.bitCount(fieldsAttackedByBlack(this) & (this.getOppositeBishops() | this.getOppositeKnights() | this.getOppositeRooks()));
+            //System.out.println("APA" + attackedPawns + "AQ" + attackedQueens + "API" + attackedPieces);
+            this.assessmentValue += (150*attackedPiecesO+20*attackedPawnsO+400*attackedQueensO);
+        }
+
+        //Hanging Pieces
+        if(currentPlayerIsWhite){
+            long hangingPawns = Long.bitCount(fieldsAttackedByBlack(this) &~fieldsAttackedByWhite(this) & this.getOwnPawns());
+            long hangingPieces = Long.bitCount(fieldsAttackedByBlack(this) &~fieldsAttackedByWhite(this) & (this.getOwnBishops() | this.getOwnKnights() | this.getOwnRooks()));
+            long hangingQueen = Long.bitCount(fieldsAttackedByBlack(this) &~fieldsAttackedByWhite(this) & this.getOwnQueen());
+            this.assessmentValue -= (300*hangingPieces+50*hangingPawns+700*hangingQueen);
+
+            long hangingPawnsO = Long.bitCount(~fieldsAttackedByBlack(this) &fieldsAttackedByWhite(this) & this.getOppositePawns());
+            long hangingPiecesO = Long.bitCount(~fieldsAttackedByBlack(this) &fieldsAttackedByWhite(this) & (this.getOppositeBishops() | this.getOppositeKnights() | this.getOppositeRooks()));
+            long hangingQueenO = Long.bitCount(~fieldsAttackedByBlack(this) &fieldsAttackedByWhite(this) & this.getOppositeQueen());
+            this.assessmentValue += (300*hangingPiecesO+50*hangingPawnsO+700*hangingQueenO);
+        } else {
+            long hangingPawns = Long.bitCount(~fieldsAttackedByBlack(this) &fieldsAttackedByWhite(this) & this.getOwnPawns());
+            long hangingPieces = Long.bitCount(~fieldsAttackedByBlack(this) &fieldsAttackedByWhite(this) & (this.getOwnBishops() | this.getOwnKnights() | this.getOwnRooks()));
+            long hangingQueen = Long.bitCount(~fieldsAttackedByBlack(this) &fieldsAttackedByWhite(this) & this.getOwnQueen());
+            this.assessmentValue -= (300*hangingPieces+50*hangingPawns+700*hangingQueen);
+
+            long hangingPawnsO = Long.bitCount(fieldsAttackedByBlack(this) &~fieldsAttackedByWhite(this) & this.getOppositePawns());
+            long hangingPiecesO = Long.bitCount(fieldsAttackedByBlack(this) &~fieldsAttackedByWhite(this) & (this.getOppositeBishops() | this.getOppositeKnights() | this.getOppositeRooks()));
+            long hangingQueenO = Long.bitCount(fieldsAttackedByBlack(this) &~fieldsAttackedByWhite(this) & this.getOppositeQueen());
+            this.assessmentValue += (300*hangingPiecesO+50*hangingPawnsO+700*hangingQueenO);
+        }
+
+        //Doubled pawns
+        for (int i = 0; i<8; i++){
+            if (Long.bitCount(FileMasks8[i]& this.getOwnPawns())>1){
+                this.assessmentValue -= 50;
+                //System.out.println("Doppelbauer in" + i);
+            }
+        }
+        for (int i = 0; i<8; i++){
+            if (Long.bitCount(FileMasks8[i]& this.getOppositePawns())>1){
+                this.assessmentValue += 50;
+                //System.out.println("Doppelbauer in" + i);
+            }
+        }
+
+        //PST
+        int pstScoreWhite = 0;
+        pstScoreWhite += addPSTValues(this.getWhitePawns(), PieceSquareTables.MG_WHITE_PAWNS);
+        pstScoreWhite += addPSTValues(this.getWhiteKnights(), PieceSquareTables.MG_WHITE_KNIGHTS);
+        pstScoreWhite += addPSTValues(this.getWhiteBishops(), PieceSquareTables.MG_WHITE_BISHOPS);
+        pstScoreWhite += addPSTValues(this.getWhiteRooks(), PieceSquareTables.MG_WHITE_ROOKS);
+        pstScoreWhite += addPSTValues(this.getWhiteQueen(), PieceSquareTables.MG_WHITE_QUEEN);
+        pstScoreWhite += addPSTValues(this.getWhiteKing(), PieceSquareTables.MG_WHITE_KING);
+        int pstScoreBlack = 0;
+        pstScoreBlack += addPSTValues(this.getBlackPawns(), PieceSquareTables.MG_BLACK_PAWNS);
+        pstScoreBlack += addPSTValues(this.getBlackKnights(), PieceSquareTables.MG_BLACK_KNIGHTS);
+        pstScoreBlack += addPSTValues(this.getBlackBishops(), PieceSquareTables.MG_BLACK_BISHOPS);
+        pstScoreBlack += addPSTValues(this.getBlackRooks(), PieceSquareTables.MG_BLACK_ROOKS);
+        pstScoreBlack += addPSTValues(this.getBlackQueen(), PieceSquareTables.MG_BLACK_QUEEN);
+        pstScoreBlack += addPSTValues(this.getBlackKing(), PieceSquareTables.MG_BLACK_KING);
+        if(currentPlayerIsWhite){
+            this.assessmentValue += (pstScoreWhite-pstScoreBlack);
+        } else {
+            this.assessmentValue += (pstScoreBlack-pstScoreWhite);
+        }
+
+        return (int)this.assessmentValue;
+    }
+
+    public int assessBoardNoPST(){
+
+        this.assessmentValue = 0;
+
+        String ownValidMoves = MoveGenerator.validMoves(this);
+
+        //create board with same positions but opponents's turn to count their moves
+        Board copyButOpponentsTurn = new Board(this.bitboardsToFenParser());
+        copyButOpponentsTurn.setCurrentPlayerIsWhite(!copyButOpponentsTurn.isCurrentPlayerIsWhite());
+        String opponentsValidMoves = MoveGenerator.validMoves(copyButOpponentsTurn);
+
+
+        // define assessment values for certain positions
+        int kingInExtendedCenter = 300;
+
+        if((fieldsAttackedByBlack(this) & this.getWhiteKing()) != 0)
+        {
+            if(currentPlayerIsWhite){
+                this.assessmentValue = -1000000;
+                if(ownValidMoves.equals("")){
+                    this.assessmentValue = -10000000; //player is checkmate
+                }
+            } else {
+                this.assessmentValue = 1000000;
+            }
+        }
+        if((fieldsAttackedByWhite(this) & this.getBlackKing())!=0){
+            if (currentPlayerIsWhite) {
+                this.assessmentValue = 1000000;
+            } else {
+                this.assessmentValue = -1000000;
+                if(ownValidMoves.equals("")){
+                    this.assessmentValue = -10000000; //player is checkmate
+                }
+            }
+        }
+        if ((this.getOwnKing() & CENTRE) != 0){
+            return this.assessmentValue = 10000000; //player has won
+        }
+        if ((this.getOppositeKing() & CENTRE) != 0){
+            return this.assessmentValue = -10000000; //player has lost
+        }
+
+        //Count material
+        this.assessmentValue += Long.bitCount(this.getOwnPawns())-Long.bitCount(this.getOppositePawns())*100;
+        this.assessmentValue += (Long.bitCount(this.getOwnKnights())-Long.bitCount(this.getOppositeKnights()))*300;
+        this.assessmentValue += (Long.bitCount(this.getOwnRooks())-Long.bitCount(this.getOppositeRooks()))*500;
+        this.assessmentValue += (Long.bitCount(this.getOwnBishops())-Long.bitCount(this.getOppositeBishops()))*300;
+        this.assessmentValue += (Long.bitCount(this.getOwnQueen())-Long.bitCount(this.getOppositeQueen()))*900;
+
+        if ((getOwnKing() & EXTENDED_CENTRE) != 0){
+            this.assessmentValue += kingInExtendedCenter;
+        }
+
+        //Mobility
+        this.assessmentValue += (int) MoveGenerator.getMoveCount(ownValidMoves)*10;
+        this.assessmentValue -= (int) MoveGenerator.getMoveCount(opponentsValidMoves)*10;
+
+        //Attacked Pieces
+        if (currentPlayerIsWhite){
+            long attackedPawns = Long.bitCount((fieldsAttackedByBlack(this) & this.getOwnPawns()));
+            long attackedQueens = Long.bitCount(fieldsAttackedByBlack(this) & this.getOwnQueen());
+            long attackedPieces = Long.bitCount(fieldsAttackedByBlack(this) & (this.getOwnBishops() | this.getOwnKnights() | this.getOwnRooks()));
+            //System.out.println("APA" + attackedPawns + "AQ" + attackedQueens + "API" + attackedPieces);
+            this.assessmentValue -= (150*attackedPieces+20*attackedPawns+400*attackedQueens);
+
+            long attackedPawnsO = Long.bitCount((fieldsAttackedByWhite(this) & this.getOppositePawns()));
+            long attackedQueensO = Long.bitCount(fieldsAttackedByWhite(this) & this.getOppositeQueen());
+            long attackedPiecesO = Long.bitCount(fieldsAttackedByWhite(this) & (this.getOppositeBishops() | this.getOppositeKnights() | this.getOppositeRooks()));
+            //System.out.println("APA" + attackedPawns + "AQ" + attackedQueens + "API" + attackedPieces);
+            this.assessmentValue += (150*attackedPiecesO+20*attackedPawnsO+400*attackedQueensO);
+        } else {
+            long attackedPawns = Long.bitCount((fieldsAttackedByWhite(this) & this.getOwnPawns()));
+            long attackedQueens = Long.bitCount(fieldsAttackedByWhite(this) & this.getOwnQueen());
+            long attackedPieces = Long.bitCount(fieldsAttackedByWhite(this) & (this.getOwnBishops() | this.getOwnKnights() | this.getOwnRooks()));
+            //System.out.println("APA" + attackedPawns + "AQ" + attackedQueens + "API" + attackedPieces);
+            this.assessmentValue -= (150*attackedPieces+20*attackedPawns+400*attackedQueens);
+
+            long attackedPawnsO = Long.bitCount((fieldsAttackedByBlack(this) & this.getOppositePawns()));
+            long attackedQueensO = Long.bitCount(fieldsAttackedByBlack(this) & this.getOppositeQueen());
+            long attackedPiecesO = Long.bitCount(fieldsAttackedByBlack(this) & (this.getOppositeBishops() | this.getOppositeKnights() | this.getOppositeRooks()));
+            //System.out.println("APA" + attackedPawns + "AQ" + attackedQueens + "API" + attackedPieces);
+            this.assessmentValue += (150*attackedPiecesO+20*attackedPawnsO+400*attackedQueensO);
+        }
+
+        //Hanging Pieces
+        if(currentPlayerIsWhite){
+            long hangingPawns = Long.bitCount(fieldsAttackedByBlack(this) &~fieldsAttackedByWhite(this) & this.getOwnPawns());
+            long hangingPieces = Long.bitCount(fieldsAttackedByBlack(this) &~fieldsAttackedByWhite(this) & (this.getOwnBishops() | this.getOwnKnights() | this.getOwnRooks()));
+            long hangingQueen = Long.bitCount(fieldsAttackedByBlack(this) &~fieldsAttackedByWhite(this) & this.getOwnQueen());
+            this.assessmentValue -= (300*hangingPieces+50*hangingPawns+700*hangingQueen);
+
+            long hangingPawnsO = Long.bitCount(~fieldsAttackedByBlack(this) &fieldsAttackedByWhite(this) & this.getOppositePawns());
+            long hangingPiecesO = Long.bitCount(~fieldsAttackedByBlack(this) &fieldsAttackedByWhite(this) & (this.getOppositeBishops() | this.getOppositeKnights() | this.getOppositeRooks()));
+            long hangingQueenO = Long.bitCount(~fieldsAttackedByBlack(this) &fieldsAttackedByWhite(this) & this.getOppositeQueen());
+            this.assessmentValue += (300*hangingPiecesO+50*hangingPawnsO+700*hangingQueenO);
+        } else {
+            long hangingPawns = Long.bitCount(~fieldsAttackedByBlack(this) &fieldsAttackedByWhite(this) & this.getOwnPawns());
+            long hangingPieces = Long.bitCount(~fieldsAttackedByBlack(this) &fieldsAttackedByWhite(this) & (this.getOwnBishops() | this.getOwnKnights() | this.getOwnRooks()));
+            long hangingQueen = Long.bitCount(~fieldsAttackedByBlack(this) &fieldsAttackedByWhite(this) & this.getOwnQueen());
+            this.assessmentValue -= (300*hangingPieces+50*hangingPawns+700*hangingQueen);
+
+            long hangingPawnsO = Long.bitCount(fieldsAttackedByBlack(this) &~fieldsAttackedByWhite(this) & this.getOppositePawns());
+            long hangingPiecesO = Long.bitCount(fieldsAttackedByBlack(this) &~fieldsAttackedByWhite(this) & (this.getOppositeBishops() | this.getOppositeKnights() | this.getOppositeRooks()));
+            long hangingQueenO = Long.bitCount(fieldsAttackedByBlack(this) &~fieldsAttackedByWhite(this) & this.getOppositeQueen());
+            this.assessmentValue += (300*hangingPiecesO+50*hangingPawnsO+700*hangingQueenO);
+        }
+
+        //Doubled pawns
+        for (int i = 0; i<8; i++){
+            if (Long.bitCount(FileMasks8[i]& this.getOwnPawns())>1){
+                this.assessmentValue -= 50;
+                //System.out.println("Doppelbauer in" + i);
+            }
+        }
+        for (int i = 0; i<8; i++){
+            if (Long.bitCount(FileMasks8[i]& this.getOppositePawns())>1){
+                this.assessmentValue += 50;
+                //System.out.println("Doppelbauer in" + i);
+            }
+        }
+        return (int)this.assessmentValue;
+    }
+
+    public int assessBoardOnlyMaterial(){
+
+        this.assessmentValue = 0;
+
+        String ownValidMoves = MoveGenerator.validMoves(this);
+
+        if((fieldsAttackedByBlack(this) & this.getWhiteKing()) != 0)
+        {
+            if(currentPlayerIsWhite){
+                this.assessmentValue = -1000000;
+                if(ownValidMoves.equals("")){
+                    this.assessmentValue = -10000000; //player is checkmate
+                }
+            } else {
+                this.assessmentValue = 1000000;
+            }
+        }
+        if((fieldsAttackedByWhite(this) & this.getBlackKing())!=0){
+            if (currentPlayerIsWhite) {
+                this.assessmentValue = 1000000;
+            } else {
+                this.assessmentValue = -1000000;
+                if(ownValidMoves.equals("")){
+                    this.assessmentValue = -10000000; //player is checkmate
+                }
+            }
+        }
+        if ((this.getOwnKing() & CENTRE) != 0){
+            return this.assessmentValue = 10000000; //player has won
+        }
+        if ((this.getOppositeKing() & CENTRE) != 0){
+            return this.assessmentValue = -10000000; //player has lost
+        }
+
+        //Count material
+        this.assessmentValue += Long.bitCount(this.getOwnPawns())-Long.bitCount(this.getOppositePawns())*100;
+        this.assessmentValue += (Long.bitCount(this.getOwnKnights())-Long.bitCount(this.getOppositeKnights()))*300;
+        this.assessmentValue += (Long.bitCount(this.getOwnRooks())-Long.bitCount(this.getOppositeRooks()))*500;
+        this.assessmentValue += (Long.bitCount(this.getOwnBishops())-Long.bitCount(this.getOppositeBishops()))*300;
+        this.assessmentValue += (Long.bitCount(this.getOwnQueen())-Long.bitCount(this.getOppositeQueen()))*900;
+
+        return (int)this.assessmentValue;
     }
 
 

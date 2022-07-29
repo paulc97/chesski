@@ -694,7 +694,7 @@ public class MoveGenerator {
         System.out.println("Using principal variation search for move generation");
         //Iterative Deepening Search + PVS (mit PV Zugsortierung)
         long timeLimit = standardDeviationTimeLimit(b.getNextMoveCount(), 300L); //gamePhaseTimeLimit(b, 250);
-        return PrincipalVariationSearch.moiterativeDeepeningPVSWithTimeLimitNoWindow(b, timeLimit).substring(0, 4);
+        return PrincipalVariationSearch.principalVariationSearchWithTimelimit(b, timeLimit).substring(0, 4);
 
         //Iterative Deepening Search + PVS (mit PV Zugsortierung)
         /*long timeLimit = standardDeviationTimeLimit(b.getNextMoveCount(), 100L);
