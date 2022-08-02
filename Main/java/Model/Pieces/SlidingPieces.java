@@ -6,7 +6,7 @@ import static Model.Mask.*;
 
 //TODO: implements Piece interface?
 
-public class SlidingPieces {
+public class SlidingPieces implements Piece {
 
     public String rookMoves(Board b) {
 
@@ -173,5 +173,10 @@ public class SlidingPieces {
         long possibilitiesVertical = ((OCCUPIED&FileMasks8[s % 8]) - (2 * binaryS)) ^ Long.reverse(Long.reverse(OCCUPIED&FileMasks8[s % 8]) - (2 * Long.reverse(binaryS)));
         return (possibilitiesHorizontal&RankMasks8[s / 8]) | (possibilitiesVertical&FileMasks8[s % 8]);
 
+    }
+
+    @Override
+    public String moves(Board board) {
+        return "";
     }
 }
