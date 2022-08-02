@@ -78,8 +78,6 @@ public class Benchmarks {
         System.out.println("Rating board took "+(timesStart*0.001)+" Milliseconds");
     }
 
-    //PVS VS MCTS
-    //TODO: bei MCTS folgende Infos notieren: bestNode Score, bestNode visits, best Move, total Simulation Count
     @Test
     void testMCTS(){
         Board b = new Board("Q4R2/3kr3/1q3n1p/2p1p1p1/1p1bP1P1/1B1P3P/2PBK3/8 w - - 1 0");
@@ -90,7 +88,6 @@ public class Benchmarks {
         System.out.println("total Simulation Count: " + MonteCarloTreeSearch.totalSimulationCount);
 
     }
-
 
     @Test
     void benchmark(){
@@ -348,7 +345,7 @@ public class Benchmarks {
             System.out.println("Number of cutoffs "+MoveGenerator.getCutoffs());
         }
     }
-    ///////HIER BENCHMARKS FÜR PVS//////
+
     @Test
     void IDSwithPVSBenchmark1(){
         Board b = new Board("6k1/r4ppp/r7/1b6/8/8/4QPPP/4R1K1 w - - 0 1");
@@ -413,7 +410,7 @@ public class Benchmarks {
             startEpoch = System.currentTimeMillis();
             //String result = PrincipalVariationSearch.PVSearch(b, i, Integer.MIN_VALUE, Integer.MAX_VALUE,false); //Achtung: negativer Wert für bewertung!
             String result = PrincipalVariationSearch.principalVariationSearchWithoutTimelimit(b, i, false);
-            PrincipalVariationSearch.currentPv= null; //Zurücksetzen für next "Großiteration"
+            PrincipalVariationSearch.currentPv= null; //Zurücksetzen für nächste "Großiteration"
             endepoch = System.currentTimeMillis();
             time += endepoch - startEpoch;
             System.out.println(result);
@@ -427,8 +424,7 @@ public class Benchmarks {
             MoveGenerator.assesedBoards = new HashMap<Long,Integer>();
         }
     }
-    //////HIER BENCHMARKS FÜR ISOLIERTE IDS (OHNE ZEITLIMIT) ZUM VERGLEICH MIT PVS/////////////
-    //iterativeDeepeningSearchNoTimeLimit
+
     @Test
     void IDSwithOUTPVSBenchmark1(){
         Board b = new Board("6k1/r4ppp/r7/1b6/8/8/4QPPP/4R1K1 w - - 0 1");
@@ -501,7 +497,7 @@ public class Benchmarks {
             MoveGenerator.assesedBoards = new HashMap<Long,Integer>();
         }
     }
-    ///////HIER BENCHMARKS FÜR PVS mit Nullfenstersuche//////
+
     @Test
     void IDSwithPVSMinimalWindowBenchmark1(){
         Board b = new Board("6k1/r4ppp/r7/1b6/8/8/4QPPP/4R1K1 w - - 0 1");
@@ -530,51 +526,4 @@ public class Benchmarks {
             MoveGenerator.assesedBoards = new HashMap<Long,Integer>();
         }
     }
-    //DIE SIND NUR ZUM PERSÖNLICHEN TESTEN!
-/*    @Test
-    void pvsBenchmark1(){
-        Board b = new Board("6k1/r4ppp/r7/1b6/8/8/4QPPP/4R1K1 w - - 0 1");
-        for (int i = 1; i <= 4; i++) {
-            //StartPosition
-            long time = 0;
-            long startEpoch = 0;
-            long endepoch = 0;
-            PrincipalVariationSearch.assessedLeaves = 0;
-            startEpoch = System.currentTimeMillis();
-            //String result = PrincipalVariationSearch.PVSearch(b, i, Integer.MIN_VALUE, Integer.MAX_VALUE,false); //Achtung: negativer Wert für bewertung!
-            String result = PrincipalVariationSearch.moiterativeDeepeningPVSNoTimeLimitWithWindow(b, i, true);
-            endepoch = System.currentTimeMillis();
-            time += endepoch - startEpoch;
-            System.out.println(result);
-            String move = MoveGenerator.convertInternalMoveToGameserverMove(result, b);
-            System.out.println("Best move: " + move +" in depth "+i);
-            System.out.println("Elapsed time: "+time+" ms");
-            System.out.println("Assessed leaves: "+PrincipalVariationSearch.assessedLeaves);
-            System.out.println("Assessed leaves per second: "+(PrincipalVariationSearch.assessedLeaves/(time*0.001)));
-        }
-    }*/
-/*    @Test
-    void pvsBenchmark2(){
-        Board b = new Board("Q4R2/3kr3/1q3n1p/2p1p1p1/1p1bP1P1/1B1P3P/2PBK3/8 w - - 1 0");
-        for (int i = 1; i <= 4; i++) {
-            //StartPosition
-            long time = 0;
-            long startEpoch = 0;
-            long endepoch = 0;
-            PrincipalVariationSearch.assessedLeaves = 0;
-            startEpoch = System.currentTimeMillis();
-            //String result = PrincipalVariationSearch.PVSearch(b, i, Integer.MIN_VALUE, Integer.MAX_VALUE,false); //Achtung: negativer Wert für bewertung!
-            String result = PrincipalVariationSearch.moiterativeDeepeningPVSNoTimeLimit(b, i, false);
-            endepoch = System.currentTimeMillis();
-            time += endepoch - startEpoch;
-            System.out.println(result);
-            String move = MoveGenerator.convertInternalMoveToGameserverMove(result, b);
-            System.out.println("Best move: " + move +" in depth "+i);
-            System.out.println("Elapsed time: "+time+" ms");
-            System.out.println("Assessed leaves: "+PrincipalVariationSearch.assessedLeaves);
-            System.out.println("Assessed leaves per second: "+(PrincipalVariationSearch.assessedLeaves/(time*0.001)));
-        }
-    }*/
-    ////////////////7
-    
 }

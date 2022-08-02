@@ -24,14 +24,7 @@ public class Tests {
     void substringTest(){
         System.out.println("12345000".substring(4));
     }
-    @Test
-    void sthTest(){
-        board = new Board("7r/Pn6/8/8/8/1P3P2/2K4p/k1n5 w - - 4 265");
-        System.out.println(Long.numberOfTrailingZeros(65280));
-        //1111111100000000
-        //result: 8
-        System.out.println(board.addPSTValues(board.getWhitePawns(), PieceSquareTables.MG_WHITE_PAWNS));
-    }
+
     @Test
     void assessmentTest1(){
         board = new Board("3N4/6K1/1p6/1r1p1k2/1rP1P1N1/2Q1Rn2/2p5/1PPP4 w - - 0 1");
@@ -52,12 +45,6 @@ public class Tests {
         String move = result.substring(0,4);
         System.out.println(moveGenerator.convertMoveDigitsToField(move.charAt(0),move.charAt(1)) + "->" + moveGenerator.convertMoveDigitsToField(move.charAt(2),move.charAt(3)));
     }
-    /*    @Test
-        void pvsTest1(){
-            board = new Board("4k2n/8/N4q2/1P6/3PPPP1/6P1/1P6/2R1K3 w - - 0 1");
-            String result = PrincipalVariationSearch.iterativeDeepeningPVSNoTimeLimit(board, 2, false);
-            System.out.println("result is: " + result);
-        }*/
     @Test
     void alphaBetaTest1(){
         board = new Board("4k2n/8/N4q2/1P6/3PPPP1/6P1/1P6/2R1K3 w - - 0 1");
@@ -94,7 +81,7 @@ public class Tests {
         String result = moveGenerator.iterativeDeepeningSearch(board, 3000);
         System.out.println("result is: " + result);
     }
-    //TODO: bei timeLimit 6000 Error bei "move:2012ze(max): 3" -> IndexOutOfBounds (getCreatedByMove erfolgt nicht) in suchtiefe 4
+
     @Test
     void iterativeDeepeningSearch2(){
         board = new Board("2Q5/6K1/1p2N3/1r1p1k2/1r2R1N1/5n2/2p5/8 w - - 0 1");
@@ -125,7 +112,7 @@ public class Tests {
         Board b1 = new Board("r3k1R1/8/4P2P/8/2P5/N1RP3N/P3B3/3QK3 b q - 0 12");
         System.out.println(b1.bitboardsToFenParser());
         String valMoves = moveGenerator.validMoves(b1);
-        System.out.println(valMoves); //TODO: Why castling kein valid move hier um aus Schach zu bringen?
+        System.out.println(valMoves);
         moveGenerator.makeMove(b1,moveGenerator.moveSelector(b1, valMoves,1));
         System.out.println(b1.bitboardsToFenParser());
     }
@@ -199,8 +186,6 @@ public class Tests {
         assertEquals(1, board.getNextMoveCount());
     }
 
-
-
     @Test
     void makeMove(){
         MoveGenerator mg = new MoveGenerator();
@@ -220,8 +205,6 @@ public class Tests {
         Board b = new Board("rnbqkbnr/ppp1pppp/8/8/8/8/PPPPPPPP/2B1KBNR w KQkq f4 0 1");
         int gamePhase = b.calcGamePhase();
         System.out.println(gamePhase);
-
-
     }
 
     @Test
@@ -234,8 +217,6 @@ public class Tests {
         //um zu testen: bei einer Methode PST, bei anderer PST Tapered Eval auskommentieren
         System.out.println(b.assessBoard());
         System.out.println(b.assessBoardTPT(new HashMap<Long,Integer>(), new Zobrist()));
-
-
     }
 
     @Test
@@ -291,7 +272,7 @@ public class Tests {
         long time = endEpoch - startEpoch;
         System.out.println("Took: "+ time);
     }
-    //ab hier MCTS-Tests
+    //MCTS-Tests
     @Test
     void testCalcUCT(){
         double calc = MonteCarloTreeSearch.calculateUCTvalue(6,4,3, Math.sqrt(2));

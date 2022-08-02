@@ -11,8 +11,6 @@ import static Model.Mask.*;
 public class MoveGenerator {
 
     private static boolean outOfTime = false; //used for Iterative Deepening
-    //https://github.com/nealyoung/CS171/blob/master/AI.java
-
 
         static Pawns pawns = new Pawns();
         static SlidingPieces slidingPieces = new SlidingPieces();
@@ -174,167 +172,139 @@ public class MoveGenerator {
         }
 
 
-    //gibt Bitboard mit allen Positionen auf denen White Landen könnte (inkl. eigener weißer Figuren)
-    // wenn dann mit BlackKing-Bitboard verundet (&) eine 1 ergibt, könnte BlackKing geschlagen
+    /**
+     *
+     * @param b
+     * @return bitboard which includes all positions which can be reached by white figures
+     */
     public static long fieldsAttackedByWhite(Board b) {
-        long unsafe;
-       // OCCUPIED=WP|WN|WB|WR|WQ|WK|BP|BN|BB|BR|BQ|BK;
+        long attackedPositions;
         //pawn
-        unsafe=((b.getWhitePawns()>>>7)&~FILE_A);//pawn capture right
-        unsafe|=((b.getWhitePawns()>>>9)&~FILE_H);//pawn capture left
-        long possibility;
+        attackedPositions=((b.getWhitePawns()>>>7)&~FILE_A);//pawn capture right
+        attackedPositions|=((b.getWhitePawns()>>>9)&~FILE_H);//pawn capture left
+        long option;
         //knight
-        long WN = b.getWhiteKnights();
-        long i=WN&~(WN-1);
-        while(i != 0)
-        {
-            int iLocation=Long.numberOfTrailingZeros(i);
-            if (iLocation>18)
-            {
-                possibility=KNIGHT_C6<<(iLocation-18);
+        long whiteKnightsPositions = b.getWhiteKnights();
+        long i=whiteKnightsPositions&~(whiteKnightsPositions-1);
+        while(i != 0) {
+            int currentPosition=Long.numberOfTrailingZeros(i);
+            if (currentPosition<=18) {
+                option=KNIGHT_C6>>(18-currentPosition);
+            } else {
+
+                option=KNIGHT_C6<<(currentPosition-18);
             }
-            else {
-                possibility=KNIGHT_C6>>(18-iLocation);
+            if (currentPosition%8>=4) {
+                option &=~FILE_AB;
+            } else {
+                option &=~FILE_GH;
             }
-            if (iLocation%8<4)
-            {
-                possibility &=~FILE_GH;
-            }
-            else {
-                possibility &=~FILE_AB;
-            }
-            unsafe |= possibility;
-            WN&=~i;
-            i=WN&~(WN-1);
+            attackedPositions |= option;
+            whiteKnightsPositions&=~i;
+            i=whiteKnightsPositions&~(whiteKnightsPositions-1);
         }
-        //bishop/queen
-        long QB=b.getWhiteQueen()|b.getWhiteBishops();
-        i=QB&~(QB-1);
-        while(i != 0)
-        {
-            int iLocation=Long.numberOfTrailingZeros(i);
-            possibility= SlidingPieces.DAndAntiDMoves(iLocation,b.getAllPieces());
-            unsafe |= possibility;
-            QB&=~i;
-            i=QB&~(QB-1);
+        //bishop and queen
+        long whiteQueenBishopPositions=b.getWhiteQueen()|b.getWhiteBishops();
+        i=whiteQueenBishopPositions&~(whiteQueenBishopPositions-1);
+        while(i != 0) {
+            int currentPosition=Long.numberOfTrailingZeros(i);
+            option= SlidingPieces.DAndAntiDMoves(currentPosition,b.getAllPieces());
+            attackedPositions |= option;
+            whiteQueenBishopPositions&=~i;
+            i=whiteQueenBishopPositions&~(whiteQueenBishopPositions-1);
         }
-        //rook/queen
-        long QR=b.getWhiteQueen()|b.getWhiteRooks();
-        i=QR&~(QR-1);
-        while(i != 0)
-        {
+        //rook and queen
+        long whiteRookQueenPositions=b.getWhiteQueen()|b.getWhiteRooks();
+        i=whiteRookQueenPositions&~(whiteRookQueenPositions-1);
+        while(i != 0) {
             int iLocation=Long.numberOfTrailingZeros(i);
-            possibility= SlidingPieces.HAndVMoves(iLocation,b.getAllPieces());
-            unsafe |= possibility;
-            QR&=~i;
-            i=QR&~(QR-1);
+            option= SlidingPieces.HAndVMoves(iLocation,b.getAllPieces());
+            attackedPositions |= option;
+            whiteRookQueenPositions&=~i;
+            i=whiteRookQueenPositions&~(whiteRookQueenPositions-1);
         }
         //king
-        int iLocation=Long.numberOfTrailingZeros(b.getWhiteKing());
-        if (iLocation>9)
-        {
-            possibility=KING_B7<<(iLocation-9);
+        int currentPosition=Long.numberOfTrailingZeros(b.getWhiteKing());
+        if (currentPosition<=9) {
+            option=KING_B7>>(9-currentPosition);
+        } else {
+            option=KING_B7<<(currentPosition-9);
         }
-        else {
-            possibility=KING_B7>>(9-iLocation);
+        if (currentPosition%8>=4) {
+            option &=~FILE_AB;
+        } else {
+            option &=~FILE_GH;
         }
-        if (iLocation%8<4)
-        {
-            possibility &=~FILE_GH;
-        }
-        else {
-            possibility &=~FILE_AB;
-        }
-        unsafe |= possibility;
-        return unsafe;
+        attackedPositions |= option;
+        return attackedPositions;
     }
     public static long fieldsAttackedByBlack(Board b) {
-        long unsafe;
-        //OCCUPIED=WP|WN|WB|WR|WQ|WK|BP|BN|BB|BR|BQ|BK;
+        long attackedPositions;
         //pawn
-        unsafe=((b.getBlackPawns()<<7)&~FILE_H);//pawn capture right
-        unsafe|=((b.getBlackPawns()<<9)&~FILE_A);//pawn capture left
-        long possibility;
+        attackedPositions=((b.getBlackPawns()<<7)&~FILE_H);//pawn capture right
+        attackedPositions|=((b.getBlackPawns()<<9)&~FILE_A);//pawn capture left
+        long option;
         //knight
-        long BN = b.getBlackKnights();
-        long i=BN&~(BN-1);
-        while(i != 0)
-        {
-            int iLocation=Long.numberOfTrailingZeros(i);
-            if (iLocation>18)
-            {
-                possibility=KNIGHT_C6<<(iLocation-18);
+        long blackKnightsPositions = b.getBlackKnights();
+        long i=blackKnightsPositions&~(blackKnightsPositions-1);
+        while(i != 0) {
+            int currentPosition=Long.numberOfTrailingZeros(i);
+            if (currentPosition<=18) {
+                option=KNIGHT_C6>>(18-currentPosition);
+            } else {
+                option=KNIGHT_C6<<(currentPosition-18);
             }
-            else {
-                possibility=KNIGHT_C6>>(18-iLocation);
+            if (currentPosition%8>=4) {
+                option &=~FILE_AB;
+            } else {
+                option &=~FILE_GH;
             }
-            if (iLocation%8<4)
-            {
-                possibility &=~FILE_GH;
-            }
-            else {
-                possibility &=~FILE_AB;
-            }
-            unsafe |= possibility;
-            BN&=~i;
-            i=BN&~(BN-1);
+            attackedPositions |= option;
+            blackKnightsPositions&=~i;
+            i=blackKnightsPositions&~(blackKnightsPositions-1);
         }
-        //bishop/queen
-        long QB=b.getBlackQueen()|b.getBlackBishops();
-        i=QB&~(QB-1);
-        while(i != 0)
-        {
-            int iLocation=Long.numberOfTrailingZeros(i);
-            possibility= SlidingPieces.DAndAntiDMoves(iLocation,b.getAllPieces());
-            unsafe |= possibility;
-            QB&=~i;
-            i=QB&~(QB-1);
+        //bishop and queen
+        long blackQueenBishopPositions=b.getBlackQueen()|b.getBlackBishops();
+        i=blackQueenBishopPositions&~(blackQueenBishopPositions-1);
+        while(i != 0) {
+            int currentPosition=Long.numberOfTrailingZeros(i);
+            option= SlidingPieces.DAndAntiDMoves(currentPosition,b.getAllPieces());
+            attackedPositions |= option;
+            blackQueenBishopPositions&=~i;
+            i=blackQueenBishopPositions&~(blackQueenBishopPositions-1);
         }
-        //rook/queen
-        long QR=b.getBlackQueen()|b.getBlackRooks();
-        i=QR&~(QR-1);
-        while(i != 0)
-        {
-            int iLocation=Long.numberOfTrailingZeros(i);
-            possibility= SlidingPieces.HAndVMoves(iLocation,b.getAllPieces());
-            unsafe |= possibility;
-            QR&=~i;
-            i=QR&~(QR-1);
+        //rook and queen
+        long blackQueenRookPositions=b.getBlackQueen()|b.getBlackRooks();
+        i=blackQueenRookPositions&~(blackQueenRookPositions-1);
+        while(i != 0) {
+            int currentPosition=Long.numberOfTrailingZeros(i);
+            option= SlidingPieces.HAndVMoves(currentPosition,b.getAllPieces());
+            attackedPositions |= option;
+            blackQueenRookPositions&=~i;
+            i=blackQueenRookPositions&~(blackQueenRookPositions-1);
         }
         //king
-        int iLocation=Long.numberOfTrailingZeros(b.getBlackKing());
-        if (iLocation>9)
-        {
-            possibility=KING_B7<<(iLocation-9);
+        int currentPosition=Long.numberOfTrailingZeros(b.getBlackKing());
+        if (currentPosition<=9) {
+            option=KING_B7>>(9-currentPosition);
+        } else {
+            option=KING_B7<<(currentPosition-9);
+        }if (currentPosition%8>=4) {
+            option &=~FILE_AB;
+        } else {
+            option &=~FILE_GH;
         }
-        else {
-            possibility=KING_B7>>(9-iLocation);
-        }
-        if (iLocation%8<4)
-        {
-            possibility &=~FILE_GH;
-        }
-        else {
-            possibility &=~FILE_AB;
-        }
-        unsafe |= possibility;
-        return unsafe;
+        attackedPositions |= option;
+        return attackedPositions;
     }
 
-
-    //ändert für 1 Bitboard ("long board") die Positionen, nachdem "String move" ausgeführt wurde
     public static long executeMoveforOneBitboard(long board, String move, char type) {
-        if (Character.isDigit(move.charAt(3))) {//'regular' move
+        if (Character.isDigit(move.charAt(3))) {
             int start=(Character.getNumericValue(move.charAt(0))*8)+(Character.getNumericValue(move.charAt(1)));
             int end=(Character.getNumericValue(move.charAt(2))*8)+(Character.getNumericValue(move.charAt(3)));
-            if (((board>>>start)&1)==1)
-
-            //falls "passendes" Bitboard (d.h. auf Startposition war 1)-> Bit von Start auf Endposition verschieben
-            {board&=~(1L<<start); board|=(1L<<end);}
-
-            //bei allen anderen Bitboards Endposition auf 0 setzen (falls auf Ende gecaptured wurde)
+            if (((board>>>start)&1)==1) {board&=~(1L<<start); board|=(1L<<end);}
             else {board&=~(1L<<end);}
-        } else if (move.charAt(3)=='P') {//pawn promotion
+        } else if (move.charAt(3)=='P') {//promotion of pawn
             int start, end;
             if (Character.isUpperCase(move.charAt(2))) {
                 start=Long.numberOfTrailingZeros(FileMasks8[move.charAt(0)-'0']&RankMasks8[1]);
@@ -364,19 +334,19 @@ public class MoveGenerator {
 
     public static long executeCastling(long rookBoard, long kingBoard, String move, char type) {
         int start=(Character.getNumericValue(move.charAt(0))*8)+(Character.getNumericValue(move.charAt(1)));
-        if ((((kingBoard>>>start)&1)==1)&&(("0402".equals(move))||("0406".equals(move))||("7472".equals(move))||("7476".equals(move)))) {//'regular' move
+        if ((((kingBoard>>>start)&1)==1)&&(("7472".equals(move))||("0406".equals(move))||("0402".equals(move))||("7476".equals(move)))) {//'regular' move
             if (type=='R') {
                 switch (move) {
-                    case "7472": rookBoard&=~(1L<<56L); rookBoard|=(1L<<(56L+3));
-                        break;
                     case "7476": rookBoard&=~(1L<<63L); rookBoard|=(1L<<(63L-2));
+                        break;
+                    case "7472": rookBoard&=~(1L<<56L); rookBoard|=(1L<<(56L+3));
                         break;
                 }
             } else {
                 switch (move) {
-                    case "0402": rookBoard&=~(1L<<0L); rookBoard|=(1L<<(0L+3));
-                        break;
                     case "0406": rookBoard&=~(1L<<7L); rookBoard|=(1L<<(7L-2));
+                        break;
+                    case "0402": rookBoard&=~(1L<<0L); rookBoard|=(1L<<(0L+3));
                         break;
                 }
             }
@@ -384,31 +354,24 @@ public class MoveGenerator {
         return rookBoard;
     }
 
-
     public static String executeEnPassant(long board, String move) {
         if (Character.isDigit(move.charAt(3))) {
             int start=(Character.getNumericValue(move.charAt(0))*8)+(Character.getNumericValue(move.charAt(1)));
-            if ((Math.abs(move.charAt(0)-move.charAt(2))==2)&&(((board>>>start)&1)==1)) {//pawn double push
-                //board, to be sure that type is a pawn
-
-
+            if ((Math.abs(move.charAt(0)-move.charAt(2))==2)&&(((board>>>start)&1)==1)) {
                 char rank;
-                if (move.charAt(0)>move.charAt(2)){ //white pawn double push e.g. 6040
+                if (move.charAt(0)>move.charAt(2)){
                     rank = (char) (move.charAt(0)-1);
-                } else { //black pawn double push
+                } else {
                     rank = (char) (move.charAt(0)+1);
                 }
                 char file = move.charAt(1);
 
-                return convertMoveDigitsToField(rank,file); //return field on which that pawn push occured on
+                return convertMoveDigitsToField(rank,file);
             }
         }
         return "-"; //-> no en passant allowed
     }
 
-    //zeileAlt spalteAlt zeileNeu spalteNeu
-    // 0         1         2        3
-    //
 
     public static String convertMoveDigitsToField (char rank, char file){
         char f =(char)(97+(file-48));
@@ -461,16 +424,14 @@ public class MoveGenerator {
 
     }
 
-
-    public static String validMoves(Board b)
-    {
+    /**
+     *
+     * @param b
+     * @return list of valid moves, i. e. moves after which own king is not in check
+     */
+    public static String validMoves(Board b) {
         String validMoves = "";
-
         String moves = ownPossibleMoves(b).replace("-","");
-
-        //System.out.println("moves: "+moves);
-        //moves = sortMovesCaptures(b,moves);
-        //System.out.println("Sorted: "+moves);
 
         for (int i=0;i<moves.length();i+=4) {
 
@@ -497,7 +458,7 @@ public class MoveGenerator {
                 tempB.setWhiteToCastleQueenside(b.isWhiteToCastleQueenside());
                 tempB.setBlackToCastleKingside(b.isBlackToCastleKingside());
                 tempB.setBlackToCastleQueenside(b.isBlackToCastleQueenside());
-                if (Character.isDigit(moves.charAt(3))) {//'regular' move
+                if (Character.isDigit(moves.charAt(3))) {
                     int start=(Character.getNumericValue(moves.charAt(i))*8)+(Character.getNumericValue(moves.charAt(i+1)));
                     if (((1L<<start)&b.getWhiteKing())!=0) {tempB.setWhiteToCastleKingside(false); tempB.setWhiteToCastleQueenside(false);}
                     if (((1L<<start)&b.getBlackKing())!=0) {tempB.setBlackToCastleKingside(false); tempB.setBlackToCastleQueenside(false);}
@@ -509,53 +470,38 @@ public class MoveGenerator {
 
                 tempB.setCurrentPlayerIsWhite(!b.isCurrentPlayerIsWhite());
 
-
                 //check if own King is NOT in danger after move
                 if (((tempB.getWhiteKing()& fieldsAttackedByBlack(tempB))==0 && b.isCurrentPlayerIsWhite()) ||
                         ((tempB.getBlackKing()& fieldsAttackedByWhite(tempB))==0 && !b.isCurrentPlayerIsWhite())) {
                     //add current move to validMoves if king is not in danger
                     validMoves += moves.substring(i,i+4);
-
                 }
             }
-        //System.out.println("-----------------------------------");
-        //System.out.println("validMoves: " + validMoves);
-        //validMoves = sortMovesCaptures(b,validMoves);
-        //System.out.println("Sorted:");
-        //System.out.println(validMoves.length()%4);
-        //System.out.println(b.bitboardsToFenParser());
-        //b.drawBoard();
-        //System.out.println("-----------------------------------");
         return validMoves;
-
     }
 
+    /**
+     * executes one moves for all bitboards of a given board
+     * @param b
+     * @param move
+     */
     public static void makeMove(Board b, String move){
-
+        //game is over
         if (move == null || move.equals("")){
-
-            //wird angegriffen?
             if(b.isCurrentPlayerIsWhite()){
-
-
-
-                if((fieldsAttackedByBlack(b)&b.getWhiteKing())!=0){
-                    //Weißer König wird angegriffen
+                if((fieldsAttackedByBlack(b)&b.getWhiteKing())!=0){//white king is attacked
                     b.setGameOver(true);
                     b.setWhiteWon(false);
                     return;
                 }
-
-            }else { //Schwarz am Zug
+            } else {
                 if((fieldsAttackedByWhite(b)&b.getBlackKing())!=0){
                     b.setGameOver(true);
                     b.setWhiteWon(true);
                     return;
                 }
-
             }
-
-            //wird nicht angegriffen -> Remis
+            //no king is attacked -> remis
             b.setGameOver(true);
             b.setRemis(true);
             return;
@@ -571,14 +517,13 @@ public class MoveGenerator {
         //System.out.println(player+" played: "+convertMoveDigitsToField(move.charAt(0),move.charAt(1))+"->"+convertMoveDigitsToField(move.charAt(2),move.charAt(3)));
 
 
-            String oldFEN = b.bitboardsToFenParser().split(" ")[0]; //für 50-Zug-Remis-Regel
+        String oldFEN = b.bitboardsToFenParser().split(" ")[0]; //used for 50-Moves-Remis-Rule
         long oldWhitePawns = b.getWhitePawns();
         long oldBlackPawns = b.getBlackPawns();
-
         long oldWhiteKing = b.getWhiteKing();
         long oldBlackKing = b.getBlackKing();
 
-        //Castling (muss ->vor<- Änderung auf Bitboard durchgeführt werden)
+        //Castling
         if (Character.isDigit(move.charAt(3))) {//'regular' move
             int start=(Character.getNumericValue(move.charAt(0))*8)+(Character.getNumericValue(move.charAt(0+1)));
             if (((1L<<start)&b.getWhiteKing())!=0) { b.setWhiteToCastleKingside(false); b.setWhiteToCastleQueenside(false);}
@@ -589,11 +534,9 @@ public class MoveGenerator {
             if (((1L<<start)&b.getBlackRooks()&1L)!=0) {b.setBlackToCastleQueenside(false);}
         }
 
-        //En Passant (muss ->vor<- Änderung auf Bitboard durchgeführt werden)
+        //En Passant
         //b.setEnPassantBitboardFile(makeMoveEP(b.getWhitePawns()|b.getBlackPawns(),move));
         b.setEnPassants(executeEnPassant(b.getWhitePawns()|b.getBlackPawns(),move));
-
-
 
         b.setWhitePawns(executeMoveforOneBitboard(b.getWhitePawns(), move, 'P'));
         b.setWhiteKnights(executeMoveforOneBitboard(b.getWhiteKnights(), move, 'N'));
@@ -608,20 +551,15 @@ public class MoveGenerator {
         b.setBlackQueen(executeMoveforOneBitboard(b.getBlackQueen(), move, 'q'));
         b.setBlackKing(executeMoveforOneBitboard(b.getBlackKing(), move, 'k'));
 
-        //Castling auch vor Änderung der King Position??
         b.setWhiteRooks(executeCastling(b.getWhiteRooks(), oldWhiteKing|oldBlackKing, move, 'R'));
         b.setBlackRooks(executeCastling(b.getBlackRooks(), oldWhiteKing|oldBlackKing, move, 'r'));
 
-
-
-
         b.setCurrentPlayerIsWhite(!b.isCurrentPlayerIsWhite());
 
-        if(b.getWhitePawns()!=oldWhitePawns||b.getBlackPawns()!=oldBlackPawns){ //wurde ein Bauer bewegt?(/geschlagen)
+        if(b.getWhitePawns()!=oldWhitePawns||b.getBlackPawns()!=oldBlackPawns){ //check if pawn was moved or captured
             b.setHalfMoveCount(-1);
-        } else {  //wurde eine Figur geschlagen?
-            String newFEN = b.bitboardsToFenParser().split(" ")[0]; //für 50-Zug-Remis-Regel;
-
+        } else {  //check if figure was captured
+            String newFEN = b.bitboardsToFenParser().split(" ")[0]; //for 50-Moves-Remis-Rule
             int oldFigureCount =0;
             for (int i =0; i<oldFEN.length();i++){
                 if(oldFEN.charAt(i) == 'r'||oldFEN.charAt(i) == 'n'||oldFEN.charAt(i) == 'b'||oldFEN.charAt(i) == 'k'||oldFEN.charAt(i) == 'q'||oldFEN.charAt(i) == 'p'||oldFEN.charAt(i) == 'P'||oldFEN.charAt(i) == 'R'||oldFEN.charAt(i) == 'N'||oldFEN.charAt(i) == 'B'||oldFEN.charAt(i) == 'K'||oldFEN.charAt(i) == 'Q'){
@@ -646,10 +584,8 @@ public class MoveGenerator {
             b.setNextMoveCount(b.getNextMoveCount()+1); //"full" move after black
         }
 
-
         //Check if King is in CENTRE
         if((CENTRE&b.getWhiteKing())!=0){
-            //Weißer König wird angegriffen
             b.setGameOver(true);
             b.setWhiteWon(true);
             return;
@@ -660,7 +596,7 @@ public class MoveGenerator {
             return;
         }
 
-        //50-Züge-Remis-Regel
+        //50-Moves-Remis-Rule
         if(b.getHalfMoveCount()>=100){
             b.setGameOver(true);
             b.setRemis(true);
@@ -683,22 +619,10 @@ public class MoveGenerator {
             return alphaBeta(b, depth, Integer.MIN_VALUE, Integer.MAX_VALUE, true).substring(0, 4);
         }
 
-        //Das hier nicht löschen!! Ist Variante ohne PVS nur mit IDS!
-
-/*            System.out.println("Using iterative deepening search for move generation");
-            //Iterative Deepening Search (ohne Zugsortierung)
-            long timeLimit = standardDeviationTimeLimit(b.getNextMoveCount(), 100L);
-            return iterativeDeepeningSearch(b, timeLimit).substring(0, 4);
-*/
-
         System.out.println("Using principal variation search for move generation");
         //Iterative Deepening Search + PVS (mit PV Zugsortierung)
         long timeLimit = standardDeviationTimeLimit(b.getNextMoveCount(), 300L); //gamePhaseTimeLimit(b, 250);
         return PrincipalVariationSearch.principalVariationSearchWithTimelimit(b, timeLimit).substring(0, 4);
-
-        //Iterative Deepening Search + PVS (mit PV Zugsortierung)
-        /*long timeLimit = standardDeviationTimeLimit(b.getNextMoveCount(), 100L);
-        return alphaBetaNullMoveTimeLimit(b, 4, Integer.MIN_VALUE, Integer.MAX_VALUE, true, System.currentTimeMillis(), timeLimit).substring(0, 4);*/
 
         //System.out.println("Using alpha beta search for move generation");
         //return alphaBeta(b, suchtiefe, Integer.MIN_VALUE, Integer.MAX_VALUE, true).substring(0, 4);
@@ -728,209 +652,115 @@ public class MoveGenerator {
         return timeLimit;
     }
 
-
     /**
-     *
+     * performs alphaBeta search in order to get the best move
      * @param b
-     * @param depth
-     * @param alpha
-     * @param beta
+     * @param depth maximal search depth
+     * @param alpha initialized with Integer.MIN_VALUE
+     * @param beta initialized with Integer.MAX_VALUE
      * @param isMaxPlayer
-     * @return String in this format: XXXXY.. where XXXX is representation of move and Y.. value of Bewertungsfunktion
+     * @return String in this format: XXXXY.. where XXXX is representation of move and Y.. value of assessment function
      */
     public static String alphaBeta (Board b, int depth, int alpha, int beta, boolean isMaxPlayer){
-        //System.out.println("Is KI playing white: "+ b.isKIPlayingWhite());
-        //System.out.println("Current player is white: "+ b.isCurrentPlayerIsWhite());
-        //System.out.println("Is max player: "+isMaxPlayer);
-
-
         if(depth == 0){
             assessedLeaves++;
-            //TODO: "gameOver" wird momentan am Anfang von makeMove gesetzt, wenn eigener Player Schachmatt ist
-            //wenn am Ende von Make move noch "gameOver" gesetzt würde, wenn anderer Player Schachmatt ist (oder gleich am Ende von validMoves, wenn das leer ist
-            //dann könnte man hier die moveList auch erst nach dem check dass nicht gameOver ist generieren und so evtl. Zeit sparen
-            //momentan könnte moveList jedoch noch "" sein ohne dass gameOver schon gesetzt wurde
-            //TODO: muss dan bei der Bewertungsfunktion überprüft werden, ob gerade verloren ist/König im Schachmatt steht?
             String score = String.valueOf(b.assessBoardFromOwnPerspective());
-
-            //System.out.println(b.getCreatedByMove() + score);
-            if(b.getCreatedByMove().equals("")) return "9999" + score; //um mögliche Errors zu vermeiden (kann nur == "" wenn mit Suchtiefe 0 gestartet -> kommt im richtigen Spiel nciht vor)
-            return b.getCreatedByMove() + score; //TODO: wann wird created by move gesetzt?
+            if(b.getCreatedByMove().equals("")) return "9999" + score;
+            return b.getCreatedByMove() + score;
         }
-
         String moveList = validMoves(b);
-
-        //System.out.println("move list:" + moveList);
-        //System.out.println("in depth:" + depth);
-
         if(b.isGameOver()||moveList.equals("")){
             assessedLeaves++;
-            //TODO: "gameOver" wird momentan am Anfang von makeMove gesetzt, wenn eigener Player Schachmatt ist
-            //wenn am Ende von Make move noch "gameOver" gesetzt würde, wenn anderer Player Schachmatt ist (oder gleich am Ende von validMoves, wenn das leer ist
-            //dann könnte man hier die moveList auch erst nach dem check dass nicht gameOver ist generieren und so evtl. Zeit sparen
-            //momentan könnte moveList jedoch noch "" sein ohne dass gameOver schon gesetzt wurde
-            //TODO: muss dan bei der Bewertungsfunktion überprüft werden, ob gerade verloren ist/König im Schachmatt steht?
             String score = String.valueOf(b.assessBoardFromOwnPerspective());
-
-            //System.out.println(b.getCreatedByMove() + score);
-            if(b.getCreatedByMove().equals("")) return "9999" + score; //um mögliche Errors zu vermeiden (kann nur == "" wenn mit Suchtiefe 0 gestartet -> kommt im richtigen Spiel nciht vor)
-            return b.getCreatedByMove() + score; //TODO: wann wird created by move gesetzt?
+            if(b.getCreatedByMove().equals("")) return "9999" + score;
+            return b.getCreatedByMove() + score;
         }
-
-
-
         if(isMaxPlayer){
-            String bestMove = "9999";
+            String bestMove = "9999"; //prevents NullPointerException, value will be overwritten
             for(int i = 0; i<moveList.length(); i+=4){
-
                 String move = moveList.substring(i,i+4);
-
-                //System.out.println("Iteration: " + i + " with move: " + move);
                 Board newBoard = b.createBoardFromMove(move);
                 newBoard.setCreatedByMove(move);
-
                 int currentEval = Integer.parseInt(alphaBeta(newBoard, depth-1, alpha, beta, false).substring(4));
-                //System.out.println("alpha was:" + alpha);
-                //System.out.println("beta was:" + beta);
                 if(currentEval > alpha){
-                    bestMove = move; //equiv. zu b.getCreatedByMove();
+                    bestMove = move;
                     alpha = currentEval;
                 }
-                //System.out.println("alpha is:" + alpha);
-                //alpha = Math.max(alpha,currentEval); wird redundant, siehe 2 Zeilen vorher
-
                 if (beta<=alpha){
-                    //System.out.println("Beta cutoff!");
                     break; //beta-cutoff
                 }
-
-
-
             }
             return bestMove + alpha;
         } else {
             String bestMove= "9999";
             for(int i = 0; i<moveList.length(); i+=4){
-
                 String move = moveList.substring(i,i+4);
-                //System.out.println("Iteration: " + i + " with move: " + move);
-
-
                 Board newBoard = b.createBoardFromMove(move);
                 newBoard.setCreatedByMove(move);
-
                 int currentEval = Integer.parseInt(alphaBeta(newBoard, depth-1, alpha, beta, true).substring(4));
-                //System.out.println("beta was:" + beta);
-                //System.out.println("alpha was:" + alpha);
                 if (currentEval < beta){
                     bestMove = move;
                     beta = currentEval;
                 }
-                //System.out.println("beta is:" + beta);
-                //beta = Math.min(beta, currentEval);
-
                 if (beta <= alpha){
-                    //System.out.println("Alpha cutoff!");
                     break; //alpha-cutoff
                 }
-
             }
             return bestMove + beta;
         }
     }
 
-
-    //das gleiche wie alphaBeta nur ohne cutoffs
     public static String minMax (Board b, int depth, boolean isMaxPlayer){
 
         if (depth == 0){
             assessedLeaves++;
-            //TODO: "gameOver" wird momentan am Anfang von makeMove gesetzt, wenn eigener Player Schachmatt ist
-            //wenn am Ende von Make move noch "gameOver" gesetzt würde, wenn anderer Player Schachmatt ist (oder gleich am Ende von validMoves, wenn das leer ist
-            //dann könnte man hier die moveList auch erst nach dem check dass nicht gameOver ist generieren und so evtl. Zeit sparen
-            //momentan könnte moveList jedoch noch "" sein ohne dass gameOver schon gesetzt wurde
-            //TODO: muss dan bei der Bewertungsfunktion überprüft werden, ob gerade verloren ist/König im Schachmatt steht?
-
             String score = String.valueOf(b.assessBoardFromOwnPerspective());
-
-            //System.out.println(b.getCreatedByMove() + score);
-            return b.getCreatedByMove() + score; //TODO: wann wird created by move gesetzt?
+            return b.getCreatedByMove() + score;
         }
-
         String moveList = validMoves(b);
-        //System.out.println("Valid Move List: " + moveList);
-
         if(b.isGameOver()||moveList.equals("")){
             assessedLeaves++;
-            //TODO: "gameOver" wird momentan am Anfang von makeMove gesetzt, wenn eigener Player Schachmatt ist
-            //wenn am Ende von Make move noch "gameOver" gesetzt würde, wenn anderer Player Schachmatt ist (oder gleich am Ende von validMoves, wenn das leer ist
-            //dann könnte man hier die moveList auch erst nach dem check dass nicht gameOver ist generieren und so evtl. Zeit sparen
-            //momentan könnte moveList jedoch noch "" sein ohne dass gameOver schon gesetzt wurde
-            //TODO: muss dan bei der Bewertungsfunktion überprüft werden, ob gerade verloren ist/König im Schachmatt steht?
-
             String score = String.valueOf(b.assessBoardFromOwnPerspective());
-
-            //System.out.println(b.getCreatedByMove() + score);
-            return b.getCreatedByMove() + score; //TODO: wann wird created by move gesetzt?
+            return b.getCreatedByMove() + score;
         }
-
-
-
         if(isMaxPlayer){
-            //System.out.println("This is max player");
             String bestMove = "";
             int max = -Integer.MAX_VALUE;
             for(int i = 0; i<moveList.length(); i+=4){
-
                 String move = moveList.substring(i,i+4);
-
-                //System.out.println("Iteration: " + i + " with move: " + move);
                 Board newBoard = b.createBoardFromMove(move);
                 newBoard.setCreatedByMove(move);
-
-                String zwischenergebnis = minMax(newBoard, depth-1, false);
-                //System.out.println("zwischenergebnis: " + zwischenergebnis);
-                int currentEval = Integer.parseInt(zwischenergebnis.substring(4));
-                //System.out.println("currentEval: "+ currentEval + "in iteration (max): " + i + "of move: " + move);
+                String temp = minMax(newBoard, depth-1, false);
+                int currentEval = Integer.parseInt(temp.substring(4));
                 if(currentEval > max){
-                    bestMove = move; //equiv. zu b.getCreatedByMove();
+                    bestMove = move;
                     max = currentEval;
-                    //System.out.println("was greater!");
                 }
-
-
-
             }
-            //System.out.println("best move(max): " + bestMove + "with score: " + max);
             return bestMove + max;
         } else {
-            //System.out.println("This is min player");
             String bestMove= "";
             int min = Integer.MAX_VALUE;
             for(int i = 0; i<moveList.length(); i+=4){
-
                 String move = moveList.substring(i,i+4);
-                //System.out.println("Iteration: " + i + " with move: " + move);
-
-
                 Board newBoard = b.createBoardFromMove(move);
                 newBoard.setCreatedByMove(move);
-
                 int currentEval = Integer.parseInt(minMax(newBoard, depth-1, true).substring(4));
-                //System.out.println("currentEval: "+ currentEval + "in iteration (min): " + i + "of move: " + move);
                 if (currentEval < min){
                     bestMove = move;
                     min = currentEval;
-                    //System.out.println("was lower!");
                 }
-
             }
-            //System.out.println("best move(min): " + bestMove + "with score: " + min);
             return bestMove + min;
         }
     }
 
-    //IDS
+    /**
+     * performs iterative deepening search (without move ordering) until timeLimit exceeds
+     * @param b
+     * @param timeLimit
+     * @return
+     */
     public static String iterativeDeepeningSearch(Board b, long timeLimit){
         System.out.println("Starting iterative deepening search with time limit: "+timeLimit);
         long startTime = System.currentTimeMillis();
@@ -945,143 +775,79 @@ public class MoveGenerator {
                 break;
             }
             long newTimeLimit = endTime-currentTime;
-            String result = alphaBetaTimeLimit(b, depth, Integer.MIN_VALUE, Integer.MAX_VALUE, true, currentTime, newTimeLimit); //TODO
-
-            if(!outOfTime){ //ohne den check könnte bestMoveSoFar mit move aus unkomplettierter Suche überschrieben werden, der könnte (momentan noch) schlechter sein
+            String result = alphaBetaTimeLimit(b, depth, Integer.MIN_VALUE, Integer.MAX_VALUE, true, currentTime, newTimeLimit);
+            if(!outOfTime){ //only consider completed iterations
                 bestMoveSoFar = result;
                 System.out.println("depth was: " + depth);
             }
             depth++;
-            //System.out.println("Increased depth, current:" + depth);
         }
         return bestMoveSoFar;
     }
 
-    //Alpha-Beta with Time-Limit for IDS
-    //TODO: aktualisieren, falls alphaBeta Methode verändert wird
     public static String alphaBetaTimeLimit (Board b, int depth, int alpha, int beta, boolean isMaxPlayer, long startTime, long timeLimit){
-        //System.out.println("Is KI playing white: "+ b.isKIPlayingWhite());
-        //System.out.println("Current player is white: "+ b.isCurrentPlayerIsWhite());
-        //System.out.println("Is max player: "+isMaxPlayer);
-
         long currentTime = System.currentTimeMillis();
         long elapsedTime = (currentTime - startTime);
         if(elapsedTime >= timeLimit){
             outOfTime = true;
         }
-
-
-/*       if (depth == 0) {
-           //System.out.println("Calling qs with move" +b.getCreatedByMove());
-            return quiescenceSearchv1(b, alpha, beta, !isMaxPlayer);
-        }*/
-
         if(depth == 0||outOfTime){
             assessedLeaves++;
             String score = String.valueOf(b.assessBoardFromOwnPerspective());
             if(outOfTime){
                 System.out.println("Out of Time!");
             }
-            //System.out.println("b currently assessed, was created by move" + b.getCreatedByMove());
-            //System.out.println(b.getCreatedByMove() + score);
             if(b.getCreatedByMove().equals("")) return "9999" + score; //um mögliche Errors zu vermeiden (kann nur == "" wenn mit Suchtiefe 0 gestartet -> kommt im richtigen Spiel nciht vor)
             return b.getCreatedByMove() + score;
         }
-
-
-
-
         String moveList = validMoves(b);
-
         if(outOfTime || b.isGameOver()||moveList.equals("")){
             assessedLeaves++;
             String score = String.valueOf(b.assessBoardFromOwnPerspective());
             if(outOfTime){
                 System.out.println("Out of Time! (after Move Generation)");
             }
-            //System.out.println("b currently assessed, was created by move" + b.getCreatedByMove());
-            //System.out.println(b.getCreatedByMove() + score);
-            if(b.getCreatedByMove().equals("")) return "9999" + score; //um mögliche Errors zu vermeiden (kann nur == "" wenn mit Suchtiefe 0 gestartet -> kommt im richtigen Spiel nciht vor)
+            if(b.getCreatedByMove().equals("")) return "9999" + score;
             return b.getCreatedByMove() + score;
         }
-
-        //https://stackoverflow.com/questions/15447580/java-minimax-alpha-beta-pruning-recursion-return
-
         if(isMaxPlayer){
             String bestMove = "9999";
             for(int i = 0; i<moveList.length(); i+=4){
-                if(outOfTime) break; //TODO: richtig? -> out of time wird vor der for Schleife berechnet und evaluiert und kann hier meiner Meinung nach nie true sein... Die nächste Überprüfung dürfte beim nächsten Selbsaufruf erfolgen...
+                if(outOfTime) break;
                 String move = moveList.substring(i,i+4);
                 Board newBoard = b.createBoardFromMove(move);
                 newBoard.setCreatedByMove(move);
-                //System.out.println("max" + "board was created by move:" + move);
-
-                //System.out.println("max: wird mit alpha" + alpha + "und beta:" + beta +"aufgerufen");
-                String zwischenergebnis = alphaBetaTimeLimit(newBoard, depth-1, alpha, beta, false, startTime, timeLimit);
-                //System.out.println("move:" + move + "ze(max): "+zwischenergebnis);
-                int currentEval = Integer.parseInt(zwischenergebnis.substring(4));
-                //System.out.println("currentEval is:" + currentEval);
-                //System.out.println("alpha was:" + alpha);
-                //System.out.println("beta was:" + beta);
+                String temp = alphaBetaTimeLimit(newBoard, depth-1, alpha, beta, false, startTime, timeLimit);
+                int currentEval = Integer.parseInt(temp.substring(4));
                 if(currentEval > alpha){
-                    bestMove = move; //equiv. zu b.getCreatedByMove();
-
+                    bestMove = move;
                     alpha = currentEval;
                 }
-                //System.out.println("best Move is currently" + bestMove);
-                /*if(bestMove.equals("")){
-                    //System.out.println("nothing!");
-                    bestMove = "9999";
-                }*/
-                //System.out.println("alpha is:" + alpha);
-                //alpha = Math.max(alpha,currentEval); wird redundant, siehe 2 Zeilen vorher
-
                 if (beta<=alpha){
-                    //System.out.println("Beta cutoff!");
                     cutoffs++;
                     break; //beta-cutoff
                 }
 
             }
-            //System.out.println("max out of for:" + bestMove + alpha);
             return bestMove + alpha;
         } else {
             String bestMove= "9999";
             for(int i = 0; i<moveList.length(); i+=4){
-                if(outOfTime) break; //TODO: richtig?
+                if(outOfTime) break;
                 String move = moveList.substring(i,i+4);
                 Board newBoard = b.createBoardFromMove(move);
                 newBoard.setCreatedByMove(move);
-                //System.out.println("min" + "board was created by move:" + move);
-
-                //System.out.println("min: wird mit alpha" + alpha + "und beta:" + beta +"aufgerufen");
-                String zwischenergebnis = alphaBetaTimeLimit(newBoard, depth-1, alpha, beta, true, startTime, timeLimit);
-                //System.out.println("move:" + move + "ze: "+ zwischenergebnis);
-                int currentEval = Integer.parseInt(zwischenergebnis.substring(4));
-                //System.out.println("currentEval is:" + currentEval);
-                //System.out.println("beta was:" + beta);
-                //System.out.println("alpha was:" + alpha);
+                String temp = alphaBetaTimeLimit(newBoard, depth-1, alpha, beta, true, startTime, timeLimit);
+                int currentEval = Integer.parseInt(temp.substring(4));
                 if (currentEval < beta){
                     bestMove = move;
-
                     beta = currentEval;
                 }
-                //System.out.println("best move is currently:" + bestMove);
-                /*if(bestMove.equals("")){
-                    //System.out.println("nothing!");
-                    bestMove = "9999";
-                }*/
-                //System.out.println("beta is:" + beta );
-                //beta = Math.min(beta, currentEval);
-
                 if (beta <= alpha){
-                    //System.out.println("Alpha cutoff!");
                     cutoffs++;
                     break; //alpha-cutoff
                 }
-
             }
-            //System.out.println("min out of for:" + bestMove + beta);
             return bestMove + beta;
         }
     }
@@ -1134,7 +900,7 @@ public class MoveGenerator {
             }
             //System.out.println("b currently assessed, was created by move" + b.getCreatedByMove());
             //System.out.println(b.getCreatedByMove() + score);
-            if(b.getCreatedByMove().equals("")) return "9999" + score; //um mögliche Errors zu vermeiden (kann nur == "" wenn mit Suchtiefe 0 gestartet -> kommt im richtigen Spiel nciht vor)
+            if(b.getCreatedByMove().equals("")) return "9999" + score;
             return b.getCreatedByMove() + score;
         }
 
@@ -1144,7 +910,7 @@ public class MoveGenerator {
         if(isMaxPlayer){
             String bestMove = "9999";
             for(int i = 0; i<moveList.length(); i+=4){
-                if(outOfTime) break; //TODO: richtig? -> out of time wird vor der for Schleife berechnet und evaluiert und kann hier meiner Meinung nach nie true sein... Die nächste Überprüfung dürfte beim nächsten Selbsaufruf erfolgen...
+                if(outOfTime) break;
                 String move = moveList.substring(i,i+4);
                 Board newBoard = b.createBoardFromMove(move);
                 newBoard.setCreatedByMove(move);
@@ -1154,7 +920,7 @@ public class MoveGenerator {
                 int currentEval = Integer.parseInt(zwischenergebnis.substring(4));
 
                 if(currentEval > alpha){
-                    bestMove = move; //equiv. zu b.getCreatedByMove();
+                    bestMove = move;
                     alpha = currentEval;
                 }
 
@@ -1167,7 +933,7 @@ public class MoveGenerator {
         } else {
             String bestMove= "9999";
             for(int i = 0; i<moveList.length(); i+=4){
-                if(outOfTime) break; //TODO: richtig?
+                if(outOfTime) break;
                 String move = moveList.substring(i,i+4);
                 Board newBoard = b.createBoardFromMove(move);
                 newBoard.setCreatedByMove(move);
@@ -1190,16 +956,19 @@ public class MoveGenerator {
         }
     }
 
-    //IDS ohne Zeitlimit (für Benchmarkvergleich mit IDS+PVS)
+
+    /**
+     * performs iterative deepening search (without move ordering) until a given maximal depth
+     * method is used for benchmark comparison with principal variation search
+     * @param b
+     * @param depth
+     * @param isMaxPlayer
+     * @return
+     */
     public static String iterativeDeepeningSearchNoTimeLimit(Board b, int depth, boolean isMaxPlayer){
-        //System.out.println("Starting iterative deepening search with depth: "+depth);
-
         String result ="";
-
         for(int i = 1; i <= depth; i++){
-            //System.out.println("current depth: " + i);
-
-            result = alphaBeta(b, i, Integer.MIN_VALUE, Integer.MAX_VALUE, isMaxPlayer);
+           result = alphaBeta(b, i, Integer.MIN_VALUE, Integer.MAX_VALUE, isMaxPlayer);
 
         }
         return result;
