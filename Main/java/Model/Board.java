@@ -310,13 +310,13 @@ public class Board implements Comparable <Board> {
 
         //Doubled pawns
         for (int i = 0; i<8; i++){
-            if (Long.bitCount(FileMasks8[i]& this.getOwnPawns())>1){
+            if (Long.bitCount(ColumnMasks8[i]& this.getOwnPawns())>1){
                 this.assessmentValue -= 50;
                 //System.out.println("Doppelbauer in" + i);
             }
         }
         for (int i = 0; i<8; i++){
-            if (Long.bitCount(FileMasks8[i]& this.getOppositePawns())>1){
+            if (Long.bitCount(ColumnMasks8[i]& this.getOppositePawns())>1){
                 this.assessmentValue += 50;
                 //System.out.println("Doppelbauer in" + i);
             }
@@ -463,13 +463,13 @@ public class Board implements Comparable <Board> {
 
         //Doubled pawns
         for (int i = 0; i<8; i++){
-            if (Long.bitCount(FileMasks8[i]& this.getOwnPawns())>1){
+            if (Long.bitCount(ColumnMasks8[i]& this.getOwnPawns())>1){
                 this.assessmentValue -= 50;
                 //System.out.println("Doppelbauer in" + i);
             }
         }
         for (int i = 0; i<8; i++){
-            if (Long.bitCount(FileMasks8[i]& this.getOppositePawns())>1){
+            if (Long.bitCount(ColumnMasks8[i]& this.getOppositePawns())>1){
                 this.assessmentValue += 50;
                 //System.out.println("Doppelbauer in" + i);
             }
@@ -1238,13 +1238,13 @@ public class Board implements Comparable <Board> {
 
         //Doubled pawns
         for (int i = 0; i<8; i++){
-            if (Long.bitCount(FileMasks8[i]& this.getOwnPawns())>1){
+            if (Long.bitCount(ColumnMasks8[i]& this.getOwnPawns())>1){
                 this.assessmentValue -= 50;
                 //System.out.println("Doppelbauer in" + i);
             }
         }
         for (int i = 0; i<8; i++){
-            if (Long.bitCount(FileMasks8[i]& this.getOppositePawns())>1){
+            if (Long.bitCount(ColumnMasks8[i]& this.getOppositePawns())>1){
                 this.assessmentValue += 50;
                 //System.out.println("Doppelbauer in" + i);
             }
@@ -1384,13 +1384,13 @@ public class Board implements Comparable <Board> {
 
         //Doubled pawns
         for (int i = 0; i<8; i++){
-            if (Long.bitCount(FileMasks8[i]& this.getOwnPawns())>1){
+            if (Long.bitCount(ColumnMasks8[i]& this.getOwnPawns())>1){
                 this.assessmentValue -= 50;
                 //System.out.println("Doppelbauer in" + i);
             }
         }
         for (int i = 0; i<8; i++){
-            if (Long.bitCount(FileMasks8[i]& this.getOppositePawns())>1){
+            if (Long.bitCount(ColumnMasks8[i]& this.getOppositePawns())>1){
                 this.assessmentValue += 50;
                 //System.out.println("Doppelbauer in" + i);
             }

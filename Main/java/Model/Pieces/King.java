@@ -4,7 +4,7 @@ import Model.Board;
 import Model.MoveGenerator;
 
 import static Model.Mask.*;
-import static Model.Mask.FILE_AB;
+import static Model.Mask.COLUMN_AB;
 
 public class King implements Piece {
 
@@ -22,9 +22,9 @@ public class King implements Piece {
                 option=KING_B7<<(currentLocation - 9);
             }
             if (currentLocation%8 >= 4) {
-                option &=~FILE_AB&(~(b.getWhitePieces()|b.getBlackKing()));
+                option &=~COLUMN_AB &(~(b.getWhitePieces()|b.getBlackKing()));
             } else {
-                option &=~FILE_GH&(~(b.getWhitePieces()|b.getBlackKing())); //TODO: (Verständnisfrage) Hier würde FILE_H auch reichen, oder?
+                option &=~COLUMN_GH &(~(b.getWhitePieces()|b.getBlackKing())); //TODO: (Verständnisfrage) Hier würde FILE_H auch reichen, oder?
             }
 
             //normal moves
@@ -60,9 +60,9 @@ public class King implements Piece {
                 option = KING_B7 << (currentPosition - 9);
             }
             if (currentPosition % 8 >= 4) {
-                option &= ~FILE_AB & (~(b.getBlackPieces() | b.getWhiteKing()));
+                option &= ~COLUMN_AB & (~(b.getBlackPieces() | b.getWhiteKing()));
             } else {
-                option &= ~FILE_GH & (~(b.getBlackPieces() | b.getWhiteKing()));
+                option &= ~COLUMN_GH & (~(b.getBlackPieces() | b.getWhiteKing()));
             }
 
             //normal moves

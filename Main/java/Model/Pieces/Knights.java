@@ -24,9 +24,9 @@ public class Knights implements Piece {
                     option=KNIGHT_C6<<(currentLocation-18);
                 }
                 if (currentLocation%8 >= 4) {
-                    option &=~FILE_AB&(~(b.getWhitePieces()|b.getBlackKing()));
+                    option &=~COLUMN_AB &(~(b.getWhitePieces()|b.getBlackKing()));
                 } else {
-                    option &=~FILE_GH&(~(b.getWhitePieces()|b.getBlackKing()));
+                    option &=~COLUMN_GH &(~(b.getWhitePieces()|b.getBlackKing()));
                 }
 
                 long k=option&~(option - 1);
@@ -53,9 +53,9 @@ public class Knights implements Piece {
                     option=KNIGHT_C6<<(iLocation-18);
                 }
                 if (iLocation%8 >= 4) {
-                    option &=~FILE_AB&(~(b.getBlackPieces()|b.getWhiteKing()));
+                    option &=~COLUMN_AB &(~(b.getBlackPieces()|b.getWhiteKing()));
                 } else {
-                    option &=~FILE_GH&(~(b.getBlackPieces()|b.getWhiteKing()));
+                    option &=~COLUMN_GH &(~(b.getBlackPieces()|b.getWhiteKing()));
                 }
 
                 long k=option&~(option - 1);

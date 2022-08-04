@@ -14,7 +14,7 @@ public class Pawns implements Piece {
 
             //1 forward
             long pawnMoves = (b.getWhitePawns() >> 8)
-                    & ~RANK_8
+                    & ~ROW_8
                     & b.getEmptyFields();
             for (int i = Long.numberOfTrailingZeros(pawnMoves); i < 64 - Long.numberOfLeadingZeros(pawnMoves); i++) {
                 if (((pawnMoves >> i) & 1) == 1) {
@@ -24,7 +24,7 @@ public class Pawns implements Piece {
 
             //2 forward
             pawnMoves = (b.getWhitePawns() >> 16)
-                    & RANK_4
+                    & ROW_4
                     & b.getEmptyFields() & (b.getEmptyFields() >> 8) ;
             for (int i = Long.numberOfTrailingZeros(pawnMoves); i < 64 - Long.numberOfLeadingZeros(pawnMoves); i++) {
                 if (((pawnMoves >> i) & 1) == 1) {
@@ -34,7 +34,7 @@ public class Pawns implements Piece {
 
             //right capture
             pawnMoves = (b.getWhitePawns() >> 7)
-                    & ~RANK_8 & ~FILE_A &
+                    & ~ROW_8 & ~COLUMN_A &
                     (b.getBlackPieces() & ~b.getBlackKing());
             for (int i = Long.numberOfTrailingZeros(pawnMoves); i < 64 - Long.numberOfLeadingZeros(pawnMoves); i++) {
                 if (((pawnMoves >> i) & 1) == 1) {
@@ -44,7 +44,7 @@ public class Pawns implements Piece {
 
             //left capture
             pawnMoves = (b.getWhitePawns() >> 9)
-                    & ~RANK_8 & ~FILE_H
+                    & ~ROW_8 & ~COLUMN_H
                     & (b.getBlackPieces() & ~b.getBlackKing());
             for (int i = Long.numberOfTrailingZeros(pawnMoves); i < 64 - Long.numberOfLeadingZeros(pawnMoves); i++) {
                 if (((pawnMoves >> i) & 1) == 1) {
@@ -56,7 +56,7 @@ public class Pawns implements Piece {
             //Promotions
             //pawn promotion forward
             pawnMoves = (b.getWhitePawns() >> 8)
-                    & RANK_8
+                    & ROW_8
                     & b.getEmptyFields();
             for (int i = Long.numberOfTrailingZeros(pawnMoves); i < 64 - Long.numberOfLeadingZeros(pawnMoves); i++) {
                 if (((pawnMoves >> i) & 1) == 1) {
@@ -69,7 +69,7 @@ public class Pawns implements Piece {
 
             //pawn promotion, capture right
             pawnMoves = (b.getWhitePawns() >> 7)
-                    & RANK_8 & ~FILE_A
+                    & ROW_8 & ~COLUMN_A
                     & (b.getBlackPieces() & ~b.getBlackKing());
             for (int i = Long.numberOfTrailingZeros(pawnMoves); i < 64 - Long.numberOfLeadingZeros(pawnMoves); i++) {
                 if (((pawnMoves >> i) & 1) == 1) {
@@ -81,7 +81,7 @@ public class Pawns implements Piece {
             }
 
             //pawn promotion by capture left
-            pawnMoves = (b.getWhitePawns() >> 9) & (b.getBlackPieces() & ~b.getBlackKing()) & RANK_8 & ~FILE_H;
+            pawnMoves = (b.getWhitePawns() >> 9) & (b.getBlackPieces() & ~b.getBlackKing()) & ROW_8 & ~COLUMN_H;
             for (int i = Long.numberOfTrailingZeros(pawnMoves); i < 64 - Long.numberOfLeadingZeros(pawnMoves); i++) {
                 if (((pawnMoves >> i) & 1) == 1) {
                     moveList += "" + (i % 8 + 1) + (i % 8) + "QP"
@@ -93,12 +93,12 @@ public class Pawns implements Piece {
 
             long EPBitboardFileFromFenString = 0L;
             if(b.getEnPassants().length()>1){
-                EPBitboardFileFromFenString = FileMasks8[b.getEnPassants().charAt(0)-97];
+                EPBitboardFileFromFenString = ColumnMasks8[b.getEnPassants().charAt(0)-97];
             }
 
             long option = 0L;
             option = (b.getWhitePawns() << 1)
-                    & RANK_5 & ~FILE_A
+                    & ROW_5 & ~COLUMN_A
                     & b.getBlackPawns() & EPBitboardFileFromFenString;
             if (option != 0)
             {
@@ -108,7 +108,7 @@ public class Pawns implements Piece {
 
             //en passant left
             option = (b.getWhitePawns() >> 1) & b.getBlackPawns()
-                    & RANK_5 & ~FILE_H
+                    & ROW_5 & ~COLUMN_H
                     & EPBitboardFileFromFenString;
             if (option != 0)
             {
@@ -120,7 +120,7 @@ public class Pawns implements Piece {
 
             //move 1 forward
             long pawnMoves = (b.getBlackPawns() << 8)
-                    & ~RANK_1
+                    & ~ROW_1
                     & b.getEmptyFields();
 
             for (int i = Long.numberOfTrailingZeros(pawnMoves); i < 64 - Long.numberOfLeadingZeros(pawnMoves); i++) {
@@ -132,7 +132,7 @@ public class Pawns implements Piece {
 
             //move 2 forward
             pawnMoves = (b.getBlackPawns() << 16)
-                    & RANK_5
+                    & ROW_5
                     & b.getEmptyFields() & (b.getEmptyFields() << 8);
 
             for (int i = Long.numberOfTrailingZeros(pawnMoves); i < 64 - Long.numberOfLeadingZeros(pawnMoves); i++) {
@@ -143,7 +143,7 @@ public class Pawns implements Piece {
 
             //capture right
             pawnMoves = (b.getBlackPawns() << 7)
-                    & ~RANK_1 & ~FILE_H
+                    & ~ROW_1 & ~COLUMN_H
                     & (b.getWhitePieces() & ~b.getWhiteKing());
 
             for (int i = Long.numberOfTrailingZeros(pawnMoves); i < 64 - Long.numberOfLeadingZeros(pawnMoves); i++) {
@@ -155,7 +155,7 @@ public class Pawns implements Piece {
 
             //capture left
             pawnMoves = (b.getBlackPawns() << 9)
-                    & ~RANK_1 & ~FILE_A
+                    & ~ROW_1 & ~COLUMN_A
                     & (b.getWhitePieces() & ~b.getWhiteKing());
 
             for (int i = Long.numberOfTrailingZeros(pawnMoves); i < 64 - Long.numberOfLeadingZeros(pawnMoves); i++) {
@@ -168,7 +168,7 @@ public class Pawns implements Piece {
             //Promotions
             //pawn promotion forward
             pawnMoves = (b.getBlackPawns() << 8)
-                    & RANK_1
+                    & ROW_1
                     & b.getEmptyFields();
 
             for (int i = Long.numberOfTrailingZeros(pawnMoves); i < 64 - Long.numberOfLeadingZeros(pawnMoves); i++) {
@@ -184,7 +184,7 @@ public class Pawns implements Piece {
 
             //pawn promotion, capture left
             pawnMoves = (b.getBlackPawns() << 9)
-                    & RANK_1 & ~FILE_A
+                    & ROW_1 & ~COLUMN_A
                     & (b.getWhitePieces() & ~b.getWhiteKing());
 
             for (int i = Long.numberOfTrailingZeros(pawnMoves); i < 64 - Long.numberOfLeadingZeros(pawnMoves); i++) {
@@ -199,7 +199,7 @@ public class Pawns implements Piece {
 
 
             //pawn promotion, capture right
-            pawnMoves = (b.getBlackPawns() << 7) & (b.getWhitePieces() & ~b.getWhiteKing()) & RANK_1 & ~FILE_H;
+            pawnMoves = (b.getBlackPawns() << 7) & (b.getWhitePieces() & ~b.getWhiteKing()) & ROW_1 & ~COLUMN_H;
             for (int i = Long.numberOfTrailingZeros(pawnMoves); i < 64 - Long.numberOfLeadingZeros(pawnMoves); i++) {
                 if (((pawnMoves >> i) & 1) == 1) {
                     moveList += ""
@@ -213,13 +213,13 @@ public class Pawns implements Piece {
 
             long EpColumn = 0L;
             if(b.getEnPassants().length()>1){
-                EpColumn = FileMasks8[b.getEnPassants().charAt(0)-97];
+                EpColumn = ColumnMasks8[b.getEnPassants().charAt(0)-97];
             }
 
             //en passant right
             long option = 0L;
             option = (b.getBlackPawns() >> 1)&b.getWhitePawns()
-                    & RANK_4 & ~FILE_H
+                    & ROW_4 & ~COLUMN_H
                     & EpColumn;
 
             if (option != 0)
@@ -230,7 +230,7 @@ public class Pawns implements Piece {
 
             //en passant left
             option = (b.getBlackPawns() << 1)&b.getWhitePawns()
-                    & RANK_4 & ~FILE_A
+                    & ROW_4 & ~COLUMN_A
                     &EpColumn;
 
             if (option != 0)

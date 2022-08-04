@@ -2,11 +2,9 @@ import Model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
-import static Model.Mask.FileMasks8;
-import static Model.MoveGenerator.getQuiescenceSearchIterations;
+import static Model.Mask.ColumnMasks8;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class Tests {
@@ -197,7 +195,7 @@ public class Tests {
 
     @Test
     void testDigitConversion(){
-        System.out.println(FileMasks8[("c7").charAt(0)-97]);
+        System.out.println(ColumnMasks8[("c7").charAt(0)-97]);
     }
 
     @Test
