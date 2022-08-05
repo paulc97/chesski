@@ -24,7 +24,7 @@ public class King implements Piece {
             if (currentLocation%8 >= 4) {
                 option &=~COLUMN_AB &(~(b.getWhitePieces()|b.getBlackKing()));
             } else {
-                option &=~COLUMN_GH &(~(b.getWhitePieces()|b.getBlackKing())); //TODO: (Verständnisfrage) Hier würde FILE_H auch reichen, oder?
+                option &=~COLUMN_GH &(~(b.getWhitePieces()|b.getBlackKing()));
             }
 
             //normal moves

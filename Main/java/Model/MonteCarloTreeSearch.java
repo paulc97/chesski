@@ -105,7 +105,7 @@ public class MonteCarloTreeSearch {
     }
     public static double calculateUCTvalue (int parentVisits, int childVisits, double childScore, double C){
         if (childVisits == 0) {
-            return Integer.MAX_VALUE; //TODO: was soll passieren, wenn child noch unbesucht?
+            return Integer.MAX_VALUE;
         }
         double exploitation = (double) childScore / (double) childVisits;
         double exploration = Math.sqrt(Math.log((double) parentVisits)/(double) childVisits);
