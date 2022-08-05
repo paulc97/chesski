@@ -1,4 +1,5 @@
 package Model.Pieces;
+
 import Model.Board;
 
 import static Model.Mask.*;
@@ -25,7 +26,7 @@ public class Pawns implements Piece {
             //2 forward
             pawnMoves = (b.getWhitePawns() >> 16)
                     & ROW_4
-                    & b.getEmptyFields() & (b.getEmptyFields() >> 8) ;
+                    & b.getEmptyFields() & (b.getEmptyFields() >> 8);
             for (int i = Long.numberOfTrailingZeros(pawnMoves); i < 64 - Long.numberOfLeadingZeros(pawnMoves); i++) {
                 if (((pawnMoves >> i) & 1) == 1) {
                     moveList += "" + (i / 8 + 2) + (i % 8) + (i / 8) + (i % 8);
@@ -92,28 +93,26 @@ public class Pawns implements Piece {
             }
 
             long EPBitboardFileFromFenString = 0L;
-            if(b.getEnPassants().length()>1){
-                EPBitboardFileFromFenString = ColumnMasks8[b.getEnPassants().charAt(0)-97];
+            if (b.getEnPassants().length() > 1) {
+                EPBitboardFileFromFenString = ColumnMasks8[b.getEnPassants().charAt(0) - 97];
             }
 
             long option = 0L;
             option = (b.getWhitePawns() << 1)
                     & ROW_5 & ~COLUMN_A
                     & b.getBlackPawns() & EPBitboardFileFromFenString;
-            if (option != 0)
-            {
-                int index=Long.numberOfTrailingZeros(option);
-                moveList+=""+(index%8-1)+(index%8)+"WE";
+            if (option != 0) {
+                int index = Long.numberOfTrailingZeros(option);
+                moveList += "" + (index % 8 - 1) + (index % 8) + "WE";
             }
 
             //en passant left
             option = (b.getWhitePawns() >> 1) & b.getBlackPawns()
                     & ROW_5 & ~COLUMN_H
                     & EPBitboardFileFromFenString;
-            if (option != 0)
-            {
-                int index=Long.numberOfTrailingZeros(option);
-                moveList+=""+(index%8+1)+(index%8)+"WE";
+            if (option != 0) {
+                int index = Long.numberOfTrailingZeros(option);
+                moveList += "" + (index % 8 + 1) + (index % 8) + "WE";
             }
 
         } else {
@@ -212,31 +211,29 @@ public class Pawns implements Piece {
 
 
             long EpColumn = 0L;
-            if(b.getEnPassants().length()>1){
-                EpColumn = ColumnMasks8[b.getEnPassants().charAt(0)-97];
+            if (b.getEnPassants().length() > 1) {
+                EpColumn = ColumnMasks8[b.getEnPassants().charAt(0) - 97];
             }
 
             //en passant right
             long option = 0L;
-            option = (b.getBlackPawns() >> 1)&b.getWhitePawns()
+            option = (b.getBlackPawns() >> 1) & b.getWhitePawns()
                     & ROW_4 & ~COLUMN_H
                     & EpColumn;
 
-            if (option != 0)
-            {
-                int index=Long.numberOfTrailingZeros(option);
-                moveList+=""+(index%8+1)+(index%8)+"BE";
+            if (option != 0) {
+                int index = Long.numberOfTrailingZeros(option);
+                moveList += "" + (index % 8 + 1) + (index % 8) + "BE";
             }
 
             //en passant left
-            option = (b.getBlackPawns() << 1)&b.getWhitePawns()
+            option = (b.getBlackPawns() << 1) & b.getWhitePawns()
                     & ROW_4 & ~COLUMN_A
-                    &EpColumn;
+                    & EpColumn;
 
-            if (option != 0)
-            {
-                int index=Long.numberOfTrailingZeros(option);
-                moveList+=""+(index%8-1)+(index%8)+"BE";
+            if (option != 0) {
+                int index = Long.numberOfTrailingZeros(option);
+                moveList += "" + (index % 8 - 1) + (index % 8) + "BE";
             }
         }
 
