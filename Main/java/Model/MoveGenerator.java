@@ -44,6 +44,8 @@ public class MoveGenerator {
 
     public static String sortMovesCaptures(Board board, String moves) {
 
+        //System.out.println("MoveOrdering");
+
         String QueenCaptures = "";
         String RookCaptures = "";
         String PieceCaptures = "";
@@ -137,7 +139,7 @@ public class MoveGenerator {
             }
         }
 
-        return QueenPromotion + RookPromotion + PiecePromotion + QueenCaptures + RookCaptures + PieceCaptures + PawnCaptures + nonCaptures;
+        return QueenCaptures + RookCaptures + PieceCaptures + PawnCaptures +QueenPromotion + RookPromotion + PiecePromotion + nonCaptures;
 
     }
 
@@ -667,7 +669,7 @@ public class MoveGenerator {
             return validMoves;
         }
 
-        //sortMovesCaptures(b,validMoves);
+
 
         if ((gameTimeLimit - usedTimeInMs) < panicModeTimeBuffer) {
             System.out.println("Entered panic mode");
@@ -724,7 +726,9 @@ public class MoveGenerator {
             if (b.getCreatedByMove().equals("")) return "9999" + score;
             return b.getCreatedByMove() + score;
         }
-        String moveList = validMoves(b);
+
+        String moveList = sortMovesCaptures(b,validMoves(b));
+
         if (b.isGameOver() || moveList.equals("")) {
             assessedLeaves++;
             String score = String.valueOf(b.assessBoardFromOwnPerspective());
