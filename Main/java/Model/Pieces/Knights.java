@@ -12,8 +12,8 @@ public class Knights implements Piece {
 
         if (b.isCurrentPlayerIsWhite()) {
 
-            long currentPositionsWhiteKnights = b.getWhiteKnights();
-            long i=currentPositionsWhiteKnights&~(currentPositionsWhiteKnights-1);
+            long whiteKnights = b.getWhiteKnights();
+            long i=whiteKnights&~(whiteKnights-1);
             long option;
 
             while(i != 0) {
@@ -36,14 +36,14 @@ public class Knights implements Piece {
                     option&=~k;
                     k=option&~(option-1);
                 }
-                currentPositionsWhiteKnights&=~i;
-                i=currentPositionsWhiteKnights&~(currentPositionsWhiteKnights-1);
+                whiteKnights&=~i;
+                i=whiteKnights&~(whiteKnights-1);
             }
 
         } else {
 
-            long currentPositionsBlackKnights = b.getBlackKnights();
-            long i=currentPositionsBlackKnights&~(currentPositionsBlackKnights-1);
+            long blackKnights = b.getBlackKnights();
+            long i=blackKnights&~(blackKnights-1);
             long option;
             while(i != 0) {
                 int iLocation=Long.numberOfTrailingZeros(i);
@@ -65,8 +65,8 @@ public class Knights implements Piece {
                     option&=~k;
                     k=option&~(option-1);
                 }
-                currentPositionsBlackKnights&=~i;
-                i=currentPositionsBlackKnights&~(currentPositionsBlackKnights-1);
+                blackKnights&=~i;
+                i=blackKnights&~(blackKnights-1);
             }
         }
         return moveList;

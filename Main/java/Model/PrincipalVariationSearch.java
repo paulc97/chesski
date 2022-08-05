@@ -151,6 +151,9 @@ public class PrincipalVariationSearch {
             return new Pv(score);
         }
         String moveList = MoveGenerator.validMoves(b);
+
+        moveList = MoveGenerator.sortMovesCaptures(b,moveList);
+
         if (outOfTime||b.isGameOver() || moveList.equals("")) {
             assessedLeaves++;
             assessedLeavesCurrent++;

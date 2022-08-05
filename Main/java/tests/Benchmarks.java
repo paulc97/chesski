@@ -25,6 +25,225 @@ public class Benchmarks {
     //b.assessBoardNoPST()
     //b.assessBoardOnlyMaterial()
     @Test
+    void MoveOrderingBenchmark(){
+
+        Board b = new Board("Q4R2/3kr3/1q3n1p/2p1p1p1/1p1bP1P1/1B1P3P/2PBK3/8 w - - 1 0");
+        for (int i = 1; i <= 5; i++) {
+            //StartPosition
+            long time = 0;
+            long startEpoch = 0;
+            long endepoch = 0;
+            MoveGenerator.setAssessedLeaves(0);
+            MoveGenerator.setQuiescenceSearchIterations(0);
+            startEpoch = System.currentTimeMillis();
+            String result = MoveGenerator.alphaBeta(b, i, Integer.MIN_VALUE, Integer.MAX_VALUE,true);
+            endepoch = System.currentTimeMillis();
+            time += endepoch - startEpoch;
+            System.out.println(result);
+            String move = MoveGenerator.convertInternalMoveToGameserverMove(result, b);
+            System.out.println("Best move: " + move +" in depth "+i);
+            System.out.println("Elapsed time: "+time+" ms");
+            System.out.println("Assessed leaves: "+ MoveGenerator.getAssessedLeaves());
+            System.out.println("Assessed leaves per second: "+(MoveGenerator.getAssessedLeaves()/(time*0.001)));
+            System.out.println("Quiescence Search Iterations: "+getQuiescenceSearchIterations());
+            System.out.println("LeavesFoundAsHash: " + MoveGenerator.zobrist.found);
+            MoveGenerator.zobrist.found = 0;
+            MoveGenerator.assesedBoards = new HashMap<Long,Integer>();
+        }
+
+    }
+
+    @Test
+    void assessAllBoardsBenchmark(){
+
+        System.out.println("New Board : 6k1/r4ppp/r7/1b6/8/8/4QPPP/4R1K1 w - - 0 1");
+        long timesStart = 0;
+        long startEpoch = 0;
+        long endepoch = 0;
+
+        Board b = new Board("6k1/r4ppp/r7/1b6/8/8/4QPPP/4R1K1 w - - 0 1");
+
+        for (int i = 0;i<1000;i++){
+            startEpoch = System.currentTimeMillis();
+            b.assessBoard();
+            endepoch = System.currentTimeMillis();
+            timesStart += endepoch - startEpoch;
+        }
+        System.out.println("Assessment value assessBoard: " + b.assessBoard()); //TODO: auch hier nach jedem Durchlauf ändern
+        System.out.println("assessBoard: Rating board took "+(timesStart*0.001)+" Milliseconds");
+
+         timesStart = 0;
+         startEpoch = 0;
+         endepoch = 0;
+
+         b = new Board("6k1/r4ppp/r7/1b6/8/8/4QPPP/4R1K1 w - - 0 1");
+
+        for (int i = 0;i<1000;i++){
+            startEpoch = System.currentTimeMillis();
+            b.assessBoardStaticPST(); //TODO: nach jedem Durchlauf Funktion ändern
+            endepoch = System.currentTimeMillis();
+            timesStart += endepoch - startEpoch;
+        }
+        System.out.println("Assessment value assessBoardStaticPST(): " + b.assessBoardStaticPST()); //TODO: auch hier nach jedem Durchlauf ändern
+        System.out.println("b.assessBoardStaticPST():Rating board took "+(timesStart*0.001)+" Milliseconds");
+
+         timesStart = 0;
+         startEpoch = 0;
+         endepoch = 0;
+
+         b = new Board("6k1/r4ppp/r7/1b6/8/8/4QPPP/4R1K1 w - - 0 1");
+
+        for (int i = 0;i<1000;i++){
+            startEpoch = System.currentTimeMillis();
+            b.assessBoardNoPST(); //TODO: nach jedem Durchlauf Funktion ändern
+            endepoch = System.currentTimeMillis();
+            timesStart += endepoch - startEpoch;
+        }
+        System.out.println("Assessment value assessBoardNoPST() : " + b.assessBoardNoPST()); //TODO: auch hier nach jedem Durchlauf ändern
+        System.out.println("assessBoardNoPST() :Rating board took "+(timesStart*0.001)+" Milliseconds");
+
+         timesStart = 0;
+         startEpoch = 0;
+         endepoch = 0;
+
+         b = new Board("6k1/r4ppp/r7/1b6/8/8/4QPPP/4R1K1 w - - 0 1");
+
+        for (int i = 0;i<1000;i++){
+            startEpoch = System.currentTimeMillis();
+            b.assessBoardOnlyMaterial(); //TODO: nach jedem Durchlauf Funktion ändern
+            endepoch = System.currentTimeMillis();
+            timesStart += endepoch - startEpoch;
+        }
+        System.out.println("Assessment value assessBoardOnlyMaterial: " + b.assessBoardOnlyMaterial()); //TODO: auch hier nach jedem Durchlauf ändern
+        System.out.println(" assessBoardOnlyMaterial: Rating board took "+(timesStart*0.001)+" Milliseconds");
+
+        System.out.println("New Board: 7k/5ppp/8/R7/5n2/3B4/2K5/8 b - - 0 1");
+         timesStart = 0;
+         startEpoch = 0;
+         endepoch = 0;
+
+         b = new Board("7k/5ppp/8/R7/5n2/3B4/2K5/8 b - - 0 1");
+
+        for (int i = 0;i<1000;i++){
+            startEpoch = System.currentTimeMillis();
+            b.assessBoard();
+            endepoch = System.currentTimeMillis();
+            timesStart += endepoch - startEpoch;
+        }
+        System.out.println("Assessment value assessBoard: " + b.assessBoard()); //TODO: auch hier nach jedem Durchlauf ändern
+        System.out.println("assessBoard: Rating board took "+(timesStart*0.001)+" Milliseconds");
+
+        timesStart = 0;
+        startEpoch = 0;
+        endepoch = 0;
+
+        b = new Board("6k1/r4ppp/r7/1b6/8/8/4QPPP/4R1K1 w - - 0 1");
+
+        for (int i = 0;i<1000;i++){
+            startEpoch = System.currentTimeMillis();
+            b.assessBoardStaticPST(); //TODO: nach jedem Durchlauf Funktion ändern
+            endepoch = System.currentTimeMillis();
+            timesStart += endepoch - startEpoch;
+        }
+        System.out.println("Assessment value assessBoardStaticPST(): " + b.assessBoardStaticPST()); //TODO: auch hier nach jedem Durchlauf ändern
+        System.out.println("b.assessBoardStaticPST():Rating board took "+(timesStart*0.001)+" Milliseconds");
+
+        timesStart = 0;
+        startEpoch = 0;
+        endepoch = 0;
+
+        b = new Board("6k1/r4ppp/r7/1b6/8/8/4QPPP/4R1K1 w - - 0 1");
+
+        for (int i = 0;i<1000;i++){
+            startEpoch = System.currentTimeMillis();
+            b.assessBoardNoPST(); //TODO: nach jedem Durchlauf Funktion ändern
+            endepoch = System.currentTimeMillis();
+            timesStart += endepoch - startEpoch;
+        }
+        System.out.println("Assessment value assessBoardNoPST() : " + b.assessBoardNoPST()); //TODO: auch hier nach jedem Durchlauf ändern
+        System.out.println("assessBoardNoPST() :Rating board took "+(timesStart*0.001)+" Milliseconds");
+
+        timesStart = 0;
+        startEpoch = 0;
+        endepoch = 0;
+
+        b = new Board("6k1/r4ppp/r7/1b6/8/8/4QPPP/4R1K1 w - - 0 1");
+
+        for (int i = 0;i<1000;i++){
+            startEpoch = System.currentTimeMillis();
+            b.assessBoardOnlyMaterial(); //TODO: nach jedem Durchlauf Funktion ändern
+            endepoch = System.currentTimeMillis();
+            timesStart += endepoch - startEpoch;
+        }
+        System.out.println("Assessment value assessBoardOnlyMaterial: " + b.assessBoardOnlyMaterial()); //TODO: auch hier nach jedem Durchlauf ändern
+        System.out.println(" assessBoardOnlyMaterial: Rating board took "+(timesStart*0.001)+" Milliseconds");
+
+        System.out.println("New Board : Q4R2/3kr3/1q3n1p/2p1p1p1/1p1bP1P1/1B1P3P/2PBK3/8 w - - 1 0");
+         timesStart = 0;
+         startEpoch = 0;
+         endepoch = 0;
+
+         b = new Board("Q4R2/3kr3/1q3n1p/2p1p1p1/1p1bP1P1/1B1P3P/2PBK3/8 w - - 1 0");
+
+        for (int i = 0;i<1000;i++){
+            startEpoch = System.currentTimeMillis();
+            b.assessBoard();
+            endepoch = System.currentTimeMillis();
+            timesStart += endepoch - startEpoch;
+        }
+        System.out.println("Assessment value assessBoard: " + b.assessBoard()); //TODO: auch hier nach jedem Durchlauf ändern
+        System.out.println("assessBoard: Rating board took "+(timesStart*0.001)+" Milliseconds");
+
+        timesStart = 0;
+        startEpoch = 0;
+        endepoch = 0;
+
+        b = new Board("Q4R2/3kr3/1q3n1p/2p1p1p1/1p1bP1P1/1B1P3P/2PBK3/8 w - - 1 0");
+
+        for (int i = 0;i<1000;i++){
+            startEpoch = System.currentTimeMillis();
+            b.assessBoardStaticPST(); //TODO: nach jedem Durchlauf Funktion ändern
+            endepoch = System.currentTimeMillis();
+            timesStart += endepoch - startEpoch;
+        }
+        System.out.println("Assessment value assessBoardStaticPST(): " + b.assessBoardStaticPST()); //TODO: auch hier nach jedem Durchlauf ändern
+        System.out.println("b.assessBoardStaticPST():Rating board took "+(timesStart*0.001)+" Milliseconds");
+
+        timesStart = 0;
+        startEpoch = 0;
+        endepoch = 0;
+
+        b = new Board("Q4R2/3kr3/1q3n1p/2p1p1p1/1p1bP1P1/1B1P3P/2PBK3/8 w - - 1 0");
+
+        for (int i = 0;i<1000;i++){
+            startEpoch = System.currentTimeMillis();
+            b.assessBoardNoPST(); //TODO: nach jedem Durchlauf Funktion ändern
+            endepoch = System.currentTimeMillis();
+            timesStart += endepoch - startEpoch;
+        }
+        System.out.println("Assessment value assessBoardNoPST() : " + b.assessBoardNoPST()); //TODO: auch hier nach jedem Durchlauf ändern
+        System.out.println("assessBoardNoPST() :Rating board took "+(timesStart*0.001)+" Milliseconds");
+
+        timesStart = 0;
+        startEpoch = 0;
+        endepoch = 0;
+
+        b = new Board("Q4R2/3kr3/1q3n1p/2p1p1p1/1p1bP1P1/1B1P3P/2PBK3/8 w - - 1 0");
+
+        for (int i = 0;i<1000;i++){
+            startEpoch = System.currentTimeMillis();
+            b.assessBoardOnlyMaterial(); //TODO: nach jedem Durchlauf Funktion ändern
+            endepoch = System.currentTimeMillis();
+            timesStart += endepoch - startEpoch;
+        }
+        System.out.println("Assessment value assessBoardOnlyMaterial: " + b.assessBoardOnlyMaterial()); //TODO: auch hier nach jedem Durchlauf ändern
+        System.out.println(" assessBoardOnlyMaterial: Rating board took "+(timesStart*0.001)+" Milliseconds");
+
+
+    }
+
+
+    @Test
     void assessBoardbenchmark1(){
         long timesStart = 0;
         long startEpoch = 0;

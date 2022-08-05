@@ -6,11 +6,11 @@ import static Model.Mask.*;
 
 
 
-public class SlidingPieces  {
+public class SlidingPieces  implements Piece{
 
     public String rookMoves(Board b) {
 
-        long OCCUPIED = b.getAllPieces();
+        long allPieces = b.getAllPieces();
         String rookMoves="";
         if (b.isCurrentPlayerIsWhite()){
             long whiteRooks = b.getWhiteRooks();
@@ -20,7 +20,7 @@ public class SlidingPieces  {
             while(counter != 0)
             {
                 int location=Long.numberOfTrailingZeros(counter);
-                option=horizonralAndVerticalMoves(location,OCCUPIED)&~(b.getWhitePieces()|b.getBlackKing());
+                option=horizonralAndVerticalMoves(location,allPieces)&~(b.getWhitePieces()|b.getBlackKing());
                 long i=option&~(option-1);
                 while (i != 0)
                 {
@@ -40,7 +40,7 @@ public class SlidingPieces  {
             while(i != 0)
             {
                 int location=Long.numberOfTrailingZeros(i);
-                option=horizonralAndVerticalMoves(location,OCCUPIED)&~(b.getBlackPieces()|b.getWhiteKing());
+                option=horizonralAndVerticalMoves(location,allPieces)&~(b.getBlackPieces()|b.getWhiteKing());
                 long j=option&~(option-1);
                 while (j != 0)
                 {
@@ -176,4 +176,8 @@ public class SlidingPieces  {
     }
 
 
+    @Override
+    public String moves(Board board) {
+        return null;
+    }
 }
