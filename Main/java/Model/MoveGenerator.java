@@ -32,7 +32,7 @@ public class MoveGenerator {
     public MoveGenerator() {
         double expectationValue = averageNumberOfMoves / 2;
         double variance = 30;
-        zobrist.zobristFillArray();
+        zobrist.fillZobristMap();
         System.out.println("MG Created");
         for (int i = 0; i < this.timeDistribution.length; i++) {
             double k = (double) i + 1;
@@ -192,7 +192,7 @@ public class MoveGenerator {
         i = whiteQueenBishopPositions & ~(whiteQueenBishopPositions - 1);
         while (i != 0) {
             int currentPosition = Long.numberOfTrailingZeros(i);
-            option = SlidingPieces.DAndAntiDMoves(currentPosition, b.getAllPieces());
+            option = SlidingPieces.DaigonalMoves(currentPosition, b.getAllPieces());
             attackedPositions |= option;
             whiteQueenBishopPositions &= ~i;
             i = whiteQueenBishopPositions & ~(whiteQueenBishopPositions - 1);
@@ -203,7 +203,7 @@ public class MoveGenerator {
         i = whiteRookQueenPositions & ~(whiteRookQueenPositions - 1);
         while (i != 0) {
             int iLocation = Long.numberOfTrailingZeros(i);
-            option = SlidingPieces.HAndVMoves(iLocation, b.getAllPieces());
+            option = SlidingPieces.horizonralAndVerticalMoves(iLocation, b.getAllPieces());
             attackedPositions |= option;
             whiteRookQueenPositions &= ~i;
             i = whiteRookQueenPositions & ~(whiteRookQueenPositions - 1);
@@ -258,7 +258,7 @@ public class MoveGenerator {
         i = blackQueenBishopPositions & ~(blackQueenBishopPositions - 1);
         while (i != 0) {
             int currentPosition = Long.numberOfTrailingZeros(i);
-            option = SlidingPieces.DAndAntiDMoves(currentPosition, b.getAllPieces());
+            option = SlidingPieces.DaigonalMoves(currentPosition, b.getAllPieces());
             attackedPositions |= option;
             blackQueenBishopPositions &= ~i;
             i = blackQueenBishopPositions & ~(blackQueenBishopPositions - 1);
@@ -269,7 +269,7 @@ public class MoveGenerator {
         i = blackQueenRookPositions & ~(blackQueenRookPositions - 1);
         while (i != 0) {
             int currentPosition = Long.numberOfTrailingZeros(i);
-            option = SlidingPieces.HAndVMoves(currentPosition, b.getAllPieces());
+            option = SlidingPieces.horizonralAndVerticalMoves(currentPosition, b.getAllPieces());
             attackedPositions |= option;
             blackQueenRookPositions &= ~i;
             i = blackQueenRookPositions & ~(blackQueenRookPositions - 1);

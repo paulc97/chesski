@@ -1,112 +1,104 @@
 package Model;
 
-import Model.Mask;
-
 import java.security.SecureRandom;
 
 public class Zobrist {
-    static long zArray[][][] = new long[2][6][64];
-    static long zEnPassant[] = new long[8];
-    static long zCastle[] = new long[4];
-    static long zBlackMove;
+    static long ZobristMap[][][] = new long[2][6][64];
+    static long ZobristMapEnPassant[] = new long[8];
+    static long ZobristMapCastle[] = new long[4];
+    static long ZobristMapBlackMove;
     public static int found = 0;
-    public static long random64() {
+    public static long getSecureRandom() {
         SecureRandom random = new SecureRandom();
         return random.nextLong();
     }
-    public static void zobristFillArray() {
+    public static void fillZobristMap() {
         for (int color = 0; color < 2; color++)
         {
             for (int pieceType = 0; pieceType < 6; pieceType++)
             {
                 for (int square = 0; square < 64; square++)
                 {
-                    zArray[color][pieceType][square] = random64();
+                    ZobristMap[color][pieceType][square] = getSecureRandom();
                 }
             }
         }
         for (int column = 0; column < 8; column++)
         {
-            zEnPassant[column] = random64();
+            ZobristMapEnPassant[column] = getSecureRandom();
         }
         for (int i = 0; i < 4; i++)
         {
-            zCastle[i] = random64();
+            ZobristMapCastle[i] = getSecureRandom();
         }
-        zBlackMove = random64();
+        ZobristMapBlackMove = getSecureRandom();
     }
-    public static long getZobristHash(long WP,long WN,long WB,long WR,long WQ,long WK,long BP,long BN,long BB,long BR,long BQ,long BK,boolean CWK,boolean CWQ,boolean CBK,boolean CBQ,boolean WhiteToMove) {
-        long returnZKey = 0;
+    public static long getZobristHash(long whitePawn,long whiteKnight,long whiteBishop,long whiteRook,long whiteQueen,long whiteKing,long blackPawn,long blackKnight,long blackBishop,long blackRook,long blackQueen,long BK,boolean castleWhiteKingside,boolean castleWhiteQueenside,boolean castleBlackKingside,boolean castleBlackQueenside,boolean WhiteToMove) {
+        long zobristKey = 0;
         for (int square = 0; square < 64; square++)
         {
-            if (((WP >> square) & 1) == 1)
+            if (((whitePawn >> square) & 1) == 1)
             {
-                returnZKey ^= zArray[0][0][square];
+                zobristKey ^= ZobristMap[0][0][square];
             }
-            else if (((BP >> square) & 1) == 1)
+            else if (((blackPawn >> square) & 1) == 1)
             {
-                returnZKey ^= zArray[1][0][square];
+                zobristKey ^= ZobristMap[1][0][square];
             }
-            else if (((WN >> square) & 1) == 1)
+            else if (((whiteKnight >> square) & 1) == 1)
             {
-                returnZKey ^= zArray[0][1][square];
+                zobristKey ^= ZobristMap[0][1][square];
             }
-            else if (((BN >> square) & 1) == 1)
+            else if (((blackKnight >> square) & 1) == 1)
             {
-                returnZKey ^= zArray[1][1][square];
+                zobristKey ^= ZobristMap[1][1][square];
             }
-            else if (((WB >> square) & 1) == 1)
+            else if (((whiteBishop >> square) & 1) == 1)
             {
-                returnZKey ^= zArray[0][2][square];
+                zobristKey ^= ZobristMap[0][2][square];
             }
 
-            else if (((BB >> square) & 1) == 1)
+            else if (((blackBishop >> square) & 1) == 1)
             {
-                returnZKey ^= zArray[1][2][square];
+                zobristKey ^= ZobristMap[1][2][square];
             }
-            else if (((WR >> square) & 1) == 1)
+            else if (((whiteRook >> square) & 1) == 1)
             {
-                returnZKey ^= zArray[0][3][square];
+                zobristKey ^= ZobristMap[0][3][square];
             }
-            else if (((BR >> square) & 1) == 1)
+            else if (((blackRook >> square) & 1) == 1)
             {
-                returnZKey ^= zArray[1][3][square];
+                zobristKey ^= ZobristMap[1][3][square];
             }
-            else if (((WQ >> square) & 1) == 1)
+            else if (((whiteQueen >> square) & 1) == 1)
             {
-                returnZKey ^= zArray[0][4][square];
+                zobristKey ^= ZobristMap[0][4][square];
             }
-            else if (((BQ >> square) & 1) == 1)
+            else if (((blackQueen >> square) & 1) == 1)
             {
-                returnZKey ^= zArray[1][4][square];
+                zobristKey ^= ZobristMap[1][4][square];
             }
-            else if (((WK >> square) & 1) == 1)
+            else if (((whiteKing >> square) & 1) == 1)
             {
-                returnZKey ^= zArray[0][5][square];
+                zobristKey ^= ZobristMap[0][5][square];
             }
             else if (((BK >> square) & 1) == 1)
             {
-                returnZKey ^= zArray[1][5][square];
+                zobristKey ^= ZobristMap[1][5][square];
             }
         }
-        //for (int column = 0; column < 8; column++)
-        //{
-        //    if (EP == Mask.FileMasks8[column])
-        //    {
-        //        returnZKey ^= zEnPassant[column];
-        //    }
-        //}
-        if (CWK)
-            returnZKey ^= zCastle[0];
-        if (CWQ)
-            returnZKey ^= zCastle[1];
-        if (CBK)
-            returnZKey ^= zCastle[2];
-        if (CBQ)
-            returnZKey ^= zCastle[3];
+        
+        if (castleWhiteKingside)
+            zobristKey ^= ZobristMapCastle[0];
+        if (castleWhiteQueenside)
+            zobristKey ^= ZobristMapCastle[1];
+        if (castleBlackKingside)
+            zobristKey ^= ZobristMapCastle[2];
+        if (castleBlackQueenside)
+            zobristKey ^= ZobristMapCastle[3];
         if (!WhiteToMove)
-            returnZKey ^= zBlackMove;
-        return returnZKey;
+            zobristKey ^= ZobristMapBlackMove;
+        return zobristKey;
     }
 
 }
