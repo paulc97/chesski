@@ -908,12 +908,10 @@ public class Board implements Comparable <Board> {
         this.enPassants = enPassants;
     }
 
-    //TODO
     public boolean isInCheck() {
         return inCheck;
     }
 
-    //TODO
     public boolean nullMoveOk() {
         return true;
     }
@@ -1127,7 +1125,7 @@ public class Board implements Comparable <Board> {
         this.KIPlaysWhite = KIPlaysWhite;
     }
 
-    //TODO: only for benchmark comparison, not used by actual KI
+    //only for benchmark comparison, not used by actual KI
     public int assessBoardStaticPST(){
 
         this.assessmentValue = 0;

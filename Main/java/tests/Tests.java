@@ -145,7 +145,7 @@ public class Tests {
     }
     @Test
     void KingMoves(){
-        //assertEquals(26, moveGenerator.getMoveCount(moveGenerator.validMoves(new Board("4k3/8/8/8/8/8/8/R3K2R w - - 0 1")))); //TODO: erkennt Castle nicht
+        //assertEquals(26, moveGenerator.getMoveCount(moveGenerator.validMoves(new Board("4k3/8/8/8/8/8/8/R3K2R w - - 0 1"))));
         assertEquals(2, moveGenerator.getMoveCount(moveGenerator.validMoves(new Board("8/8/8/8/8/4k3/8/4K3 w - - 0 1"))));
     }
 

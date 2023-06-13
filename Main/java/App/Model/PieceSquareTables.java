@@ -11,6 +11,7 @@ public class PieceSquareTables {
         return blackPST;
     }
 
+    //values taken from https://www.chessprogramming.org/PeSTO%27s_Evaluation_Function (except king midgame and king endgame)
     //MIDGAME TABLES
     public static final int[] MG_WHITE_PAWNS = {
             0,   0,   0,   0,   0,   0,  0,   0,

@@ -2,11 +2,10 @@ import Model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import static Model.MoveGenerator.getQuiescenceSearchIterations;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+
 
 public class Benchmarks {
     Board board;
@@ -21,7 +20,6 @@ public class Benchmarks {
 
     //Assessment Function
 
-    //TODO: zu testende FUnktionen (kannst copypaste machen)
     //b.assessBoard()
     //b.assessBoardStaticPST()
     //b.assessBoardNoPST()
@@ -255,11 +253,11 @@ public class Benchmarks {
 
         for (int i = 0;i<1000;i++){
             startEpoch = System.currentTimeMillis();
-            b.assessBoardStaticPST(); //TODO: nach jedem Durchlauf Funktion ändern
+            b.assessBoardNoPST(); //TODO: change after every iteration
             endepoch = System.currentTimeMillis();
             timesStart += endepoch - startEpoch;
         }
-        System.out.println("Assessment value: " + b.assessBoardStaticPST()); //TODO: auch hier nach jedem Durchlauf ändern
+        System.out.println("Assessment value: " + b.assessBoardNoPST()); //TODO: change after every iteration
         System.out.println("Rating board took "+(timesStart*0.001)+" Milliseconds");
     }
     @Test
@@ -272,11 +270,11 @@ public class Benchmarks {
 
         for (int i = 0;i<1000;i++){
             startEpoch = System.currentTimeMillis();
-            b.assessBoardStaticPST(); //TODO: nach jedem Durchlauf Funktion ändern
+            b.assessBoardStaticPST(); //TODO: change after every iteration
             endepoch = System.currentTimeMillis();
             timesStart += endepoch - startEpoch;
         }
-        System.out.println("Assessment value: " + b.assessBoardStaticPST()); //TODO: auch hier nach jedem Durchlauf ändern
+        System.out.println("Assessment value: " + b.assessBoardStaticPST()); //TODO: change after every iteration
         System.out.println("Rating board took "+(timesStart*0.001)+" Milliseconds");
     }
     @Test
@@ -289,11 +287,11 @@ public class Benchmarks {
 
         for (int i = 0;i<1000;i++){
             startEpoch = System.currentTimeMillis();
-            b.assessBoardStaticPST(); //TODO: nach jedem Durchlauf Funktion ändern
+            b.assessBoardStaticPST(); //TODO: change after every iteration
             endepoch = System.currentTimeMillis();
             timesStart += endepoch - startEpoch;
         }
-        System.out.println("Assessment value: " + b.assessBoardStaticPST()); //TODO: auch hier nach jedem Durchlauf ändern
+        System.out.println("Assessment value: " + b.assessBoardStaticPST()); //TODO: change after every iteration
         System.out.println("Rating board took "+(timesStart*0.001)+" Milliseconds");
     }
 
